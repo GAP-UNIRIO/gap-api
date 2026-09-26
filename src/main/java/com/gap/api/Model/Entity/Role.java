@@ -1,8 +1,7 @@
-package com.gap.api.Model.Entities;
+package com.gap.api.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
 @Getter

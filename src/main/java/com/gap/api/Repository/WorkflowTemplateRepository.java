@@ -1,7 +1,7 @@
 package com.gap.api.Repository;
 
-import com.gap.api.Model.Entities.Order;
-import com.gap.api.Model.Entities.WorkflowTemplate;
+import com.gap.api.Model.Entity.Order;
+import com.gap.api.Model.Entity.WorkflowTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

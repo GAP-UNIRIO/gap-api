@@ -1,6 +1,6 @@
 package com.gap.api.Service;
 
-import com.gap.api.Model.Entities.*;
+import com.gap.api.Model.Entity.*;
 import com.gap.api.Repository.ApprovalStageRepository;
 import com.gap.api.Repository.WorkflowTemplateRepository;
 import jakarta.transaction.Transactional;

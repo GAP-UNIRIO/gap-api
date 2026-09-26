@@ -1,8 +1,8 @@
 package com.gap.api.Service;
 
-import com.gap.api.Model.Entities.Course;
-import com.gap.api.Model.Entities.Order;
-import com.gap.api.Model.Entities.OrgUnit;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.Order;
+import com.gap.api.Model.Entity.OrgUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
