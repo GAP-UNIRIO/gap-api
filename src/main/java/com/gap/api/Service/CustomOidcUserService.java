@@ -1,5 +1,6 @@
 package com.gap.api.Service;
 
+import com.gap.api.Model.Entities.User;
 import com.gap.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,14 @@ public class CustomOidcUserService extends OidcUserService {
 
         String name = oidcUser.getFullName();
 
+        User user = userRepository.findByEmail(email).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setEmail(email);
+            return newUser;
+        });
+
+        user.setName(name);
+        userRepository.save(user);
 
         return oidcUser;
     }

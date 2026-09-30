@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private IUserService userService;
-    private ICourseService courseService;
+    private final IUserService userService;
+    private final ICourseService courseService;
 
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<UserResponse>> getLoggedUser(@AuthenticationPrincipal OidcUser oidcUser) {
