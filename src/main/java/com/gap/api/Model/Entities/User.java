@@ -25,14 +25,14 @@ public class User {
     @Column(name="email", nullable = false, unique = true)
     private String email;
 
-    @Column(name="registration_number", nullable = false, unique = true)
+    @Column(name="registration_number", unique = true)
     private String registrationNumber;
 
     @Column(name="name", nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -48,5 +48,10 @@ public class User {
 
     public void addRole(Role role) {
         this.roles.add(role);
+    }
+
+    @Transient
+    public boolean isCompletedCadaster() {
+        return this.registrationNumber != null && !this.registrationNumber.isEmpty() && this.course != null;
     }
 }
