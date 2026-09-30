@@ -67,6 +67,8 @@ jobs:
           SPRING_DATASOURCE_USERNAME: testuser
           SPRING_DATASOURCE_PASSWORD: testpassword
           SPRING_PROFILES_ACTIVE: test
+          DEV_GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
+          DEV_GOOGLE_CLIENT_SECRET: ${{secrets.DEV_GOOGLE_CLIENT_SECRET}}
         run: >
           ./gradlew check sonar
           -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
