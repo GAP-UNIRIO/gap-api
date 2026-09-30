@@ -10,8 +10,20 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${DEV_GOOGLE_CLIENT_ID}
+            client-secret: ${DEV_GOOGLE_CLIENT_SECRET}
 server:
   servlet:
     context-path: /api
+
+app:
+  security:
+    allowed-domains: "edu.unirio.br,uniriotec.br"
+    frontend-url: "http://localhost:8080/api"
 
 
