@@ -10,8 +10,25 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
 server:
   servlet:
     context-path: /api
+
+app:
+  security:
+    allowed-domains:
+      ${ALLOWED_DOMAINS}
+    frontend-url:
+      ${FRONTEND_URL}
+
+
 
 
