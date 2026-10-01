@@ -123,7 +123,7 @@ class CourseServiceTest {
         Course existing = course(1L, "Sistemas de Informação");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        assertThat(service.findById(1L)).isSameAs(existing);
+        assertThat(service.findById(1L)).isEqualTo(CourseResponse.from(existing));
     }
 
     @Test

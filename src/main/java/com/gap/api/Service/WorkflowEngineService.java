@@ -17,7 +17,6 @@ public class WorkflowEngineService {
 
     private final ApprovalStageRepository approvalStageRepository;
     private final WorkflowTemplateRepository workflowTemplateRepository;
-    private final OrgUnitResolutionService orgUnitResolutionService;
 
     @Transactional
     public void instantiateWorkflowForOrder(Order order) {
@@ -38,14 +37,27 @@ public class WorkflowEngineService {
             approvalStage.setStepOrder(workflowStep.getStepOrder());
             approvalStage.setType(workflowStep.getStageType());
             approvalStage.setStatus(ApprovalStage.ApprovalStageStatus.PENDING);
-            var responsibleUnit = orgUnitResolutionService.
-                    resolveUnitForOrder(workflowStep.getResponsibleUnitType(), order);
+            var responsibleUnit = resolveUnitForOrder(workflowStep.getResponsibleUnitType(), order);
             approvalStage.setResponsibleUnit(responsibleUnit);
             activeStages.add(approvalStage);
         }
 
         approvalStageRepository.saveAll(activeStages);
     }
+
+    private OrgUnit resolveUnitForOrder(OrgUnit.OrgUnitType targetType, Order order) {
+        Course course = order.getUser().getCourse();
+        return switch (targetType){
+            case COORDENACAO -> course.getCoordenacao();
+            case SECRETARIA ->  course.getSecretaria();
+            case DIRECAO ->   course.getDirecao();
+            case REITORIA -> course.getReitoria();
+            case ESCOLA -> course.getEscola();
+
+            default ->  throw new IllegalArgumentException("Invalid target type");
+        };
+    }
+
 
 
 }

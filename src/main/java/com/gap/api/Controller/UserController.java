@@ -23,11 +23,11 @@ public class UserController {
         if(oidcUser == null) {
             throw new RuntimeException("Usuário não autenticado.");
         }
-        return ResponseEntity.ok(BaseResponse.success("Consulta realizada com sucesso.", UserResponse.from(userService.findByEmail(oidcUser.getEmail()))));
+        return ResponseEntity.ok(BaseResponse.success("Consulta realizada com sucesso.", userService.findByEmail(oidcUser.getEmail())));
     }
 
     @PutMapping("/me/complemento")
     public ResponseEntity<BaseResponse<UserResponse>> complementUser(@RequestBody UserComplementRequest userComplementRequest, @AuthenticationPrincipal OidcUser oidcUser) {
-        return ResponseEntity.ok(BaseResponse.success("User cadaster completed successfully" , UserResponse.from(userService.completeUserCadaster(userComplementRequest, oidcUser))));
+        return ResponseEntity.ok(BaseResponse.success("User cadaster completed successfully" , userService.completeUserCadaster(userComplementRequest, oidcUser)));
     }
 }

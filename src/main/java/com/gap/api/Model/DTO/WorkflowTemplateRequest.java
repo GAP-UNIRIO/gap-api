@@ -4,9 +4,9 @@ import com.gap.api.Model.Entity.Order;
 
 import java.util.List;
 
-public record WorkflowTemplateRequestDTO(
+public record WorkflowTemplateRequest(
         Order.OrderType orderType,
         Long courseId,
-        List<WorkflowStepRequestDTO> steps
+        List<WorkflowStepRequest> steps
 ) {}
 

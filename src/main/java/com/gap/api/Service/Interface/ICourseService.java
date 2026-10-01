@@ -11,7 +11,7 @@ public interface ICourseService {
     CourseResponse create(CourseRequest courseRequest);
     CourseResponse update(Long id, CourseRequest courseRequest);
 
-    Course findById(Long id);
+    CourseResponse findById(Long id);
 
     List<CourseResponse> findAll();
 

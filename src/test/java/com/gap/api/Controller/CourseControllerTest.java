@@ -75,7 +75,7 @@ class CourseControllerTest {
     @Test
     @DisplayName("findById deve retornar 200 e o curso quando existe")
     void findById_found() throws Exception {
-        when(service.findById(1L)).thenReturn(course(1L, "Sistemas de Informação")); // Supondo ajuste no service para retornar DTO
+        when(service.findById(1L)).thenReturn(CourseResponse.from(course(1L, "Sistemas de Informação"))); // Supondo ajuste no service para retornar DTO
 
         mockMvc.perform(get("/courses/1").with(oidcLogin()))
                 .andExpect(status().isOk())

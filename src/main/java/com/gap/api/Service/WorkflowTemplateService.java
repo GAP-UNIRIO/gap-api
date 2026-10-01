@@ -1,6 +1,7 @@
 package com.gap.api.Service;
 
-import com.gap.api.Model.DTO.WorkflowTemplateRequestDTO;
+import com.gap.api.Model.DTO.WorkflowTemplateRequest;
+import com.gap.api.Model.DTO.WorkflowTemplateResponse;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.WorkflowStep;
 import com.gap.api.Model.Entity.WorkflowTemplate;
@@ -21,7 +22,7 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public WorkflowTemplate createTemplate(WorkflowTemplateRequestDTO dto) {
+    public WorkflowTemplateResponse createTemplate(WorkflowTemplateRequest dto) {
         if (dto.courseId() != null) {
             if (templateRepository.findByOrderTypeAndCourse_Id(dto.orderType(), dto.courseId()).isPresent()){
                 throw new IllegalArgumentException("Workflow template already exists for this order type and course");
@@ -50,7 +51,7 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
 
         template.getSteps().addAll(steps);
 
-        return templateRepository.save(template);
+        return WorkflowTemplateResponse.from(templateRepository.save(template));
     }
 
 }

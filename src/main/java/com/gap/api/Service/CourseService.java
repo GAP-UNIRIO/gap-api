@@ -30,8 +30,8 @@ public class CourseService implements ICourseService {
     }
 
     @Transactional(readOnly = true)
-    public Course findById(Long id) {
-        return getOrThrow(id);
+    public CourseResponse findById(Long id) {
+        return CourseResponse.from(getOrThrow(id));
     }
 
     @Transactional

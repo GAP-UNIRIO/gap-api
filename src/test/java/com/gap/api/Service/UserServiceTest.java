@@ -1,6 +1,7 @@
 package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.UserComplementRequest;
+import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
@@ -70,7 +71,7 @@ class UserServiceTest {
         User existing = user(EMAIL);
         when(repository.findByEmail(EMAIL)).thenReturn(Optional.of(existing));
 
-        assertThat(service.findByEmail(EMAIL)).isSameAs(existing);
+        assertThat(service.findByEmail(EMAIL)).isEqualTo(UserResponse.from(existing));
     }
 
     @Test
@@ -95,11 +96,11 @@ class UserServiceTest {
         when(courseRepository.findById(5L)).thenReturn(Optional.of(course));
         when(repository.save(existing)).thenReturn(existing);
 
-        User result = service.completeUserCadaster(new UserComplementRequest("20260001", 5L), oidcUser);
-
-        assertThat(result).isSameAs(existing);
-        assertThat(result.getCourse()).isSameAs(course);
-        assertThat(result.getRegistrationNumber()).isEqualTo("20260001");
+        UserResponse result = service.completeUserCadaster(new UserComplementRequest("20260001", 5L), oidcUser);
+        UserResponse expected = UserResponse.from(existing);
+        assertThat(result).isEqualTo(expected);
+        assertThat(result.courseId()).isSameAs(course.getId());
+        assertThat(result.registrationNumber()).isEqualTo("20260001");
         assertThat(result.isCompletedCadaster()).isTrue();
         verify(repository).save(existing);
     }
