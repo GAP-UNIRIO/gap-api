@@ -1,6 +1,6 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.AcademicCalendar;
+import com.gap.api.Model.Entity.AcademicCalendar;
 
 import java.time.LocalDate;
 import java.util.Map;

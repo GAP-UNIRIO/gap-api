@@ -2,9 +2,6 @@ package com.gap.api.Service.Interface;
 
 import com.gap.api.Model.DTO.InstitutionRequest;
 import com.gap.api.Model.DTO.InstitutionResponse;
-import com.gap.api.Model.Entities.Institution;
-import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

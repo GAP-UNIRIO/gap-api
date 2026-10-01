@@ -2,7 +2,7 @@ package com.gap.api.Service.Interface;
 
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
-import com.gap.api.Model.Entities.Course;
+import com.gap.api.Model.Entity.Course;
 
 import java.util.List;
 

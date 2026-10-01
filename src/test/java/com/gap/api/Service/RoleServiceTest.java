@@ -2,7 +2,7 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.RoleRequest;
 import com.gap.api.Model.DTO.RoleResponse;
-import com.gap.api.Model.Entities.Role;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Repository.RoleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

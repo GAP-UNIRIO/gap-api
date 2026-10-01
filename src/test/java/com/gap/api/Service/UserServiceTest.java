@@ -1,8 +1,8 @@
 package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.UserComplementRequest;
-import com.gap.api.Model.Entities.Course;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;

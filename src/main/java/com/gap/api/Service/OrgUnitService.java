@@ -2,7 +2,7 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.OrgUnitRequest;
 import com.gap.api.Model.DTO.OrgUnitResponse;
-import com.gap.api.Model.Entities.OrgUnit;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Repository.OrgUnitRepository;
 import com.gap.api.Service.Interface.IOrgUnitService;
 import lombok.RequiredArgsConstructor;

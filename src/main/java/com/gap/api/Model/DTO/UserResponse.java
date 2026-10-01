@@ -1,6 +1,6 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.User;
 
 public record UserResponse(
         Long id,

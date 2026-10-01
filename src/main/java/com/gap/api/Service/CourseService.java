@@ -2,8 +2,8 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
-import com.gap.api.Model.Entities.Course;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.ICourseService;

@@ -2,8 +2,8 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.OrgUnitRequest;
 import com.gap.api.Model.DTO.OrgUnitResponse;
-import com.gap.api.Model.Entities.OrgUnit;
-import com.gap.api.Model.Entities.OrgUnit.OrgUnitType;
+import com.gap.api.Model.Entity.OrgUnit;
+import com.gap.api.Model.Entity.OrgUnit.OrgUnitType;
 import com.gap.api.Repository.OrgUnitRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

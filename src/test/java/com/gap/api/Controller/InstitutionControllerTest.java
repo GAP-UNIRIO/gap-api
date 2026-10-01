@@ -3,7 +3,7 @@ package com.gap.api.Controller;
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.InstitutionRequest;
 import com.gap.api.Model.DTO.InstitutionResponse;
-import com.gap.api.Model.Entities.Institution;
+import com.gap.api.Model.Entity.Institution;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IInstitutionService;
 import org.junit.jupiter.api.DisplayName;

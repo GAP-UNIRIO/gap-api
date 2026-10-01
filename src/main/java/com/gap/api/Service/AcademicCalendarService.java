@@ -2,7 +2,7 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.AcademicCalendarRequest;
 import com.gap.api.Model.DTO.AcademicCalendarResponse;
-import com.gap.api.Model.Entities.AcademicCalendar;
+import com.gap.api.Model.Entity.AcademicCalendar;
 import com.gap.api.Repository.AcademicCalendarRepository;
 import com.gap.api.Service.Interface.IAcademicCalendarService;
 import lombok.RequiredArgsConstructor;
