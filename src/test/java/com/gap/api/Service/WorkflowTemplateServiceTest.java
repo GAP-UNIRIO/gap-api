@@ -89,4 +89,20 @@ class WorkflowTemplateServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> workflowTemplateService.createTemplate(request));
         assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("createTemplate deve lançar exceção quando já existir um template para o tipo de solicitação e curso")
+    void createTemplate_ShouldThrowException_WhenTemplateAlreadyExistsForCourse() {
+        // Arrange
+        WorkflowStepRequest step1 = new WorkflowStepRequest(1, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.COORDENACAO);
+        WorkflowStepRequest step2 = new WorkflowStepRequest(2, ApprovalStage.ApprovalStageType.DIRECTOR, OrgUnit.OrgUnitType.DIRECAO);
+        WorkflowTemplateRequest request = new WorkflowTemplateRequest(Order.OrderType.APROVEITAMENTO_DE_DISCIPLINA, 1L, List.of(step1, step2));
+        WorkflowTemplate existingTemplate = new WorkflowTemplate();
+        when(templateRepository.findByOrderTypeAndCourse_Id(request.orderType(), request.courseId()))
+                .thenReturn(Optional.of(existingTemplate));
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> workflowTemplateService.createTemplate(request));
+        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+    }
 }
