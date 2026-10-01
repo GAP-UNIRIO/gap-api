@@ -1,7 +1,7 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.Institution.AuthProviderType;
-import com.gap.api.Model.Entities.Institution.SignatureProviderType;
+import com.gap.api.Model.Entity.Institution.AuthProviderType;
+import com.gap.api.Model.Entity.Institution.SignatureProviderType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -1,6 +1,6 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.OrgUnit;
+import com.gap.api.Model.Entity.OrgUnit;
 
 public record OrgUnitRequest(
         OrgUnit.OrgUnitType type,

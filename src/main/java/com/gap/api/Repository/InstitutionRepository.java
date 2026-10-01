@@ -1,6 +1,6 @@
 package com.gap.api.Repository;
 
-import com.gap.api.Model.Entities.Institution;
+import com.gap.api.Model.Entity.Institution;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InstitutionRepository extends JpaRepository<Institution, Long> {

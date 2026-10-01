@@ -1,7 +1,7 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.OrgUnit;
-import com.gap.api.Model.Entities.OrgUnit.OrgUnitType;
+import com.gap.api.Model.Entity.OrgUnit;
+import com.gap.api.Model.Entity.OrgUnit.OrgUnitType;
 
 public record OrgUnitResponse(Long id, OrgUnitType type, String name) {
 

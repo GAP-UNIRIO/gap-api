@@ -1,6 +1,6 @@
 package com.gap.api.Repository;
 
-import com.gap.api.Model.Entities.AcademicCalendar;
+import com.gap.api.Model.Entity.AcademicCalendar;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

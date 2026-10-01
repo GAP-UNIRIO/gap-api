@@ -1,7 +1,8 @@
 package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.UserComplementRequest;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.DTO.UserResponse;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.IUserService;
@@ -19,19 +20,20 @@ public class UserService implements IUserService {
     private final UserRepository repository;
     private final CourseRepository courseRepository;
 
-    public User findByEmail(String email) {
-        return repository.findByEmail(email).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + email));
+    public UserResponse findByEmail(String email) {
+        return UserResponse.from(repository.findByEmail(email).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + email)));
     }
 
     @Transactional
-    public User completeUserCadaster(UserComplementRequest userComplementRequest, OidcUser oidcUser) {
-        User user = findByEmail(oidcUser.getEmail());
+    public UserResponse completeUserCadaster(UserComplementRequest userComplementRequest, OidcUser oidcUser) {
+        User user = repository.findByEmail(oidcUser.getEmail()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + oidcUser.getEmail()));
 
         user.setCourse(courseRepository.findById(userComplementRequest.courseId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: " + userComplementRequest.courseId())));
         user.setRegistrationNumber(userComplementRequest.registrarionNumber());
-        return repository.save(user);
+        return UserResponse.from(repository.save(user));
     }
 
     private User getOrThrow(Long id) {

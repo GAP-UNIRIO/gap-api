@@ -1,6 +1,6 @@
 package com.gap.api.Service;
 
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

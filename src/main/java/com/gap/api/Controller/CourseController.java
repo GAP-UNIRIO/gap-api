@@ -36,7 +36,7 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<CourseResponse>> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(BaseResponse.success("Consulta realizada com sucesso.", CourseResponse.from(service.findById(id))));
+        return ResponseEntity.ok(BaseResponse.success("Consulta realizada com sucesso.", service.findById(id)));
     }
 
     @GetMapping

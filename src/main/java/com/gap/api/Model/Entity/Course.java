@@ -1,8 +1,7 @@
-package com.gap.api.Model.Entities;
+package com.gap.api.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Immutable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,5 +46,24 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<User> users = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reitoria_id")
+    private OrgUnit reitoria;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coordenacao_id")
+    private OrgUnit coordenacao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "direcao_id")
+    private OrgUnit direcao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "secretaria_id")
+    private OrgUnit secretaria;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "escola_id")
+    private OrgUnit escola;
 
 }

@@ -2,8 +2,8 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
-import com.gap.api.Model.Entities.Course;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -123,7 +123,7 @@ class CourseServiceTest {
         Course existing = course(1L, "Sistemas de Informação");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        assertThat(service.findById(1L)).isSameAs(existing);
+        assertThat(service.findById(1L)).isEqualTo(CourseResponse.from(existing));
     }
 
     @Test

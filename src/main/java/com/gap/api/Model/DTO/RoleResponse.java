@@ -1,6 +1,6 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.Role;
+import com.gap.api.Model.Entity.Role;
 
 public record RoleResponse(Long id, String authority) {
 

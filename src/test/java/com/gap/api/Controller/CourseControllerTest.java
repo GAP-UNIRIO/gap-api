@@ -3,7 +3,7 @@ package com.gap.api.Controller;
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
-import com.gap.api.Model.Entities.Course;
+import com.gap.api.Model.Entity.Course;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +48,7 @@ class CourseControllerTest {
     }
 
     private Course course(Long id, String name) {
-        return new Course(id, name, null, null, null, null);
+        return new Course(id, name, null, null, null, null, null, null, null, null, null);
     }
 
     private CourseRequest request(String name) {
@@ -75,7 +75,7 @@ class CourseControllerTest {
     @Test
     @DisplayName("findById deve retornar 200 e o curso quando existe")
     void findById_found() throws Exception {
-        when(service.findById(1L)).thenReturn(course(1L, "Sistemas de Informação")); // Supondo ajuste no service para retornar DTO
+        when(service.findById(1L)).thenReturn(CourseResponse.from(course(1L, "Sistemas de Informação"))); // Supondo ajuste no service para retornar DTO
 
         mockMvc.perform(get("/courses/1").with(oidcLogin()))
                 .andExpect(status().isOk())

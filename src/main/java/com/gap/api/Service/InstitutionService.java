@@ -2,7 +2,7 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.InstitutionRequest;
 import com.gap.api.Model.DTO.InstitutionResponse;
-import com.gap.api.Model.Entities.Institution;
+import com.gap.api.Model.Entity.Institution;
 import com.gap.api.Repository.InstitutionRepository;
 import com.gap.api.Service.Interface.IInstitutionService;
 import lombok.RequiredArgsConstructor;

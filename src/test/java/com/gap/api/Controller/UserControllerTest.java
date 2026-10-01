@@ -2,8 +2,9 @@ package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.UserComplementRequest;
-import com.gap.api.Model.Entities.Course;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.DTO.UserResponse;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IUserService;
@@ -54,6 +55,10 @@ class UserControllerTest {
         return user;
     }
 
+    private UserResponse userResponseMock(Long id, String email, String name, boolean active) {
+        return new UserResponse(id, email, name, null, null, active);
+    }
+
     private UserComplementRequest complementRequest(String registrationNumber, Long courseId) {
         return new UserComplementRequest(registrationNumber, courseId);
     }
@@ -63,7 +68,7 @@ class UserControllerTest {
     @Test
     @DisplayName("GET /users/me deve retornar dados do usuário autenticado")
     void getLoggedUser_returnsUser() throws Exception {
-        User user = userMock(1L, "aluno@edu.unirio.br", "Aluno Silva");
+        UserResponse user = userResponseMock(1L, "aluno@edu.unirio.br", "Aluno Silva", false);
 
         when(userService.findByEmail("aluno@edu.unirio.br")).thenReturn(user);
 
@@ -88,8 +93,9 @@ class UserControllerTest {
         User updatedUser = userMock(1L, "aluno@edu.unirio.br", "Aluno Silva");
         updatedUser.setRegistrationNumber("20260001");
         updatedUser.setCourse(course);
+        UserResponse updatedUserResponse = UserResponse.from(updatedUser);
 
-        when(userService.completeUserCadaster(any(UserComplementRequest.class), any())).thenReturn(updatedUser);
+        when(userService.completeUserCadaster(any(UserComplementRequest.class), any())).thenReturn(updatedUserResponse);
 
         mockMvc.perform(put("/users/me/complemento")
                         .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
