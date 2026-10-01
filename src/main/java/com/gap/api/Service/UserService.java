@@ -1,7 +1,7 @@
 package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.UserComplementRequest;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.IUserService;

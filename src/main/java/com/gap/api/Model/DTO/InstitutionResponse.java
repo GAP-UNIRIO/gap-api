@@ -1,8 +1,8 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.Institution;
-import com.gap.api.Model.Entities.Institution.AuthProviderType;
-import com.gap.api.Model.Entities.Institution.SignatureProviderType;
+import com.gap.api.Model.Entity.Institution;
+import com.gap.api.Model.Entity.Institution.AuthProviderType;
+import com.gap.api.Model.Entity.Institution.SignatureProviderType;
 
 import java.time.ZonedDateTime;
 import java.util.Map;

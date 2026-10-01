@@ -3,7 +3,7 @@ package com.gap.api.Controller;
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
-import com.gap.api.Model.Entities.Course;
+import com.gap.api.Model.Entity.Course;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import org.junit.jupiter.api.DisplayName;

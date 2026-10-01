@@ -3,7 +3,7 @@ package com.gap.api.Controller;
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.OrgUnitRequest;
 import com.gap.api.Model.DTO.OrgUnitResponse;
-import com.gap.api.Model.Entities.OrgUnit;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IOrgUnitService;
 import org.junit.jupiter.api.DisplayName;

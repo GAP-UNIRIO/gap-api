@@ -1,8 +1,7 @@
-package com.gap.api.Model.Entities;
+package com.gap.api.Model.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Immutable;
 
 import java.util.ArrayList;
 import java.util.List;

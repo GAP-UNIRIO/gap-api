@@ -2,7 +2,7 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.RoleRequest;
 import com.gap.api.Model.DTO.RoleResponse;
-import com.gap.api.Model.Entities.Role;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Repository.RoleRepository;
 import com.gap.api.Service.Interface.IRoleService;
 import lombok.RequiredArgsConstructor;

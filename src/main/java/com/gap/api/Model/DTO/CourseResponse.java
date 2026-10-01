@@ -1,6 +1,7 @@
 package com.gap.api.Model.DTO;
 
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.User;
 
 public record CourseResponse(
         Long id,
@@ -9,7 +10,7 @@ public record CourseResponse(
         User coordinator,
         User secretary
 ) {
-    public static CourseResponse from(com.gap.api.Model.Entities.Course course) {
+    public static CourseResponse from(Course course) {
         return new CourseResponse(
                 course.getId(),
                 course.getName(),

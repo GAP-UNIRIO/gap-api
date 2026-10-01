@@ -2,8 +2,8 @@ package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.UserComplementRequest;
-import com.gap.api.Model.Entities.Course;
-import com.gap.api.Model.Entities.User;
+import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.User;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IUserService;
