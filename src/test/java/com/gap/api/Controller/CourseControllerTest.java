@@ -48,7 +48,7 @@ class CourseControllerTest {
     }
 
     private Course course(Long id, String name) {
-        return new Course(id, name, null, null, null, null);
+        return new Course(id, name, null, null, null, null, null, null, null, null, null);
     }
 
     private CourseRequest request(String name) {
