@@ -27,7 +27,6 @@ API REST do **GAP**, sistema de solicitações acadêmicas da UNIRIO. Ela centra
 - [CI/CD](#cicd)
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Estado atual e próximos passos](#estado-atual-e-próximos-passos)
-- [Contribuindo](#contribuindo)
 
 ---
 
