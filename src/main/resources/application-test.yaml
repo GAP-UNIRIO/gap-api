@@ -1,11 +1,11 @@
 spring:
   application:
     name: gap-api
-
   datasource:
     url: jdbc:postgresql://localhost:5432/core_api_test
-    username: testuser
-    password: testpassword
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -14,13 +14,19 @@ spring:
       client:
         registration:
           google:
-            client-id: ${DEV_GOOGLE_CLIENT_ID}
-            client-secret: ${DEV_GOOGLE_CLIENT_SECRET}
+            client-id: ${DEV_GOOGLE_CLIENT_ID:test-client-id}
+            client-secret: ${DEV_GOOGLE_CLIENT_SECRET:test-client-secret}
 server:
   servlet:
     context-path: /api
-
 app:
   security:
     allowed-domains: "edu.unirio.br,uniriotec.br"
     frontend-url: "http://localhost:8080/api"
+  storage:
+    s3:
+      bucket: ${AWS_S3_BUCKET:}
+      region: ${AWS_REGION:us-east-1}
+      temporary-prefix: ${AWS_S3_TEMPORARY_PREFIX:temporary}
+      orders-prefix: ${AWS_S3_ORDERS_PREFIX:orders}
+      upload-key-secret: ${AWS_S3_UPLOAD_KEY_SECRET:}
