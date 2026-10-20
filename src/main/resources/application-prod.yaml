@@ -10,7 +10,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-
   security:
     oauth2:
       client:
@@ -21,14 +20,14 @@ spring:
 server:
   servlet:
     context-path: /api
-
 app:
   security:
-    allowed-domains:
-      ${ALLOWED_DOMAINS}
-    frontend-url:
-      ${FRONTEND_URL}
-
-
-
-
+    allowed-domains: ${ALLOWED_DOMAINS}
+    frontend-url: ${FRONTEND_URL}
+  storage:
+    s3:
+      bucket: ${AWS_S3_BUCKET:}
+      region: ${AWS_REGION:us-east-1}
+      temporary-prefix: ${AWS_S3_TEMPORARY_PREFIX:temporary}
+      orders-prefix: ${AWS_S3_ORDERS_PREFIX:orders}
+      upload-key-secret: ${AWS_S3_UPLOAD_KEY_SECRET:}
