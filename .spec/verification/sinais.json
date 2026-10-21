@@ -1,0 +1,1184 @@
+{
+  "schema": 1,
+  "sinais": {
+    "ARQUIVO_INEXISTENTE::flyway-migrations::T-002": {
+      "codigo": "ARQUIVO_INEXISTENTE",
+      "feature": "flyway-migrations",
+      "ref": "T-002",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:22:17.220Z",
+      "ultimaVez": "2026-10-20T20:22:17.226Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_INEXISTENTE::flyway-migrations::T-003": {
+      "codigo": "ARQUIVO_INEXISTENTE",
+      "feature": "flyway-migrations",
+      "ref": "T-003",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-20T20:25:58.180Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_TESTE::flyway-migrations::AC-001": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "flyway-migrations",
+      "ref": "AC-001",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-20T20:22:17.226Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_TESTE::flyway-migrations::AC-002": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "flyway-migrations",
+      "ref": "AC-002",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-20T20:22:17.226Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_TESTE::flyway-migrations::AC-003": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "flyway-migrations",
+      "ref": "AC-003",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-20T20:22:17.226Z",
+      "gitRev": "4cc6caf"
+    },
+    "SPEC_AUSENTE::order-create::—": {
+      "codigo": "SPEC_AUSENTE",
+      "feature": "order-create",
+      "ref": "—",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-20T20:26:44.890Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/ApiApplication.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/ApiApplication.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.960Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Config/S3StorageConfig.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Config/S3StorageConfig.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Config/SecurityConfig.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Config/SecurityConfig.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/AcademicCalendarController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/AcademicCalendarController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/CourseController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/CourseController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/InstitutionController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/InstitutionController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/OrderController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/OrderController.java",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-20T20:26:44.891Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/OrgUnitController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/OrgUnitController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/RoleController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/RoleController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/UserController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/UserController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Controller/WorkflowTemplateController.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Controller/WorkflowTemplateController.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Exception/GlobalExceptionHandler.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Exception/GlobalExceptionHandler.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Filter/CsrfCookieFilter.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Filter/CsrfCookieFilter.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/AcademicCalendarRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/AcademicCalendarRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/AcademicCalendarResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/AcademicCalendarResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/AnnexRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/AnnexRequest.java",
+      "ocorrencias": 12,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/AnnexResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/AnnexResponse.java",
+      "ocorrencias": 12,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/AnnexUploadRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/AnnexUploadRequest.java",
+      "ocorrencias": 12,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/AnnexUploadResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/AnnexUploadResponse.java",
+      "ocorrencias": 12,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/BaseResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/BaseResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/BaseResponseDTO.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/BaseResponseDTO.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/CourseRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/CourseRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/CourseResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/CourseResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/InstitutionRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/InstitutionRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/InstitutionResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/InstitutionResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/OrderRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/OrderRequest.java",
+      "ocorrencias": 12,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/OrderResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/OrderResponse.java",
+      "ocorrencias": 12,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/OrgUnitRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/OrgUnitRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/OrgUnitResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/OrgUnitResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/RoleRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/RoleRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/RoleResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/RoleResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/UserComplementRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/UserComplementRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/UserResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/UserResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/WorkflowStepRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/WorkflowStepRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/WorkflowTemplateRequest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/WorkflowTemplateRequest.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.961Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/DTO/WorkflowTemplateResponse.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/DTO/WorkflowTemplateResponse.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/AcademicCalendar.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/AcademicCalendar.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/Annex.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/Annex.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/ApprovalStage.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/ApprovalStage.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/Course.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/Course.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/GraduationEvent.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/GraduationEvent.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/Institution.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/Institution.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/Notification.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/Notification.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/Order.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/Order.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/OrderHistory.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/OrderHistory.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/OrgUnit.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/OrgUnit.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/Role.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/Role.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.226Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/User.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/User.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/WorkflowStep.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/WorkflowStep.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Model/Entity/WorkflowTemplate.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Model/Entity/WorkflowTemplate.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/AcademicCalendarRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/AcademicCalendarRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/ApprovalStageRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/ApprovalStageRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/CourseRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/CourseRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/InstitutionRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/InstitutionRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/OrderRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/OrderRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/OrgUnitRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/OrgUnitRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/RoleRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/RoleRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/UserRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/UserRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Repository/WorkflowTemplateRepository.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Repository/WorkflowTemplateRepository.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/AWSStorageService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/AWSStorageService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/AcademicCalendarService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/AcademicCalendarService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/CourseService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/CourseService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/CustomOidcUserService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/CustomOidcUserService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/InstitutionService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/InstitutionService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IAcademicCalendarService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IAcademicCalendarService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/ICourseService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/ICourseService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IInstitutionService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IInstitutionService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IOrderService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IOrderService.java",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:26:44.891Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IOrgUnitService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IOrgUnitService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IRoleService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IRoleService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IStorageService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IStorageService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IUserService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IUserService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/Interface/IWorkflowTemplateService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/Interface/IWorkflowTemplateService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/OrderService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/OrderService.java",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:26:44.891Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/OrgUnitService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/OrgUnitService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/RoleService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/RoleService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/UserService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/UserService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/WorkflowEngineService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/WorkflowEngineService.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/java/com/gap/api/Service/WorkflowTemplateService.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/java/com/gap/api/Service/WorkflowTemplateService.java",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/main/resources/application.yaml": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/resources/application.yaml",
+      "ocorrencias": 14,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:17.962Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/ApiApplicationTests.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/ApiApplicationTests.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/CourseControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/CourseControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/InstitutionControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/InstitutionControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/OrderControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/OrderControllerTest.java",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:26:44.891Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/OrgUnitControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/OrgUnitControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/RoleControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/RoleControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/UserControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/UserControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Controller/WorkflowTemplateControllerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Controller/WorkflowTemplateControllerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Exception/GlobalExceptionHandlerTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Exception/GlobalExceptionHandlerTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Integration/OrderServiceIntegrationTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Integration/OrderServiceIntegrationTest.java",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:26:44.891Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/AWSStorageServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/AWSStorageServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/AcademicCalendarServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/AcademicCalendarServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/CourseServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/CourseServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/InstitutionServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/InstitutionServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/OrderServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/OrderServiceTest.java",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:26:44.891Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/OrgUnitServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/OrgUnitServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/RoleServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/RoleServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/UserServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/UserServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/WorkflowEngineServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/WorkflowEngineServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "ARQUIVO_ORFAO::—::src/test/java/com/gap/api/Service/WorkflowTemplateServiceTest.java": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/java/com/gap/api/Service/WorkflowTemplateServiceTest.java",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-20T20:37:14.002Z",
+      "gitRev": "4cc6caf"
+    },
+    "GLOB_SEM_ARQUIVOS::—::P-002": {
+      "codigo": "GLOB_SEM_ARQUIVOS",
+      "feature": "—",
+      "ref": "P-002",
+      "ocorrencias": 13,
+      "primeiraVez": "2026-10-20T20:22:17.227Z",
+      "ultimaVez": "2026-10-21T04:25:02.713Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_PROVA::flyway-migrations::AC-001": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "flyway-migrations",
+      "ref": "AC-001",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:25:58.181Z",
+      "ultimaVez": "2026-10-20T20:25:58.181Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_PROVA::flyway-migrations::AC-002": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "flyway-migrations",
+      "ref": "AC-002",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:25:58.181Z",
+      "ultimaVez": "2026-10-20T20:25:58.181Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_PROVA::flyway-migrations::AC-003": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "flyway-migrations",
+      "ref": "AC-003",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:25:58.181Z",
+      "ultimaVez": "2026-10-20T20:25:58.181Z",
+      "gitRev": "4cc6caf"
+    },
+    "ID_DUPLICADO::order-create::ASM-001": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "order-create",
+      "ref": "ASM-001",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:36:32.232Z",
+      "ultimaVez": "2026-10-20T20:36:32.239Z",
+      "gitRev": "4cc6caf"
+    },
+    "ID_DUPLICADO::order-create::ASM-002": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "order-create",
+      "ref": "ASM-002",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-20T20:36:32.239Z",
+      "gitRev": "4cc6caf"
+    },
+    "ID_DUPLICADO::order-create::ASM-003": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "order-create",
+      "ref": "ASM-003",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-20T20:36:32.239Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_TESTE::order-create::AC-004": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-004",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-005": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-005",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-006": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-006",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-007": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-007",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-008": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-008",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-009": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-009",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-010": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-010",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-011": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-011",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-012": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-012",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-20T20:36:32.239Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "STATUS_INVALIDO::codebase-baseline::.spec\\features\\codebase-baseline\\spec.md": {
+      "codigo": "STATUS_INVALIDO",
+      "feature": "codebase-baseline",
+      "ref": ".spec\\features\\codebase-baseline\\spec.md",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-21T04:29:19.387Z",
+      "ultimaVez": "2026-10-21T04:29:24.060Z",
+      "gitRev": "4cc6caf"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::codebase-baseline::T-001": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "codebase-baseline",
+      "ref": "T-001",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-21T04:29:19.394Z",
+      "ultimaVez": "2026-10-21T04:29:24.061Z",
+      "gitRev": "4cc6caf"
+    },
+    "AC_SEM_PROVA::codebase-baseline::AC-014": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "codebase-baseline",
+      "ref": "AC-014",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-21T04:29:19.394Z",
+      "ultimaVez": "2026-10-21T04:29:24.061Z",
+      "gitRev": "4cc6caf"
+    },
+    "VERIFY_OBSOLETO::flyway-migrations::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "flyway-migrations",
+      "ref": "—",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-21T04:29:19.394Z",
+      "ultimaVez": "2026-10-21T17:29:03.267Z",
+      "gitRev": "c908973"
+    },
+    "VERIFY_OBSOLETO::order-create::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "order-create",
+      "ref": "—",
+      "ocorrencias": 3,
+      "primeiraVez": "2026-10-21T04:29:19.394Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    },
+    "ARQUIVO_ORFAO::—::src/test/resources/application.properties": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/test/resources/application.properties",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-21T04:29:19.394Z",
+      "ultimaVez": "2026-10-21T04:29:24.061Z",
+      "gitRev": "4cc6caf"
+    },
+    "VERIFY_OBSOLETO::codebase-baseline::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "codebase-baseline",
+      "ref": "—",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-21T17:07:12.923Z",
+      "ultimaVez": "2026-10-21T17:29:03.266Z",
+      "gitRev": "c908973"
+    },
+    "AC_SEM_TESTE::order-create::AC-013": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "order-create",
+      "ref": "AC-013",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T17:07:12.925Z",
+      "ultimaVez": "2026-10-21T17:07:12.925Z",
+      "gitRev": "c908973"
+    }
+  }
+}

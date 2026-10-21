@@ -1,0 +1,17 @@
+{
+  "feature": "codebase-baseline",
+  "timestamp": "2026-10-21T17:30:00.720Z",
+  "gitRev": "c908973",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 36,
+  "results": {
+    "AC-014": {
+      "status": "pass",
+      "testName": "@spec:AC-014 todo arquivo de produção está mapeado em uma tarefa",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

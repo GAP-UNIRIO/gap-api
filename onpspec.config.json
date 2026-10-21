@@ -1,0 +1,13 @@
+{
+  "testCommand": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "testGlobs": [
+    "test/**/*.js",
+    "tests/**",
+    "src/test/**/*.java",
+    "src/**/*.test.*",
+    "src/**/*.spec.*",
+    "__tests__/**"
+  ],
+  "srcGlobs": ["src/**"]
+}

@@ -1,0 +1,27 @@
+{
+  "feature": "flyway-migrations",
+  "timestamp": "2026-10-21T17:29:36.971Z",
+  "gitRev": "c908973",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 36,
+  "results": {
+    "AC-001": {
+      "status": "pass",
+      "testName": "@spec:AC-001 migration inicial cobre tabelas e tipos PostgreSQL das entidades",
+      "method": "tap"
+    },
+    "AC-002": {
+      "status": "pass",
+      "testName": "@spec:AC-002 perfil de produção configura baseline na versão inicial",
+      "method": "tap"
+    },
+    "AC-003": {
+      "status": "pass",
+      "testName": "@spec:AC-003 Hibernate valida schema sem DDL automático em produção",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

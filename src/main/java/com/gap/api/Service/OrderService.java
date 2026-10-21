@@ -27,9 +27,13 @@ public class OrderService implements IOrderService {
 
     @Override
     @Transactional
-    public OrderResponse create(OrderRequest request) {
-        User user = userRepository.findById(request.userId())
+    public OrderResponse create(OrderRequest request, String authenticatedEmail) {
+        User user = userRepository.findByEmail(authenticatedEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (!user.getId().equals(request.userId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Cannot create an order for another user");
+        }
         List<AnnexRequest> requestedAnnexes = request.annexes() == null ? List.of() : request.annexes();
         for (AnnexRequest annex : requestedAnnexes) {
             if (!storageService.isTemporaryKeyIssued(annex.temporaryKey()))
