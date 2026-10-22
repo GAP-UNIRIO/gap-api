@@ -66,7 +66,7 @@ class UserServiceTest {
     // ---------- findByEmail ----------
 
     @Test
-    @DisplayName("findByEmail deve retornar o usuário quando existe")
+    @DisplayName("@spec:AC-061 findByEmail deve retornar o usuário quando existe")
     void findByEmail_found() {
         User existing = user(EMAIL);
         when(repository.findByEmail(EMAIL)).thenReturn(Optional.of(existing));
@@ -75,7 +75,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("findByEmail deve lançar 404 quando não existe")
+    @DisplayName("@spec:AC-062 findByEmail deve lançar 404 quando não existe")
     void findByEmail_notFound() {
         when(repository.findByEmail(EMAIL)).thenReturn(Optional.empty());
 
@@ -87,7 +87,7 @@ class UserServiceTest {
     // ---------- completeUserCadaster ----------
 
     @Test
-    @DisplayName("completeUserCadaster deve preencher curso e matrícula e salvar")
+    @DisplayName("@spec:AC-064 @spec:AC-067 completeUserCadaster atualiza a conta localizada pelo principal OIDC")
     void completeUserCadaster_success() {
         User existing = user(EMAIL);
         Course course = course(5L);
@@ -106,7 +106,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("completeUserCadaster deve lançar 404 quando o usuário não existe")
+    @DisplayName("@spec:AC-065 completeUserCadaster deve lançar 404 quando o usuário não existe")
     void completeUserCadaster_userNotFound() {
         when(oidcUser.getEmail()).thenReturn(EMAIL);
         when(repository.findByEmail(EMAIL)).thenReturn(Optional.empty());
@@ -120,7 +120,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("completeUserCadaster deve lançar 404 quando o curso não existe")
+    @DisplayName("@spec:AC-066 completeUserCadaster deve lançar 404 quando o curso não existe")
     void completeUserCadaster_courseNotFound() {
         User existing = user(EMAIL);
         when(oidcUser.getEmail()).thenReturn(EMAIL);
@@ -135,5 +135,21 @@ class UserServiceTest {
         assertThat(existing.getCourse()).isNull();
         assertThat(existing.getRegistrationNumber()).isNull();
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-063 cadastro completo exige matrícula não vazia e curso")
+    void completedCadaster_requiresRegistrationAndCourse() {
+        User existing = user(EMAIL);
+        assertThat(UserResponse.from(existing).isCompletedCadaster()).isFalse();
+
+        existing.setRegistrationNumber("20260001");
+        assertThat(UserResponse.from(existing).isCompletedCadaster()).isFalse();
+
+        existing.setCourse(course(5L));
+        assertThat(UserResponse.from(existing).isCompletedCadaster()).isTrue();
+
+        existing.setRegistrationNumber("");
+        assertThat(UserResponse.from(existing).isCompletedCadaster()).isFalse();
     }
 }

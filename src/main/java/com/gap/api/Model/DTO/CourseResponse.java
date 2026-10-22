@@ -6,17 +6,31 @@ import com.gap.api.Model.Entity.User;
 public record CourseResponse(
         Long id,
         String name,
-        User director,
-        User coordinator,
-        User secretary
+        ResponsibleSummary director,
+        ResponsibleSummary coordinator,
+        ResponsibleSummary secretary,
+        OrgUnitSummary department
 ) {
     public static CourseResponse from(Course course) {
         return new CourseResponse(
                 course.getId(),
                 course.getName(),
-                course.getDirector(),
-                course.getCoordinator(),
-                course.getSecretary()
+                ResponsibleSummary.from(course.getDirector()),
+                ResponsibleSummary.from(course.getCoordinator()),
+                ResponsibleSummary.from(course.getSecretary()),
+                OrgUnitSummary.from(course.getDepartment())
         );
+    }
+
+    public record ResponsibleSummary(Long id, String name, String email) {
+        private static ResponsibleSummary from(User user) {
+            return user == null ? null : new ResponsibleSummary(user.getId(), user.getName(), user.getEmail());
+        }
+    }
+
+    public record OrgUnitSummary(Long id, String name) {
+        private static OrgUnitSummary from(com.gap.api.Model.Entity.OrgUnit unit) {
+            return unit == null ? null : new OrgUnitSummary(unit.getId(), unit.getName());
+        }
     }
 }

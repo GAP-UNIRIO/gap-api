@@ -1,0 +1,97 @@
+{
+  "runId": "gap-api-flyway-migrations-mvh4qe5p",
+  "feature": "flyway-migrations",
+  "agent": "codex",
+  "modo": "paralelo",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-10-20 20:22",
+  "branchTrabalho": "spec/flyway-migrations",
+  "baseDir": ".spec/features/flyway-migrations",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-flyway-migrations-logs",
+  "ondas": [
+    [
+      "faixa-1",
+      "faixa-2",
+      "faixa-3"
+    ]
+  ],
+  "faixas": [
+    {
+      "id": "faixa-1",
+      "branch": "spec/flyway-migrations-faixa-1",
+      "worktree": "../onp-worktrees/gap-api-flyway-migrations-faixa-1",
+      "tarefas": [
+        {
+          "id": "T-001",
+          "titulo": "Adicionar Flyway e configurar execução e baseline",
+          "modelo": "gpt-5.6-terra",
+          "esforco": "medium",
+          "arquivos": [
+            "build.gradle",
+            "src/main/resources/application-prod.yaml",
+            "src/main/resources/application-dev.yaml",
+            "src/main/resources/application-test.yaml",
+            "onpspec.config.json"
+          ],
+          "refs": [
+            "US-001",
+            "AC-002",
+            "US-003",
+            "AC-003"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "faixa-2",
+      "branch": "spec/flyway-migrations-faixa-2",
+      "worktree": "../onp-worktrees/gap-api-flyway-migrations-faixa-2",
+      "tarefas": [
+        {
+          "id": "T-002",
+          "titulo": "Criar migration inicial do schema",
+          "modelo": "gpt-5.6-terra",
+          "esforco": "medium",
+          "arquivos": [
+            "src/main/resources/db/migration/V1__initial_schema.sql"
+          ],
+          "refs": [
+            "US-001",
+            "AC-001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "faixa-3",
+      "branch": "spec/flyway-migrations-faixa-3",
+      "worktree": "../onp-worktrees/gap-api-flyway-migrations-faixa-3",
+      "tarefas": [
+        {
+          "id": "T-003",
+          "titulo": "Verificar migration e configuração por testes anotados",
+          "modelo": "gpt-5.6-terra",
+          "esforco": "medium",
+          "arquivos": [
+            "src/test/java/com/gap/api/Integration/FlywayMigrationIntegrationTest.java"
+          ],
+          "refs": [
+            "US-001",
+            "AC-001",
+            "US-002",
+            "AC-002",
+            "US-003",
+            "AC-003"
+          ]
+        }
+      ]
+    }
+  ],
+  "sequenciais": [],
+  "concluidas": [],
+  "avisos": []
+}

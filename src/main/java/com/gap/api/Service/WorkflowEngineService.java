@@ -5,7 +5,9 @@ import com.gap.api.Repository.ApprovalStageRepository;
 import com.gap.api.Repository.WorkflowTemplateRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,7 +26,8 @@ public class WorkflowEngineService {
                 .findByOrderTypeAndCourse_Id(order.getOrderType(), order.getUser().getCourse().getId())
                 .orElseGet(() -> workflowTemplateRepository
                         .findByOrderTypeAndCourseIsNull(order.getOrderType())
-                        .orElseThrow(() -> new RuntimeException("No workflow template found for order type: " + order.getOrderType())));
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                                "No workflow template found for order type: " + order.getOrderType())));
 
         List<WorkflowStep> sortedSteps  = workflowTemplate.getSteps().stream()
                 .sorted((Comparator.comparingInt(WorkflowStep::getStepOrder))).toList();
@@ -53,6 +56,13 @@ public class WorkflowEngineService {
             case DIRECAO ->   course.getDirecao();
             case REITORIA -> course.getReitoria();
             case ESCOLA -> course.getEscola();
+            case DEPARTAMENTO -> {
+                if (course.getDepartment() == null) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,
+                            "Course has no department associated: " + course.getId());
+                }
+                yield course.getDepartment();
+            }
 
             default ->  throw new IllegalArgumentException("Invalid target type");
         };

@@ -70,7 +70,7 @@ class AcademicCalendarServiceTest {
     // ---------- findAll / findById ----------
 
     @Test
-    @DisplayName("findAll deve retornar os calendários ordenados por id")
+    @DisplayName("@spec:AC-015 findAll retorna os calendários ordenados por id")
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(
                 calendar(1L, "2025.2", false),
@@ -93,7 +93,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve retornar o calendário quando existe")
+    @DisplayName("@spec:AC-016 findById retorna o calendário quando existe")
     void findById_found() {
         when(repository.findById(1L)).thenReturn(Optional.of(calendar(1L, "2026.1", true)));
 
@@ -109,7 +109,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve lançar 404 quando não existe")
+    @DisplayName("@spec:AC-017 findById lança 404 quando não existe")
     void findById_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -120,7 +120,7 @@ class AcademicCalendarServiceTest {
     // ---------- create ----------
 
     @Test
-    @DisplayName("create com active null deve salvar inativo e não desativar os demais")
+    @DisplayName("@spec:AC-022 create sem active salva inativo e não desativa os demais")
     void create_defaultsToInactive() {
         when(repository.existsBySemester("2026.1")).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> {
@@ -146,7 +146,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("create com active=true deve desativar todos os outros calendários")
+    @DisplayName("@spec:AC-026 create com active=true desativa os outros calendários")
     void create_active_deactivatesOthers() {
         when(repository.existsBySemester("2026.1")).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> {
@@ -176,7 +176,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("create deve aceitar data de término igual à data de início")
+    @DisplayName("@spec:AC-023 create aceita data de término igual à data de início")
     void create_sameStartAndEnd_isValid() {
         when(repository.existsBySemester("2026.1")).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -188,7 +188,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("create deve lançar 400 quando o término é anterior ao início, sem tocar o repositório")
+    @DisplayName("@spec:AC-020 create lança 400 quando o término é anterior ao início")
     void create_invalidDates() {
         AcademicCalendarRequest invalid = request("2026.1", END, START, null);
 
@@ -199,7 +199,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("create deve lançar 409 quando o semestre já existe")
+    @DisplayName("@spec:AC-021 create lança 409 quando o semestre já existe")
     void create_semesterConflict() {
         when(repository.existsBySemester("2026.1")).thenReturn(true);
 
@@ -212,7 +212,7 @@ class AcademicCalendarServiceTest {
     // ---------- update ----------
 
     @Test
-    @DisplayName("update deve alterar os campos do calendário")
+    @DisplayName("@spec:AC-024 update altera os campos do calendário")
     void update_success() {
         AcademicCalendar existing = calendar(1L, "2025.2", false);
         LocalDate newStart = LocalDate.of(2026, 8, 1);
@@ -241,7 +241,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update com active=true deve ativar e desativar os demais")
+    @DisplayName("@spec:AC-026 update com active=true ativa e desativa os demais")
     void update_activate_deactivatesOthers() {
         AcademicCalendar existing = calendar(1L, "2026.1", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -254,7 +254,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update com active=false deve desativar sem mexer nos demais")
+    @DisplayName("@spec:AC-025 update com active=false desativa o calendário")
     void update_deactivate() {
         AcademicCalendar existing = calendar(1L, "2026.1", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -267,7 +267,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update com active null num calendário ativo deve mantê-lo ativo e desativar os demais")
+    @DisplayName("@spec:AC-025 update sem active mantém o calendário ativo")
     void update_nullActive_keepsActiveAndDeactivatesOthers() {
         AcademicCalendar existing = calendar(1L, "2026.1", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -279,7 +279,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update com active null num calendário inativo deve mantê-lo inativo")
+    @DisplayName("@spec:AC-025 update sem active mantém o calendário inativo")
     void update_nullActive_keepsInactive() {
         AcademicCalendar existing = calendar(1L, "2026.1", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -291,7 +291,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 404 quando o calendário não existe")
+    @DisplayName("@spec:AC-028 update lança 404 quando o calendário não existe")
     void update_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -300,7 +300,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 400 quando o término é anterior ao início")
+    @DisplayName("@spec:AC-020 update lança 400 quando o término é anterior ao início")
     void update_invalidDates() {
         AcademicCalendar existing = calendar(1L, "2026.1", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -313,7 +313,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 409 quando o novo semestre pertence a outro calendário")
+    @DisplayName("@spec:AC-027 update lança 409 quando o semestre pertence a outro calendário")
     void update_semesterConflict() {
         AcademicCalendar existing = calendar(1L, "2025.2", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -328,7 +328,7 @@ class AcademicCalendarServiceTest {
     // ---------- delete ----------
 
     @Test
-    @DisplayName("delete deve remover e dar flush, nessa ordem")
+    @DisplayName("@spec:AC-029 delete remove o calendário")
     void delete_success() {
         AcademicCalendar existing = calendar(1L, "2026.1", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -341,7 +341,7 @@ class AcademicCalendarServiceTest {
     }
 
     @Test
-    @DisplayName("delete deve lançar 404 e não remover quando o calendário não existe")
+    @DisplayName("@spec:AC-030 delete lança 404 quando o calendário não existe")
     void delete_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 

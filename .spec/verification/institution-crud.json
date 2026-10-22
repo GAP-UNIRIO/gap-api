@@ -1,0 +1,92 @@
+{
+  "feature": "institution-crud",
+  "timestamp": "2026-10-22T04:05:29.728Z",
+  "gitRev": "fe105ab",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 198,
+  "results": {
+    "AC-045": {
+      "status": "pass",
+      "testName": "@spec:AC-045 findAll deve retornar 200 e a lista de instituições",
+      "method": "tap"
+    },
+    "AC-046": {
+      "status": "pass",
+      "testName": "@spec:AC-046 findAll sem registros retorna lista vazia",
+      "method": "tap"
+    },
+    "AC-047": {
+      "status": "pass",
+      "testName": "@spec:AC-047 findById deve retornar 200 e a instituição quando existe",
+      "method": "tap"
+    },
+    "AC-048": {
+      "status": "pass",
+      "testName": "@spec:AC-048 findById inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-049": {
+      "status": "pass",
+      "testName": "@spec:AC-049 create deve retornar 201 e a instituição criada",
+      "method": "tap"
+    },
+    "AC-050": {
+      "status": "pass",
+      "testName": "@spec:AC-050 create rejeita campos obrigatórios ausentes e limites excedidos",
+      "method": "tap"
+    },
+    "AC-051": {
+      "status": "pass",
+      "testName": "@spec:AC-051 create rejeita valores de provedores desconhecidos",
+      "method": "tap"
+    },
+    "AC-052": {
+      "status": "pass",
+      "testName": "@spec:AC-052 create código duplicado retorna 409",
+      "method": "tap"
+    },
+    "AC-053": {
+      "status": "pass",
+      "testName": "@spec:AC-053 create deve respeitar active=false",
+      "method": "tap"
+    },
+    "AC-054": {
+      "status": "pass",
+      "testName": "@spec:AC-054 update deve retornar 200 ao alterar a instituição",
+      "method": "tap"
+    },
+    "AC-055": {
+      "status": "pass",
+      "testName": "@spec:AC-055 update com active null deve manter o valor atual",
+      "method": "tap"
+    },
+    "AC-056": {
+      "status": "pass",
+      "testName": "@spec:AC-056 update com o mesmo código não deve checar duplicidade",
+      "method": "tap"
+    },
+    "AC-057": {
+      "status": "pass",
+      "testName": "@spec:AC-057 update código duplicado retorna 409",
+      "method": "tap"
+    },
+    "AC-058": {
+      "status": "pass",
+      "testName": "@spec:AC-058 update inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-059": {
+      "status": "pass",
+      "testName": "@spec:AC-059 delete deve retornar 200 ao remover a instituição",
+      "method": "tap"
+    },
+    "AC-060": {
+      "status": "pass",
+      "testName": "@spec:AC-060 delete inexistente retorna 404",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

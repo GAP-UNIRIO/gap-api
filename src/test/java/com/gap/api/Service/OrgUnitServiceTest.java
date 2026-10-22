@@ -51,7 +51,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("findAll deve retornar as unidades ordenadas por id")
+    @DisplayName("@spec:AC-068 findAll deve retornar as unidades ordenadas por id")
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(
                 unit(1L, OrgUnitType.REITORIA, "Reitoria"),
@@ -65,7 +65,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("findAll deve retornar lista vazia quando não há unidades")
+    @DisplayName("@spec:AC-069 findAll deve retornar lista vazia quando não há unidades")
     void findAll_empty() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of());
 
@@ -73,7 +73,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve retornar a unidade quando existe")
+    @DisplayName("@spec:AC-070 findById deve retornar a unidade quando existe")
     void findById_found() {
         when(repository.findById(1L))
                 .thenReturn(Optional.of(unit(1L, OrgUnitType.COORDENACAO, "Coordenação")));
@@ -84,7 +84,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve lançar 404 quando não existe")
+    @DisplayName("@spec:AC-071 findById deve lançar 404 quando não existe")
     void findById_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -93,7 +93,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("create deve salvar a unidade com tipo e nome do request")
+    @DisplayName("@spec:AC-072 create deve salvar a unidade com tipo e nome do request")
     void create_success() {
         when(repository.save(any(OrgUnit.class))).thenAnswer(inv -> {
             OrgUnit u = inv.getArgument(0);
@@ -111,7 +111,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("update deve alterar tipo e nome da unidade existente")
+    @DisplayName("@spec:AC-075 update deve alterar tipo e nome da unidade existente")
     void update_success() {
         OrgUnit existing = unit(1L, OrgUnitType.ESCOLA, "Antigo");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -124,7 +124,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 404 quando a unidade não existe")
+    @DisplayName("@spec:AC-076 update deve lançar 404 quando a unidade não existe")
     void update_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -133,7 +133,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("delete deve remover e dar flush, nessa ordem")
+    @DisplayName("@spec:AC-077 delete deve remover e dar flush, nessa ordem")
     void delete_success() {
         OrgUnit existing = unit(1L, OrgUnitType.ESCOLA, "Escola");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -146,7 +146,7 @@ class OrgUnitServiceTest {
     }
 
     @Test
-    @DisplayName("delete deve lançar 404 e não remover quando a unidade não existe")
+    @DisplayName("@spec:AC-078 delete deve lançar 404 e não remover quando a unidade não existe")
     void delete_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 

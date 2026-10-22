@@ -48,7 +48,7 @@ class RoleServiceTest {
     // ---------- findAll ----------
 
     @Test
-    @DisplayName("findAll deve retornar os papéis ordenados por id")
+    @DisplayName("@spec:AC-080 findAll deve retornar os papéis ordenados por id")
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id")))
                 .thenReturn(List.of(role(1L, "ROLE_ADMIN"), role(2L, "ROLE_USER")));
@@ -61,7 +61,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("findAll deve retornar lista vazia quando não há papéis")
+    @DisplayName("@spec:AC-081 findAll deve retornar lista vazia quando não há papéis")
     void findAll_empty() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of());
 
@@ -71,7 +71,7 @@ class RoleServiceTest {
     // ---------- findById ----------
 
     @Test
-    @DisplayName("findById deve retornar o papel quando existe")
+    @DisplayName("@spec:AC-082 findById deve retornar o papel quando existe")
     void findById_found() {
         when(repository.findById(1L)).thenReturn(Optional.of(role(1L, "ROLE_ADMIN")));
 
@@ -81,7 +81,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve lançar 404 quando não existe")
+    @DisplayName("@spec:AC-083 findById deve lançar 404 quando não existe")
     void findById_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -92,7 +92,7 @@ class RoleServiceTest {
     // ---------- create ----------
 
     @Test
-    @DisplayName("create deve salvar e retornar o novo papel")
+    @DisplayName("@spec:AC-084 create deve salvar e retornar o novo papel")
     void create_success() {
         when(repository.existsByAuthority("ROLE_ADMIN")).thenReturn(false);
         when(repository.save(any(Role.class))).thenAnswer(inv -> {
@@ -110,7 +110,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("create deve lançar 409 quando a authority já existe")
+    @DisplayName("@spec:AC-086 create deve lançar 409 quando a authority já existe")
     void create_conflict() {
         when(repository.existsByAuthority("ROLE_ADMIN")).thenReturn(true);
 
@@ -123,7 +123,7 @@ class RoleServiceTest {
     // ---------- update ----------
 
     @Test
-    @DisplayName("update deve alterar a authority quando ela é nova")
+    @DisplayName("@spec:AC-087 update deve alterar a authority quando ela é nova")
     void update_success() {
         Role existing = role(1L, "ROLE_OLD");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -136,7 +136,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("update com a mesma authority não deve checar duplicidade")
+    @DisplayName("@spec:AC-087 update com a mesma authority não deve checar duplicidade")
     void update_sameAuthority_skipsExistsCheck() {
         Role existing = role(1L, "ROLE_ADMIN");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -148,7 +148,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 409 quando a nova authority já pertence a outro papel")
+    @DisplayName("@spec:AC-088 update deve lançar 409 quando a nova authority já pertence a outro papel")
     void update_conflict() {
         Role existing = role(1L, "ROLE_OLD");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -161,7 +161,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 404 quando o papel não existe")
+    @DisplayName("@spec:AC-089 update deve lançar 404 quando o papel não existe")
     void update_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -172,7 +172,7 @@ class RoleServiceTest {
     // ---------- delete ----------
 
     @Test
-    @DisplayName("delete deve remover e dar flush, nessa ordem")
+    @DisplayName("@spec:AC-090 delete deve remover e dar flush, nessa ordem")
     void delete_success() {
         Role existing = role(1L, "ROLE_ADMIN");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -185,7 +185,7 @@ class RoleServiceTest {
     }
 
     @Test
-    @DisplayName("delete deve lançar 404 e não remover quando o papel não existe")
+    @DisplayName("@spec:AC-091 delete deve lançar 404 e não remover quando o papel não existe")
     void delete_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 

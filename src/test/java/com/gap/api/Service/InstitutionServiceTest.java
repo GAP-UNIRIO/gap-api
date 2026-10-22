@@ -66,7 +66,7 @@ class InstitutionServiceTest {
     // ---------- findAll / findById ----------
 
     @Test
-    @DisplayName("findAll deve retornar as instituições ordenadas por id")
+    @DisplayName("@spec:AC-045 findAll deve retornar as instituições ordenadas por id")
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(
                 institution(1L, "Inst A", "111", true),
@@ -80,7 +80,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("findAll deve retornar lista vazia quando não há instituições")
+    @DisplayName("@spec:AC-046 findAll deve retornar lista vazia quando não há instituições")
     void findAll_empty() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of());
 
@@ -88,7 +88,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve retornar a instituição quando existe")
+    @DisplayName("@spec:AC-047 findById deve retornar a instituição quando existe")
     void findById_found() {
         when(repository.findById(1L)).thenReturn(Optional.of(institution(1L, "Inst A", "111", true)));
 
@@ -100,7 +100,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve lançar 404 quando não existe")
+    @DisplayName("@spec:AC-048 findById deve lançar 404 quando não existe")
     void findById_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -111,7 +111,7 @@ class InstitutionServiceTest {
     // ---------- create ----------
 
     @Test
-    @DisplayName("create deve copiar os campos do request e ficar ativa quando active é null")
+    @DisplayName("@spec:AC-053 create deve copiar os campos e ficar ativa quando active é null")
     void create_defaultsToActive() {
         when(repository.existsByCode("123")).thenReturn(false);
         when(repository.save(any(Institution.class))).thenAnswer(inv -> {
@@ -136,7 +136,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("create deve respeitar active=false")
+    @DisplayName("@spec:AC-053 create deve respeitar active=false")
     void create_respectsInactive() {
         when(repository.existsByCode("123")).thenReturn(false);
         when(repository.save(any(Institution.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -147,7 +147,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("create deve lançar 409 quando o código já existe")
+    @DisplayName("@spec:AC-052 create deve lançar 409 quando o código já existe")
     void create_conflict() {
         when(repository.existsByCode("123")).thenReturn(true);
 
@@ -160,7 +160,7 @@ class InstitutionServiceTest {
     // ---------- update ----------
 
     @Test
-    @DisplayName("update deve alterar os campos e mudar o código quando ele está livre")
+    @DisplayName("@spec:AC-054 update deve alterar os campos e mudar o código quando ele está livre")
     void update_success() {
         Institution existing = institution(1L, "Antiga", "111", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -177,7 +177,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("update com active null deve manter o valor atual")
+    @DisplayName("@spec:AC-055 update com active null deve manter o valor atual")
     void update_nullActive_keepsCurrent() {
         Institution existing = institution(1L, "Antiga", "111", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -189,7 +189,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("update com o mesmo código não deve checar duplicidade")
+    @DisplayName("@spec:AC-056 update com o mesmo código não deve checar duplicidade")
     void update_sameCode_skipsExistsCheck() {
         Institution existing = institution(1L, "Antiga", "111", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -200,7 +200,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 409 quando o novo código pertence a outra instituição")
+    @DisplayName("@spec:AC-057 update deve lançar 409 quando o novo código pertence a outra instituição")
     void update_conflict() {
         Institution existing = institution(1L, "Antiga", "111", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -214,7 +214,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("update deve lançar 404 quando a instituição não existe")
+    @DisplayName("@spec:AC-058 update deve lançar 404 quando a instituição não existe")
     void update_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -225,7 +225,7 @@ class InstitutionServiceTest {
     // ---------- delete ----------
 
     @Test
-    @DisplayName("delete deve remover e dar flush, nessa ordem")
+    @DisplayName("@spec:AC-059 delete deve remover e dar flush, nessa ordem")
     void delete_success() {
         Institution existing = institution(1L, "Inst", "111", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -238,7 +238,7 @@ class InstitutionServiceTest {
     }
 
     @Test
-    @DisplayName("delete deve lançar 404 e não remover quando a instituição não existe")
+    @DisplayName("@spec:AC-060 delete deve lançar 404 e não remover quando a instituição não existe")
     void delete_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 

@@ -10,11 +10,14 @@ import com.gap.api.Repository.OrderRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.IOrderService;
 import com.gap.api.Service.Interface.IStorageService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,7 @@ class OrderServiceIntegrationTest {
     private IStorageService storageService;
 
     @Test
+    @DisplayName("@spec:AC-009 template ausente retorna 503, reverte banco e limpa anexos finais")
     void create_workflowFailureRollsBackOrderAndAnnexesAndCleansFinalObjects() {
         String suffix = UUID.randomUUID().toString();
         Course course = new Course();
@@ -65,8 +69,11 @@ class OrderServiceIntegrationTest {
         OrderRequest request = new OrderRequest(user.getId(), Order.OrderType.INCLUSAO_DISCIPLINA,
                 Map.of("reason", "rollback integration test"),
                 List.of(new AnnexRequest("proof.pdf", "application/pdf", temporaryKey)));
+        String authenticatedEmail = user.getEmail();
 
-        assertThrows(RuntimeException.class, () -> orderService.create(request));
+        ResponseStatusException failure = assertThrows(ResponseStatusException.class,
+                () -> orderService.create(request, authenticatedEmail));
+        assertEquals(HttpStatus.SERVICE_UNAVAILABLE, failure.getStatusCode());
 
         assertEquals(0, orderRepository.count(), "order insert must roll back when no workflow template exists");
         verify(storageService).deleteObject(finalKey);

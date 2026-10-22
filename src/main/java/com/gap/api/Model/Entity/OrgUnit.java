@@ -11,7 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "org_units")
-public class OrgUnit {
+public class
+OrgUnit {
 
     @Id
     @Column(name = "id", nullable = false, unique = true)

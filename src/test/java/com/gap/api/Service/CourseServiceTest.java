@@ -3,8 +3,10 @@ package com.gap.api.Service;
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
 import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
+import com.gap.api.Repository.OrgUnitRepository;
 import com.gap.api.Repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +39,7 @@ class CourseServiceTest {
     private static final Long DIRECTOR_ID = 10L;
     private static final Long COORDINATOR_ID = 20L;
     private static final Long SECRETARY_ID = 30L;
+    private static final Long DEPARTMENT_ID = 40L;
 
     @Mock
     private CourseRepository repository;
@@ -44,18 +47,26 @@ class CourseServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private OrgUnitRepository orgUnitRepository;
+
     @InjectMocks
     private CourseService service;
 
     private User director;
     private User coordinator;
     private User secretary;
+    private OrgUnit department;
 
     @BeforeEach
     void setUp() {
         director = user(DIRECTOR_ID, "diretor@gap.com");
         coordinator = user(COORDINATOR_ID, "coordenador@gap.com");
         secretary = user(SECRETARY_ID, "secretaria@gap.com");
+        department = new OrgUnit();
+        department.setId(DEPARTMENT_ID);
+        department.setName("Departamento de Computação");
+        department.setType(OrgUnit.OrgUnitType.DEPARTAMENTO);
     }
 
     private User user(Long id, String email) {
@@ -77,13 +88,14 @@ class CourseServiceTest {
     }
 
     private CourseRequest request(String name) {
-        return new CourseRequest(name, DIRECTOR_ID, COORDINATOR_ID, SECRETARY_ID);
+        return new CourseRequest(name, DIRECTOR_ID, COORDINATOR_ID, SECRETARY_ID, DEPARTMENT_ID);
     }
 
     private void stubUserReferences() {
         when(userRepository.getReferenceById(DIRECTOR_ID)).thenReturn(director);
         when(userRepository.getReferenceById(COORDINATOR_ID)).thenReturn(coordinator);
         when(userRepository.getReferenceById(SECRETARY_ID)).thenReturn(secretary);
+        when(orgUnitRepository.findById(DEPARTMENT_ID)).thenReturn(Optional.of(department));
     }
 
     private void assertStatus(Throwable ex, HttpStatus expected) {
@@ -94,7 +106,7 @@ class CourseServiceTest {
     // ---------- findAll / findById ----------
 
     @Test
-    @DisplayName("findAll deve retornar os cursos ordenados por id")
+    @DisplayName("@spec:AC-031 findAll retorna os cursos ordenados por id")
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(
                 course(1L, "Sistemas de Informação"),
@@ -104,13 +116,16 @@ class CourseServiceTest {
 
         assertThat(result).extracting(CourseResponse::name)
                 .containsExactly("Sistemas de Informação", "Engenharia");
-        assertThat(result.get(0).director()).isSameAs(director);
-        assertThat(result.get(0).coordinator()).isSameAs(coordinator);
-        assertThat(result.get(0).secretary()).isSameAs(secretary);
+        assertThat(result.get(0).director()).isEqualTo(new CourseResponse.ResponsibleSummary(
+                DIRECTOR_ID, "diretor@gap.com", "diretor@gap.com"));
+        assertThat(result.get(0).coordinator()).isEqualTo(new CourseResponse.ResponsibleSummary(
+                COORDINATOR_ID, "coordenador@gap.com", "coordenador@gap.com"));
+        assertThat(result.get(0).secretary()).isEqualTo(new CourseResponse.ResponsibleSummary(
+                SECRETARY_ID, "secretaria@gap.com", "secretaria@gap.com"));
     }
 
     @Test
-    @DisplayName("findAll deve retornar lista vazia quando não há cursos")
+    @DisplayName("@spec:AC-032 findAll retorna lista vazia quando não há cursos")
     void findAll_empty() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of());
 
@@ -118,7 +133,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve retornar a entidade Course quando existe")
+    @DisplayName("@spec:AC-033 findById retorna o curso quando existe")
     void findById_found() {
         Course existing = course(1L, "Sistemas de Informação");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -127,7 +142,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("findById deve lançar 404 quando não existe")
+    @DisplayName("@spec:AC-034 findById lança 404 quando não existe")
     void findById_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -138,7 +153,7 @@ class CourseServiceTest {
     // ---------- create ----------
 
     @Test
-    @DisplayName("create deve montar o curso com nome, diretor, coordenador e secretário")
+    @DisplayName("@spec:AC-035 @spec:AC-108 create associa nome, responsáveis e departamento")
     void create_success() {
         stubUserReferences();
         when(repository.save(any(Course.class))).thenAnswer(inv -> {
@@ -156,14 +171,35 @@ class CourseServiceTest {
         assertThat(saved.getDirector()).isSameAs(director);
         assertThat(saved.getCoordinator()).isSameAs(coordinator);
         assertThat(saved.getSecretary()).isSameAs(secretary);
+        assertThat(saved.getDepartment()).isSameAs(department);
+        assertThat(result.department()).isEqualTo(new CourseResponse.OrgUnitSummary(DEPARTMENT_ID, "Departamento de Computação"));
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.name()).isEqualTo("Sistemas de Informação");
+    }
+
+    @Test
+    @DisplayName("@spec:AC-109 create e update rejeitam unidade inexistente ou que não seja departamento")
+    void create_rejectsInvalidDepartment() {
+        stubUserReferences();
+        OrgUnit otherUnit = new OrgUnit();
+        otherUnit.setId(DEPARTMENT_ID);
+        otherUnit.setType(OrgUnit.OrgUnitType.COORDENACAO);
+        when(orgUnitRepository.findById(DEPARTMENT_ID)).thenReturn(Optional.empty(), Optional.of(otherUnit));
+
+        assertThatThrownBy(() -> service.create(request("Curso")))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+        assertThatThrownBy(() -> service.create(request("Curso")))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+        when(repository.findById(1L)).thenReturn(Optional.of(course(1L, "Curso atual")));
+        assertThatThrownBy(() -> service.update(1L, request("Curso novo")))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+        verify(repository, never()).save(any());
     }
 
     // ---------- update ----------
 
     @Test
-    @DisplayName("update deve alterar nome e responsáveis do curso existente")
+    @DisplayName("@spec:AC-038 update altera nome e responsáveis do curso existente")
     void update_success() {
         Course existing = course(1L, "Nome antigo");
         User newDirector = user(11L, "novo.diretor@gap.com");
@@ -173,21 +209,24 @@ class CourseServiceTest {
         when(userRepository.getReferenceById(11L)).thenReturn(newDirector);
         when(userRepository.getReferenceById(21L)).thenReturn(newCoordinator);
         when(userRepository.getReferenceById(31L)).thenReturn(newSecretary);
+        when(orgUnitRepository.findById(DEPARTMENT_ID)).thenReturn(Optional.of(department));
         when(repository.save(existing)).thenReturn(existing);
 
-        CourseResponse result = service.update(1L, new CourseRequest("Nome novo", 11L, 21L, 31L));
+        CourseResponse result = service.update(1L, new CourseRequest("Nome novo", 11L, 21L, 31L, DEPARTMENT_ID));
 
         assertThat(existing.getName()).isEqualTo("Nome novo");
         assertThat(existing.getDirector()).isSameAs(newDirector);
         assertThat(existing.getCoordinator()).isSameAs(newCoordinator);
         assertThat(existing.getSecretary()).isSameAs(newSecretary);
+        assertThat(existing.getDepartment()).isSameAs(department);
         assertThat(result.name()).isEqualTo("Nome novo");
-        assertThat(result.director()).isSameAs(newDirector);
+        assertThat(result.director()).isEqualTo(new CourseResponse.ResponsibleSummary(
+                11L, "novo.diretor@gap.com", "novo.diretor@gap.com"));
         verify(repository).save(existing);
     }
 
     @Test
-    @DisplayName("update deve lançar 404 e não salvar quando o curso não existe")
+    @DisplayName("@spec:AC-039 update lança 404 e não salva quando o curso não existe")
     void update_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
@@ -201,7 +240,7 @@ class CourseServiceTest {
     // ---------- delete ----------
 
     @Test
-    @DisplayName("delete deve remover e dar flush, nessa ordem")
+    @DisplayName("@spec:AC-041 delete remove o curso")
     void delete_success() {
         Course existing = course(1L, "Sistemas de Informação");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
@@ -214,7 +253,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("delete deve lançar 404 e não remover quando o curso não existe")
+    @DisplayName("@spec:AC-042 delete lança 404 e não remove quando o curso não existe")
     void delete_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 

@@ -1,0 +1,47 @@
+{
+  "feature": "user-profile",
+  "timestamp": "2026-10-22T04:07:31.695Z",
+  "gitRev": "fe105ab",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 198,
+  "results": {
+    "AC-061": {
+      "status": "pass",
+      "testName": "@spec:AC-061 GET /users/me retorna dados do usuário autenticado",
+      "method": "tap"
+    },
+    "AC-062": {
+      "status": "pass",
+      "testName": "@spec:AC-062 GET /users/me retorna 404 para conta não cadastrada",
+      "method": "tap"
+    },
+    "AC-063": {
+      "status": "pass",
+      "testName": "@spec:AC-063 cadastro completo exige matrícula não vazia e curso",
+      "method": "tap"
+    },
+    "AC-064": {
+      "status": "pass",
+      "testName": "@spec:AC-064 @spec:AC-067 PUT /users/me/complemento completa o cadastro da identidade autenticada",
+      "method": "tap"
+    },
+    "AC-065": {
+      "status": "pass",
+      "testName": "@spec:AC-065 PUT /users/me/complemento retorna 404 se a conta não existe",
+      "method": "tap"
+    },
+    "AC-066": {
+      "status": "pass",
+      "testName": "@spec:AC-066 PUT /users/me/complemento retorna 404 se o curso não existe",
+      "method": "tap"
+    },
+    "AC-067": {
+      "status": "pass",
+      "testName": "@spec:AC-064 @spec:AC-067 PUT /users/me/complemento completa o cadastro da identidade autenticada",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

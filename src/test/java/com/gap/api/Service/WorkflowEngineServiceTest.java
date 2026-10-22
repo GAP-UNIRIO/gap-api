@@ -4,11 +4,14 @@ import com.gap.api.Model.Entity.*;
 import com.gap.api.Repository.ApprovalStageRepository;
 import com.gap.api.Repository.WorkflowTemplateRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,7 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-009 @spec:AC-101 prefere template específico do curso")
     void instantiateWorkflow_prefersCourseSpecificTemplate() {
         Order order = orderWithCourse(31L);
         WorkflowTemplate specific = template();
@@ -51,6 +55,7 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-009 @spec:AC-102 usa template padrão quando não existe template de curso")
     void instantiateWorkflow_fallsBackToDefaultTemplate() {
         Order order = orderWithCourse(32L);
         WorkflowTemplate fallback = template(step(1, ApprovalStage.ApprovalStageType.COORDINATOR,
@@ -70,6 +75,7 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-103 instancia etapas ordenadas, pendentes e associadas ao pedido/unidade")
     void instantiateWorkflow_savesSortedPendingStagesWithResponsibleUnits() {
         Order order = orderWithCourse(33L);
         WorkflowTemplate template = template(
@@ -92,6 +98,39 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-110 resolve DEPARTAMENTO usa a unidade associada ao curso")
+    void instantiateWorkflow_resolvesDepartment() {
+        Order order = orderWithCourse(35L);
+        OrgUnit department = unit(50L, OrgUnit.OrgUnitType.DEPARTAMENTO);
+        order.getUser().getCourse().setDepartment(department);
+        WorkflowTemplate template = template(step(1, ApprovalStage.ApprovalStageType.COORDINATOR,
+                OrgUnit.OrgUnitType.DEPARTAMENTO));
+        when(workflowTemplateRepository.findByOrderTypeAndCourse_Id(order.getOrderType(), 35L))
+                .thenReturn(Optional.of(template));
+
+        workflowEngineService.instantiateWorkflowForOrder(order);
+
+        assertSame(department, capturedStages().get(0).getResponsibleUnit());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-112 rejeita etapa de departamento quando o curso legado não tem vínculo")
+    void instantiateWorkflow_rejectsMissingDepartment() {
+        Order order = orderWithCourse(36L);
+        WorkflowTemplate template = template(step(1, ApprovalStage.ApprovalStageType.COORDINATOR,
+                OrgUnit.OrgUnitType.DEPARTAMENTO));
+        when(workflowTemplateRepository.findByOrderTypeAndCourse_Id(order.getOrderType(), 36L))
+                .thenReturn(Optional.of(template));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> workflowEngineService.instantiateWorkflowForOrder(order));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+        verifyNoInteractions(approvalStageRepository);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-009 @spec:AC-104 retorna 503 quando não existe template e não salva etapas")
     void instantiateWorkflow_missingTemplateDoesNotSaveStages() {
         Order order = orderWithCourse(34L);
         when(workflowTemplateRepository.findByOrderTypeAndCourse_Id(order.getOrderType(), 34L))
@@ -99,9 +138,10 @@ class WorkflowEngineServiceTest {
         when(workflowTemplateRepository.findByOrderTypeAndCourseIsNull(order.getOrderType()))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> workflowEngineService.instantiateWorkflowForOrder(order));
 
+        assertEquals(HttpStatus.SERVICE_UNAVAILABLE, exception.getStatusCode());
         assertTrue(exception.getMessage().contains("No workflow template found"));
         verifyNoInteractions(approvalStageRepository);
     }

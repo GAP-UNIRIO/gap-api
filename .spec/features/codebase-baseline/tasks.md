@@ -1,0 +1,95 @@
+﻿# Tarefas: inventário da base existente
+
+> feature: codebase-baseline
+
+## T-001 — Registrar módulos existentes ainda sem especificação funcional [concluida]
+- Refs: US-007, AC-014
+- Arquivos: test/codebase-inventory.test.js
+- Notas: Os arquivos preexistentes listados abaixo ficam rastreados como baseline. A tarefa não afirma que seus requisitos funcionais foram reconstruídos; módulos devem ganhar features próprias conforme forem alterados.
+- Arquivos: src\main\java\com\gap\api\ApiApplication.java
+- Arquivos: src\main\java\com\gap\api\Config\S3StorageConfig.java
+- Arquivos: src\main\java\com\gap\api\Config\SecurityConfig.java
+- Arquivos: src\main\java\com\gap\api\Controller\AcademicCalendarController.java
+- Arquivos: src\main\java\com\gap\api\Controller\CourseController.java
+- Arquivos: src\main\java\com\gap\api\Controller\InstitutionController.java
+- Arquivos: src\main\java\com\gap\api\Controller\OrderController.java
+- Arquivos: src\main\java\com\gap\api\Controller\OrgUnitController.java
+- Arquivos: src\main\java\com\gap\api\Controller\RoleController.java
+- Arquivos: src\main\java\com\gap\api\Controller\UserController.java
+- Arquivos: src\main\java\com\gap\api\Controller\WorkflowTemplateController.java
+- Arquivos: src\main\java\com\gap\api\Exception\GlobalExceptionHandler.java
+- Arquivos: src\main\java\com\gap\api\Filter\CsrfCookieFilter.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\AcademicCalendarRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\AcademicCalendarResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\AnnexRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\AnnexResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\AnnexUploadRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\AnnexUploadResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\BaseResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\BaseResponseDTO.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\CourseRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\CourseResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\InstitutionRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\InstitutionResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\OrderRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\OrderResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\OrgUnitRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\OrgUnitResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\RoleRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\RoleResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\UserComplementRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\UserResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\WorkflowStepRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\WorkflowTemplateRequest.java
+- Arquivos: src\main\java\com\gap\api\Model\DTO\WorkflowTemplateResponse.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\AcademicCalendar.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\Annex.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\ApprovalStage.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\Course.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\GraduationEvent.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\Institution.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\Notification.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\Order.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\OrderHistory.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\OrgUnit.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\Role.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\User.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\WorkflowStep.java
+- Arquivos: src\main\java\com\gap\api\Model\Entity\WorkflowTemplate.java
+- Arquivos: src\main\java\com\gap\api\Repository\AcademicCalendarRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\ApprovalStageRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\CourseRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\InstitutionRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\OrderRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\OrgUnitRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\RoleRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\UserRepository.java
+- Arquivos: src\main\java\com\gap\api\Repository\WorkflowTemplateRepository.java
+- Arquivos: src\main\java\com\gap\api\Service\AcademicCalendarService.java
+- Arquivos: src\main\java\com\gap\api\Service\AWSStorageService.java
+- Arquivos: src\main\java\com\gap\api\Service\CourseService.java
+- Arquivos: src\main\java\com\gap\api\Service\CustomOidcUserService.java
+- Arquivos: src\main\java\com\gap\api\Service\InstitutionService.java
+- Arquivos: src\main\java\com\gap\api\Service\OrderService.java
+- Arquivos: src\main\java\com\gap\api\Service\OrgUnitService.java
+- Arquivos: src\main\java\com\gap\api\Service\RoleService.java
+- Arquivos: src\main\java\com\gap\api\Service\UserService.java
+- Arquivos: src\main\java\com\gap\api\Service\WorkflowEngineService.java
+- Arquivos: src\main\java\com\gap\api\Service\WorkflowTemplateService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IAcademicCalendarService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\ICourseService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IInstitutionService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IOrderService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IOrgUnitService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IRoleService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IStorageService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IUserService.java
+- Arquivos: src\main\java\com\gap\api\Service\Interface\IWorkflowTemplateService.java
+- Arquivos: src\main\resources\application-dev.yaml
+- Arquivos: src\main\resources\application-prod.yaml
+- Arquivos: src\main\resources\application-test.yaml
+- Arquivos: src\main\resources\application.yaml
+- Arquivos: src\main\resources\db\migration\V1__initial_schema.sql
+- Arquivos: src/test/resources/application.properties
+
+

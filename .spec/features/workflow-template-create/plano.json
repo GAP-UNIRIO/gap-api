@@ -1,0 +1,109 @@
+{
+  "runId": "gap-api-workflow-template-create-mvj05uqx",
+  "feature": "workflow-template-create",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-10-22 03:49",
+  "branchTrabalho": "spec/workflow-template-create",
+  "baseDir": ".spec/features/workflow-template-create",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-workflow-template-create-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-028",
+      "titulo": "Mapear o contrato atual e lacunas de schema",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        ".spec/features/workflow-template-create/spec.md",
+        "src/main/java/com/gap/api/Controller/WorkflowTemplateController.java",
+        "src/main/java/com/gap/api/Service/WorkflowTemplateService.java",
+        "src/main/java/com/gap/api/Service/WorkflowEngineService.java",
+        "src/main/java/com/gap/api/Model/DTO/WorkflowTemplateRequest.java",
+        "src/main/java/com/gap/api/Model/DTO/WorkflowStepRequest.java",
+        "src/main/java/com/gap/api/Model/Entity/WorkflowStep.java",
+        "src/main/resources/db/migration/V1__initial_schema.sql"
+      ],
+      "refs": [
+        "US-030",
+        "AC-093",
+        "AC-094",
+        "AC-095",
+        "AC-096",
+        "AC-097",
+        "AC-098",
+        "AC-099",
+        "AC-100",
+        "US-031",
+        "AC-101",
+        "AC-102",
+        "AC-103",
+        "AC-104"
+      ]
+    },
+    {
+      "id": "T-029",
+      "titulo": "Anotar e completar testes do contrato definido",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/WorkflowTemplateControllerTest.java",
+        "src/test/java/com/gap/api/Service/WorkflowTemplateServiceTest.java",
+        "src/test/java/com/gap/api/Service/WorkflowEngineServiceTest.java"
+      ],
+      "refs": [
+        "US-030",
+        "AC-093",
+        "AC-094",
+        "AC-095",
+        "AC-096",
+        "AC-097",
+        "AC-098",
+        "AC-099",
+        "AC-100",
+        "US-031",
+        "AC-101",
+        "AC-102",
+        "AC-103",
+        "AC-104"
+      ]
+    },
+    {
+      "id": "T-030",
+      "titulo": "Verificar feature e auditoria CI",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        ".spec/features/workflow-template-create/spec.md",
+        ".spec/features/workflow-template-create/tasks.md",
+        ".spec/verification/workflow-template-create.json"
+      ],
+      "refs": [
+        "US-030",
+        "AC-093",
+        "AC-094",
+        "AC-095",
+        "AC-096",
+        "AC-097",
+        "AC-098",
+        "AC-099",
+        "AC-100",
+        "US-031",
+        "AC-101",
+        "AC-102",
+        "AC-103",
+        "AC-104"
+      ]
+    }
+  ],
+  "concluidas": [],
+  "avisos": [
+    "T-028 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}

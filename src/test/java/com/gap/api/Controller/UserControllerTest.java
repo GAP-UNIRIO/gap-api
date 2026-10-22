@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -66,7 +68,7 @@ class UserControllerTest {
     // ---------- GET /users/me ----------
 
     @Test
-    @DisplayName("GET /users/me deve retornar dados do usuário autenticado")
+    @DisplayName("@spec:AC-061 GET /users/me retorna dados do usuário autenticado")
     void getLoggedUser_returnsUser() throws Exception {
         UserResponse user = userResponseMock(1L, "aluno@edu.unirio.br", "Aluno Silva", false);
 
@@ -80,10 +82,20 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.data.name").value("Aluno Silva"));
     }
 
+    @Test
+    @DisplayName("@spec:AC-062 GET /users/me retorna 404 para conta não cadastrada")
+    void getLoggedUser_notFound() throws Exception {
+        when(userService.findByEmail("aluno@edu.unirio.br"))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        mockMvc.perform(get("/users/me")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br"))))
+                .andExpect(status().isNotFound());
+    }
+
     // ---------- PUT /users/me/complemento ----------
 
     @Test
-    @DisplayName("PUT /users/me/complemento deve completar o cadastro e retornar 200")
+    @DisplayName("@spec:AC-064 @spec:AC-067 PUT /users/me/complemento completa o cadastro da identidade autenticada")
     void complementUser_success() throws Exception {
         UserComplementRequest request = complementRequest("20260001", 10L);
 
@@ -104,6 +116,32 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.registrationNumber").value("20260001"));
+                .andExpect(jsonPath("$.data.registrationNumber").value("20260001"))
+                .andExpect(jsonPath("$.data.courseId").value(10L))
+                .andExpect(jsonPath("$.data.isCompletedCadaster").value(true));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-065 PUT /users/me/complemento retorna 404 se a conta não existe")
+    void complementUser_userNotFound() throws Exception {
+        when(userService.completeUserCadaster(any(UserComplementRequest.class), any()))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        mockMvc.perform(put("/users/me/complemento")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(complementRequest("20260001", 10L))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-066 PUT /users/me/complemento retorna 404 se o curso não existe")
+    void complementUser_courseNotFound() throws Exception {
+        when(userService.completeUserCadaster(any(UserComplementRequest.class), any()))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        mockMvc.perform(put("/users/me/complemento")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(complementRequest("20260001", 99L))))
+                .andExpect(status().isNotFound());
     }
 }
