@@ -1,7 +1,7 @@
 # Especificação: CRUD de cursos
 
 > feature: course-crud
-> status: em implementação
+> status: implementada
 
 ## Contexto
 
@@ -134,7 +134,7 @@ Como gestor, quero excluir um curso que não deve mais permanecer cadastrado.
 - **Quando** o cliente cria ou atualiza um curso
 - **Então** recebe HTTP 400 e nenhuma alteração é salva
 
-### US-016 — Administrar unidades organizacionais do curso
+### US-033 — Administrar unidades organizacionais do curso
 
 Como gestor, quero associar unidades de reitoria, coordenação, direção, secretaria e escola ao curso para que os fluxos institucionais encontrem essas unidades.
 
@@ -153,7 +153,7 @@ Como gestor, quero associar unidades de reitoria, coordenação, direção, secr
 - **Quando** o cliente cria ou atualiza um curso
 - **Então** recebe HTTP 400 e nenhuma associação é alterada
 
-### US-017 — Validar responsáveis do curso
+### US-034 — Validar responsáveis do curso
 
 Como gestor, quero garantir que os usuários associados existem e exercem a função informada para evitar vínculos incorretos.
 

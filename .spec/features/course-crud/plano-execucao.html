@@ -38,12 +38,10 @@
 </style>
 <main>
   <h1>Plano de execução — course-crud</h1>
-  <p class="sub">gerado por <code>onp-spec plano</code> em 2026-10-22 18:39 · regenere após mudar tasks.md</p>
+  <p class="sub">gerado por <code>onp-spec plano</code> em 2026-10-22 18:51 · regenere após mudar tasks.md</p>
   <div class="resumo">
-    <div><b>3</b> tarefa(s) em paralelo</div>
-    <div><b>1</b> faixa(s) · <b>1</b> onda(s)</div>
-    <div><b>1</b> sequencial(is)</div>
-    <div>seleção do usuário: <b>T-033, T-034, T-035</b></div>
+    <div><b>1</b> tarefa(s), uma após a outra</div>
+    <div>modo <b>sequencial</b> (escolha do usuário)</div>
     <div>branch <code>spec/course-crud</code></div>
   </div>
   
@@ -51,42 +49,16 @@
     <h2>Como executar — via agente</h2>
     <p>Peça ao agente (Codex) para executar o plano. Ele roda:</p>
     <div><code id="cmd">bash .spec/features/course-crud/executar-tarefas.sh</code></div>
-    <p class="nota">Este arquivo é só visualização. Cada faixa roda <code>codex exec</code> num worktree próprio, com contexto limpo, modelo e esforço já definidos.
+    <p class="nota">Este arquivo é só visualização. Cada tarefa roda <code>codex exec</code> na árvore principal, uma após a outra, com contexto limpo e modelo/esforço já definidos.
     O gate final (verify + audit) roda sozinho; a execução fica em background e, a cada
     1 minuto, o agente posta no chat a <b>tabela de andamento</b>
     (<code>onp-spec resumo course-crud --tabela</code>) e o
     <b>resumo geral de andamento</b> (<code>onp-spec resumo course-crud</code>).</p>
   </div>
   
-    <section class="onda">
-      <h3>Onda 1 <small>faixa-1 — em paralelo, janelas limpas</small></h3>
-      <div class="grade">
-      <div class="faixa">
-        <h4>faixa-1 <small>branch <code>spec/course-crud-faixa-1</code> · worktree <code>../onp-worktrees/gap-api-course-crud-faixa-1</code></small></h4>
-        
-        <div class="tarefa">
-          <span class="tid">T-033</span>
-          <span class="ttitulo">Expandir contrato para unidades organizacionais</span>
-          <span class="meta"><code>gpt-5.6-luna</code> · esforço <b>low</b></span>
-          <span class="arquivos"><code>src/main/java/com/gap/api/Model/DTO/CourseRequest.java</code> <code>src/main/java/com/gap/api/Model/DTO/CourseResponse.java</code> <code>src/test/java/com/gap/api/Controller/CourseControllerTest.java</code></span>
-        </div>
-        <div class="tarefa">
-          <span class="tid">T-034</span>
-          <span class="ttitulo">Validar responsáveis obrigatórios e seus papéis</span>
-          <span class="meta"><code>gpt-5.6-luna</code> · esforço <b>low</b></span>
-          <span class="arquivos"><code>src/main/java/com/gap/api/Model/DTO/CourseRequest.java</code> <code>src/main/java/com/gap/api/Service/CourseService.java</code> <code>src/test/java/com/gap/api/Controller/CourseControllerTest.java</code> <code>src/test/java/com/gap/api/Service/CourseServiceTest.java</code> <code>src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java</code></span>
-        </div>
-        <div class="tarefa">
-          <span class="tid">T-035</span>
-          <span class="ttitulo">Resolver unidades organizacionais por tipo</span>
-          <span class="meta"><code>gpt-5.6-luna</code> · esforço <b>low</b></span>
-          <span class="arquivos"><code>src/main/java/com/gap/api/Service/CourseService.java</code> <code>src/test/java/com/gap/api/Service/CourseServiceTest.java</code> <code>src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java</code></span>
-        </div>
-      </div></div>
-    </section>
   
     <section class="onda">
-      <h3>Sequenciais <small>após as ondas, na árvore principal</small></h3>
+      <h3>Ordem de execução <small>uma tarefa após a outra, na árvore principal</small></h3>
       <div class="grade"><div class="faixa">
         <div class="tarefa">
           <span class="tid">T-036</span>
@@ -99,8 +71,7 @@
     <h3>Branches e commits</h3>
     <ol>
       <li>tudo parte da branch de trabalho <code>spec/course-crud</code></li>
-      <li>1 faixa = 1 branch + 1 worktree; 1 tarefa = 1 commit <code>T-xxx course-crud: título</code></li>
-      <li>merge <code>--no-ff</code> por faixa, na ordem; conflito interrompe e pede você</li>
+      <li>as tarefas rodam nela mesma, na ordem; 1 tarefa = 1 commit <code>T-xxx course-crud: título</code></li>
       <li>gate final: <code>onp-spec verify course-crud</code> + <code>onp-spec audit --ci</code> — exit 0 ou não está pronto</li>
     </ol>
   </section>

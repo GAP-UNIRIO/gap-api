@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# executar-tarefas.sh — gerado por `onp-spec plano course-crud` em 2026-10-22 18:39
+# executar-tarefas.sh — gerado por `onp-spec plano course-crud` em 2026-10-22 18:51
 # NÃO edite à mão: mudou tasks.md ou a config, regenere o plano.
 #
 # uso:
@@ -14,7 +14,7 @@
 set -u
 set -o pipefail
 
-RUN_ID='gap-api-course-crud-mvjvxb6l'
+RUN_ID='gap-api-course-crud-mvjwdjg8'
 FEATURE='course-crud'
 BASE_BRANCH='spec/course-crud'
 ENGINE='.agents/skills/onp-spec-driven/scripts/onp-spec.mjs'
@@ -168,67 +168,7 @@ iniciar_resumos() {
   trap 'parar_resumos; node "$ENGINE" resumo "$FEATURE" --gravar >/dev/null 2>&1 || true' EXIT
 }
 
-# ── faixa-1: T-033 T-034 T-035 ──
-executar_faixa_1() {
-  local WT="$WT_BASE-faixa-1"
-  preparar_worktree 'faixa-1' 'spec/course-crud-faixa-1' "$WT" || return 1
-  evento --tipo faixa --faixa 'faixa-1' --estado executando --tentativa "$(tentativa 'faixa-1')"
-  : > "$LOG_DIR/faixa-1.log"
-  (
-    cd "$WT" || exit 9
-    rodar_tarefa 'faixa-1' 'T-033' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
-Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
-
-Sua tarefa (somente ela):
-T-033 — "Expandir contrato para unidades organizacionais"
-  critérios/refs: AC-120 (Persistir e devolver vínculos organizacionais), AC-121 (Rejeitar tipo de unidade incompatível), AC-122 (Exigir os cinco vínculos organizacionais)
-  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Model/DTO/CourseRequest.java, src/main/java/com/gap/api/Model/DTO/CourseResponse.java, src/test/java/com/gap/api/Controller/CourseControllerTest.java
-  mensagem de commit: "T-033 course-crud: Expandir contrato para unidades organizacionais"
-
-Regras inegociáveis:
-- Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
-- NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
-- Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
-- NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low &&
-    rodar_tarefa 'faixa-1' 'T-034' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
-Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
-
-Sua tarefa (somente ela):
-T-034 — "Validar responsáveis obrigatórios e seus papéis"
-  critérios/refs: AC-119 (Exigir os três responsáveis), AC-123 (Rejeitar ID de responsável inexistente), AC-124 (Exigir papel correspondente ao responsável)
-  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Model/DTO/CourseRequest.java, src/main/java/com/gap/api/Service/CourseService.java, src/test/java/com/gap/api/Controller/CourseControllerTest.java, src/test/java/com/gap/api/Service/CourseServiceTest.java, src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java
-  mensagem de commit: "T-034 course-crud: Validar responsáveis obrigatórios e seus papéis"
-
-Regras inegociáveis:
-- Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
-- NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
-- Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
-- NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low &&
-    rodar_tarefa 'faixa-1' 'T-035' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
-Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
-
-Sua tarefa (somente ela):
-T-035 — "Resolver unidades organizacionais por tipo"
-  critérios/refs: AC-120 (Persistir e devolver vínculos organizacionais), AC-121 (Rejeitar tipo de unidade incompatível), AC-122 (Exigir os cinco vínculos organizacionais)
-  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Service/CourseService.java, src/test/java/com/gap/api/Service/CourseServiceTest.java, src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java
-  mensagem de commit: "T-035 course-crud: Resolver unidades organizacionais por tipo"
-
-Regras inegociáveis:
-- Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
-- NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
-- Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
-- NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low
-  ) >> "$LOG_DIR/faixa-1.log" 2>&1
-  local st=$?
-  mesclar_faixa 'faixa-1' 'spec/course-crud-faixa-1' "$WT" "$st" || return 1
-  marcar_concluidas T-033 T-034 T-035
-  return 0
-}
-
-# ── sequencial T-036 (fora da seleção do usuário) ──
+# ── sequencial T-036 (ordem do tasks.md) ──
 executar_seq_T_036() {
   info 'sequencial T-036 — Verificar e auditar regras novas'
   if rodar_tarefa seq 'T-036' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
@@ -313,17 +253,12 @@ executar_tudo() {
   iniciar_resumos
   info "logs em: $LOG_DIR"
   info "resumo geral de andamento: a cada 1 min aqui no terminal (e via: onp-spec resumo)"
-  # onda 1: faixa-1
-  info "onda 1: faixa-1 — janelas limpas em paralelo"
-  executar_faixa_1 & PID_FAIXA_1=$!
-  wait "$PID_FAIXA_1" || true
   executar_seq_T_036 || true
   encerrar tudo
 }
 
 listar() {
   echo "execução: $RUN_ID (feature $FEATURE, branch $BASE_BRANCH)"
-  echo "  faixa-1  onda 1  T-033, T-034, T-035"
   echo "  seq       T-036 (sequencial)"
   echo
   echo "reexecutar uma faixa:    --faixa <id>"
@@ -355,7 +290,6 @@ case "$MODO" in
   gate) COM_GATE=1; iniciar_resumos; encerrar gate ;;
   faixa)
     case "$ALVO" in
-      faixa-1) evento --tipo inicio --escopo "faixa:faixa-1"; iniciar_resumos; executar_faixa_1 || true; encerrar "faixa:faixa-1" ;;
       *) falhar "faixa desconhecida: '$ALVO' — veja as disponíveis com --listar" ;;
     esac ;;
   seq)

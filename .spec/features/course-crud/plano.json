@@ -1,90 +1,19 @@
 {
-  "runId": "gap-api-course-crud-mvjvxb6l",
+  "runId": "gap-api-course-crud-mvjwdjg8",
   "feature": "course-crud",
   "agent": "codex",
-  "modo": "paralelo",
-  "paralelizar": [
-    "T-033",
-    "T-034",
-    "T-035"
-  ],
+  "modo": "sequencial",
+  "paralelizar": null,
   "modeloForcado": "gpt-5.6-luna",
   "esforcoForcado": "low",
-  "geradoEm": "2026-10-22 18:39",
+  "geradoEm": "2026-10-22 18:51",
   "branchTrabalho": "spec/course-crud",
   "baseDir": ".spec/features/course-crud",
   "specDir": ".spec",
   "repoName": "gap-api",
   "logsDir": "../onp-worktrees/gap-api-course-crud-logs",
-  "ondas": [
-    [
-      "faixa-1"
-    ]
-  ],
-  "faixas": [
-    {
-      "id": "faixa-1",
-      "branch": "spec/course-crud-faixa-1",
-      "worktree": "../onp-worktrees/gap-api-course-crud-faixa-1",
-      "tarefas": [
-        {
-          "id": "T-033",
-          "titulo": "Expandir contrato para unidades organizacionais",
-          "modelo": "gpt-5.6-luna",
-          "esforco": "low",
-          "arquivos": [
-            "src/main/java/com/gap/api/Model/DTO/CourseRequest.java",
-            "src/main/java/com/gap/api/Model/DTO/CourseResponse.java",
-            "src/test/java/com/gap/api/Controller/CourseControllerTest.java"
-          ],
-          "refs": [
-            "US-016",
-            "AC-120",
-            "AC-121",
-            "AC-122"
-          ]
-        },
-        {
-          "id": "T-034",
-          "titulo": "Validar responsáveis obrigatórios e seus papéis",
-          "modelo": "gpt-5.6-luna",
-          "esforco": "low",
-          "arquivos": [
-            "src/main/java/com/gap/api/Model/DTO/CourseRequest.java",
-            "src/main/java/com/gap/api/Service/CourseService.java",
-            "src/test/java/com/gap/api/Controller/CourseControllerTest.java",
-            "src/test/java/com/gap/api/Service/CourseServiceTest.java",
-            "src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java"
-          ],
-          "refs": [
-            "US-013",
-            "US-014",
-            "AC-119",
-            "US-017",
-            "AC-123",
-            "AC-124"
-          ]
-        },
-        {
-          "id": "T-035",
-          "titulo": "Resolver unidades organizacionais por tipo",
-          "modelo": "gpt-5.6-luna",
-          "esforco": "low",
-          "arquivos": [
-            "src/main/java/com/gap/api/Service/CourseService.java",
-            "src/test/java/com/gap/api/Service/CourseServiceTest.java",
-            "src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java"
-          ],
-          "refs": [
-            "US-016",
-            "AC-120",
-            "AC-121",
-            "AC-122"
-          ]
-        }
-      ]
-    }
-  ],
+  "ondas": [],
+  "faixas": [],
   "sequenciais": [
     {
       "id": "T-036",
@@ -115,6 +44,9 @@
     "T-014",
     "T-015",
     "T-032",
+    "T-033",
+    "T-034",
+    "T-035",
     "T-031"
   ],
   "avisos": []

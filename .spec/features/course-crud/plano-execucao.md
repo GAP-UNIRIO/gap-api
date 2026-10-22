@@ -1,42 +1,26 @@
 # Plano de execução — course-crud
 
-> gerado por `onp-spec plano` em 2026-10-22 18:39 — NÃO edite à mão;
-> mudou tasks.md ou a config? Regenere: `onp-spec plano course-crud --paralelizar T-033,T-034,T-035 --modelo gpt-5.6-luna --esforco low`
+> gerado por `onp-spec plano` em 2026-10-22 18:51 — NÃO edite à mão;
+> mudou tasks.md ou a config? Regenere: `onp-spec plano course-crud --sequencial --modelo gpt-5.6-luna --esforco low`
 
 ## Resumo — o que vai acontecer
 
-- **4 tarefa(s) pendente(s)**: 3 em 1 faixa(s) paralela(s) + 1 sequencial(is) (7 já concluída(s): T-011, T-012, T-013, T-014, T-015, T-032, T-031)
-- **seleção do usuário**: paralelizar só T-033, T-034, T-035 — as demais rodam uma após a outra, ao final
-- **1 faixa = 1 worktree + 1 branch + 1 janela de contexto limpa** — faixas não compartilham nenhum arquivo entre si
-- prefere outra seleção ou uma após a outra? Regenere com `onp-spec plano course-crud --paralelizar T-xxx,T-yyy` ou `--sequencial`
+- **modo SEQUENCIAL (escolha do usuário)**: 1 tarefa(s) pendente(s), UMA APÓS A OUTRA, na árvore principal (10 já concluída(s): T-011, T-012, T-013, T-014, T-015, T-032, T-033, T-034, T-035, T-031)
+- sem worktrees e sem paralelismo — cada tarefa roda numa janela de contexto limpa, na ordem do tasks.md
 - **custo travado pelo usuário**: modelo `gpt-5.6-luna` · esforço `low` em TODAS as tarefas (vence tasks.md e config)
 - tudo acontece na branch de trabalho `spec/course-crud`; levar para a main é decisão sua
 
-## Faixas e ondas
+## Ordem de execução (uma tarefa após a outra)
 
-### Onda 1 — faixa-1
-
-#### faixa-1 — branch `spec/course-crud-faixa-1` — worktree `../onp-worktrees/gap-api-course-crud-faixa-1`
-
-| tarefa | título | modelo | esforço | arquivos |
-|---|---|---|---|---|
-| T-033 | Expandir contrato para unidades organizacionais | `gpt-5.6-luna` | low | `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Model/DTO/CourseResponse.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java` |
-| T-034 | Validar responsáveis obrigatórios e seus papéis | `gpt-5.6-luna` | low | `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java` |
-| T-035 | Resolver unidades organizacionais por tipo | `gpt-5.6-luna` | low | `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java` |
-
-## Tarefas sequenciais (após as ondas, na árvore principal)
-
-| tarefa | título | modelo | esforço | por que sequencial |
-|---|---|---|---|---|
-| T-036 | Verificar e auditar regras novas | `gpt-5.6-luna` | low | fora da seleção do usuário |
+| tarefa | título | modelo | esforço |
+|---|---|---|---|
+| T-036 | Verificar e auditar regras novas | `gpt-5.6-luna` | low |
 
 ## Gestão de branches e commits
 
 1. branch de trabalho `spec/course-crud` criada do ponto atual (se ainda não existir)
-2. cada faixa nasce dela como branch própria e roda no seu worktree — **1 tarefa = 1 commit** (`T-xxx feature: título`)
-3. terminou a onda → merge `--no-ff` de cada faixa de volta, na ordem; conflito interrompe a faixa e pede resolução humana
-4. faixa mesclada → worktree removido, branch apagada, tarefa marcada `[concluida]` no tasks.md
-5. gate final na branch de trabalho: `onp-spec verify course-crud` + `onp-spec audit --ci` — **exit 0 ou não está pronto**
+2. as tarefas rodam nela mesma, na ordem — **1 tarefa = 1 commit** (`T-xxx feature: título`), marcada `[concluida]` só com trabalho feito
+3. gate final na branch de trabalho: `onp-spec verify course-crud` + `onp-spec audit --ci` — **exit 0 ou não está pronto**
 
 ## Como executar
 
@@ -46,9 +30,9 @@
 bash .spec/features/course-crud/executar-tarefas.sh
 ```
 
-Cada faixa roda `codex exec` com **janela de contexto limpa**, no seu worktree, com
-`--model` e `model_reasoning_effort` já definidos por tarefa e sandbox `workspace-write`. Os prompts exatos estão
-embutidos no script — quer rodar uma faixa na mão, é só copiá-los de lá.
+Cada tarefa roda `codex exec` com **janela de contexto limpa**, na árvore principal,
+uma após a outra, com `--model` e `model_reasoning_effort` já definidos por tarefa e sandbox `workspace-write`.
+Os prompts exatos estão embutidos no script.
 Logs: `../onp-worktrees/gap-api-course-crud-logs/`.
 
 **Confirmação de custos — antes de executar**: os modelos e esforços por
