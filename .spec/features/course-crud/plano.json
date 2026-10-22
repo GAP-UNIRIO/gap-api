@@ -1,18 +1,16 @@
 {
-  "runId": "gap-api-course-crud-mvjvt3l1",
+  "runId": "gap-api-course-crud-mvjvxb6l",
   "feature": "course-crud",
   "agent": "codex",
   "modo": "paralelo",
   "paralelizar": [
-    "T-032",
     "T-033",
     "T-034",
-    "T-035",
-    "T-036"
+    "T-035"
   ],
   "modeloForcado": "gpt-5.6-luna",
   "esforcoForcado": "low",
-  "geradoEm": "2026-10-22 18:35",
+  "geradoEm": "2026-10-22 18:39",
   "branchTrabalho": "spec/course-crud",
   "baseDir": ".spec/features/course-crud",
   "specDir": ".spec",
@@ -29,22 +27,6 @@
       "branch": "spec/course-crud-faixa-1",
       "worktree": "../onp-worktrees/gap-api-course-crud-faixa-1",
       "tarefas": [
-        {
-          "id": "T-032",
-          "titulo": "Validar nomes de curso na requisição",
-          "modelo": "gpt-5.6-luna",
-          "esforco": "low",
-          "arquivos": [
-            "src/main/java/com/gap/api/Model/DTO/CourseRequest.java",
-            "src/test/java/com/gap/api/Controller/CourseControllerTest.java",
-            ".spec/features/course-crud/spec.md"
-          ],
-          "refs": [
-            "US-013",
-            "AC-037",
-            "AC-118"
-          ]
-        },
         {
           "id": "T-033",
           "titulo": "Expandir contrato para unidades organizacionais",
@@ -99,41 +81,41 @@
             "AC-121",
             "AC-122"
           ]
-        },
-        {
-          "id": "T-036",
-          "titulo": "Verificar e auditar regras novas",
-          "modelo": "gpt-5.6-luna",
-          "esforco": "low",
-          "arquivos": [
-            ".spec/features/course-crud/spec.md",
-            ".spec/features/course-crud/tasks.md",
-            ".spec/verification/course-crud.json"
-          ],
-          "refs": [
-            "AC-037",
-            "AC-118",
-            "AC-119",
-            "AC-120",
-            "AC-121",
-            "AC-122",
-            "AC-123",
-            "AC-124"
-          ]
         }
       ]
     }
   ],
-  "sequenciais": [],
+  "sequenciais": [
+    {
+      "id": "T-036",
+      "titulo": "Verificar e auditar regras novas",
+      "modelo": "gpt-5.6-luna",
+      "esforco": "low",
+      "arquivos": [
+        ".spec/features/course-crud/spec.md",
+        ".spec/features/course-crud/tasks.md",
+        ".spec/verification/course-crud.json"
+      ],
+      "refs": [
+        "AC-037",
+        "AC-118",
+        "AC-119",
+        "AC-120",
+        "AC-121",
+        "AC-122",
+        "AC-123",
+        "AC-124"
+      ]
+    }
+  ],
   "concluidas": [
     "T-011",
     "T-012",
     "T-013",
     "T-014",
     "T-015",
+    "T-032",
     "T-031"
   ],
-  "avisos": [
-    "T-032 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
-  ]
+  "avisos": []
 }

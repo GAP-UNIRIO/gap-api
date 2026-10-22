@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# executar-tarefas.sh — gerado por `onp-spec plano course-crud` em 2026-10-22 18:35
+# executar-tarefas.sh — gerado por `onp-spec plano course-crud` em 2026-10-22 18:39
 # NÃO edite à mão: mudou tasks.md ou a config, regenere o plano.
 #
 # uso:
@@ -14,7 +14,7 @@
 set -u
 set -o pipefail
 
-RUN_ID='gap-api-course-crud-mvjvt3l1'
+RUN_ID='gap-api-course-crud-mvjvxb6l'
 FEATURE='course-crud'
 BASE_BRANCH='spec/course-crud'
 ENGINE='.agents/skills/onp-spec-driven/scripts/onp-spec.mjs'
@@ -168,7 +168,7 @@ iniciar_resumos() {
   trap 'parar_resumos; node "$ENGINE" resumo "$FEATURE" --gravar >/dev/null 2>&1 || true' EXIT
 }
 
-# ── faixa-1: T-032 T-033 T-034 T-035 T-036 ──
+# ── faixa-1: T-033 T-034 T-035 ──
 executar_faixa_1() {
   local WT="$WT_BASE-faixa-1"
   preparar_worktree 'faixa-1' 'spec/course-crud-faixa-1' "$WT" || return 1
@@ -176,21 +176,6 @@ executar_faixa_1() {
   : > "$LOG_DIR/faixa-1.log"
   (
     cd "$WT" || exit 9
-    rodar_tarefa 'faixa-1' 'T-032' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
-Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
-
-Sua tarefa (somente ela):
-T-032 — "Validar nomes de curso na requisição"
-  critérios/refs: AC-037 (Rejeitar nome ausente na requisição), AC-118 (Rejeitar nome vazio ou composto por espaços)
-  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Model/DTO/CourseRequest.java, src/test/java/com/gap/api/Controller/CourseControllerTest.java, .spec/features/course-crud/spec.md
-  mensagem de commit: "T-032 course-crud: Validar nomes de curso na requisição"
-
-Regras inegociáveis:
-- Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
-- NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
-- Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
-- NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low &&
     rodar_tarefa 'faixa-1' 'T-033' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
 Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
 
@@ -235,8 +220,18 @@ Regras inegociáveis:
 - NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
 - Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
 - NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low &&
-    rodar_tarefa 'faixa-1' 'T-036' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
+- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low
+  ) >> "$LOG_DIR/faixa-1.log" 2>&1
+  local st=$?
+  mesclar_faixa 'faixa-1' 'spec/course-crud-faixa-1' "$WT" "$st" || return 1
+  marcar_concluidas T-033 T-034 T-035
+  return 0
+}
+
+# ── sequencial T-036 (fora da seleção do usuário) ──
+executar_seq_T_036() {
+  info 'sequencial T-036 — Verificar e auditar regras novas'
+  if rodar_tarefa seq 'T-036' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
 Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
 
 Sua tarefa (somente ela):
@@ -250,12 +245,19 @@ Regras inegociáveis:
 - NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
 - Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
 - NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low
-  ) >> "$LOG_DIR/faixa-1.log" 2>&1
-  local st=$?
-  mesclar_faixa 'faixa-1' 'spec/course-crud-faixa-1' "$WT" "$st" || return 1
-  marcar_concluidas T-032 T-033 T-034 T-035 T-036
-  return 0
+- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low >> "$LOG_DIR/seq.log" 2>&1; then
+    # commit de segurança se o agente esqueceu (rastreabilidade > perfeição)
+    if [ -n "$(git status --porcelain)" ]; then
+      git add -A && git commit -q -m 'T-036 course-crud: Verificar e auditar regras novas (auto-commit do plano)'
+    fi
+    marcar_concluidas T-036
+    verde "✔ T-036 concluída"
+    return 0
+  fi
+  vermelho "✘ T-036 falhou (log: $LOG_DIR/seq.log)"
+  amarelo "  reexecute só ela: bash .spec/features/course-crud/executar-tarefas.sh --seq T-036"
+  FALHAS="$FALHAS T-036"
+  return 1
 }
 
 # ── gate: quem decide é a máquina ────────────────────────────────────
@@ -315,12 +317,14 @@ executar_tudo() {
   info "onda 1: faixa-1 — janelas limpas em paralelo"
   executar_faixa_1 & PID_FAIXA_1=$!
   wait "$PID_FAIXA_1" || true
+  executar_seq_T_036 || true
   encerrar tudo
 }
 
 listar() {
   echo "execução: $RUN_ID (feature $FEATURE, branch $BASE_BRANCH)"
-  echo "  faixa-1  onda 1  T-032, T-033, T-034, T-035, T-036"
+  echo "  faixa-1  onda 1  T-033, T-034, T-035"
+  echo "  seq       T-036 (sequencial)"
   echo
   echo "reexecutar uma faixa:    --faixa <id>"
   echo "reexecutar sequencial:   --seq <T-xxx>"
@@ -356,6 +360,7 @@ case "$MODO" in
     esac ;;
   seq)
     case "$ALVO" in
+      T-036) evento --tipo inicio --escopo "seq:T-036"; iniciar_resumos; executar_seq_T_036 || true; encerrar "seq:T-036" ;;
       *) falhar "tarefa sequencial desconhecida: '$ALVO' — veja as disponíveis com --listar" ;;
     esac ;;
 esac
