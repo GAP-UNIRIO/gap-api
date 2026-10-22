@@ -1,0 +1,90 @@
+{
+  "runId": "gap-api-institution-crud-mviyluto",
+  "feature": "institution-crud",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-10-22 03:06",
+  "branchTrabalho": "spec/institution-crud",
+  "baseDir": ".spec/features/institution-crud",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-institution-crud-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-017",
+      "titulo": "Rastrear e completar testes de serviço e HTTP",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/InstitutionControllerTest.java",
+        "src/test/java/com/gap/api/Service/InstitutionServiceTest.java",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-016",
+        "AC-045",
+        "AC-046",
+        "AC-047",
+        "AC-048",
+        "US-017",
+        "AC-049",
+        "AC-050",
+        "AC-051",
+        "AC-052",
+        "AC-053",
+        "US-018",
+        "AC-054",
+        "AC-055",
+        "AC-056",
+        "AC-057",
+        "AC-058",
+        "US-019",
+        "AC-059",
+        "AC-060"
+      ]
+    },
+    {
+      "id": "T-018",
+      "titulo": "Verificar e auditar a feature",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        ".spec/features/institution-crud/spec.md",
+        ".spec/features/institution-crud/tasks.md",
+        ".spec/verification/institution-crud.json",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-016",
+        "AC-045",
+        "AC-046",
+        "AC-047",
+        "AC-048",
+        "US-017",
+        "AC-049",
+        "AC-050",
+        "AC-051",
+        "AC-052",
+        "AC-053",
+        "US-018",
+        "AC-054",
+        "AC-055",
+        "AC-056",
+        "AC-057",
+        "AC-058",
+        "US-019",
+        "AC-059",
+        "AC-060"
+      ]
+    }
+  ],
+  "concluidas": [
+    "T-016"
+  ],
+  "avisos": []
+}

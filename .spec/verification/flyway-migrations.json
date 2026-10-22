@@ -1,11 +1,11 @@
 {
   "feature": "flyway-migrations",
-  "timestamp": "2026-10-21T17:29:36.971Z",
-  "gitRev": "c908973",
+  "timestamp": "2026-10-22T04:03:14.947Z",
+  "gitRev": "fe105ab",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 36,
+  "testsParsed": 198,
   "results": {
     "AC-001": {
       "status": "pass",
@@ -20,6 +20,11 @@
     "AC-003": {
       "status": "pass",
       "testName": "@spec:AC-003 Hibernate valida schema sem DDL automático em produção",
+      "method": "tap"
+    },
+    "AC-111": {
+      "status": "pass",
+      "testName": "@spec:AC-111 V2 adiciona departamento opcional a cursos existentes com chave estrangeira",
       "method": "tap"
     }
   },

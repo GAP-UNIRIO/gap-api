@@ -1,0 +1,72 @@
+{
+  "feature": "org-unit-crud",
+  "timestamp": "2026-10-22T04:06:28.784Z",
+  "gitRev": "fe105ab",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 198,
+  "results": {
+    "AC-068": {
+      "status": "pass",
+      "testName": "@spec:AC-068 findAll retorna lista de unidades organizacionais",
+      "method": "tap"
+    },
+    "AC-069": {
+      "status": "pass",
+      "testName": "@spec:AC-069 findAll retorna lista vazia",
+      "method": "tap"
+    },
+    "AC-070": {
+      "status": "pass",
+      "testName": "@spec:AC-070 findById retorna 200 e a unidade quando existe",
+      "method": "tap"
+    },
+    "AC-071": {
+      "status": "pass",
+      "testName": "@spec:AC-071 findById inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-072": {
+      "status": "pass",
+      "testName": "@spec:AC-072 create retorna 201 e a unidade criada",
+      "method": "tap"
+    },
+    "AC-073": {
+      "status": "pass",
+      "testName": "@spec:AC-073 create rejeita tipo desconhecido",
+      "method": "tap"
+    },
+    "AC-074": {
+      "status": "pass",
+      "testName": "@spec:AC-074 create com tipo ou nome nulo retorna 409 por restrição do banco",
+      "method": "tap"
+    },
+    "AC-075": {
+      "status": "pass",
+      "testName": "@spec:AC-075 update retorna 200 ao alterar a unidade",
+      "method": "tap"
+    },
+    "AC-076": {
+      "status": "pass",
+      "testName": "@spec:AC-076 update inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-077": {
+      "status": "pass",
+      "testName": "@spec:AC-077 delete retorna 200 ao remover a unidade",
+      "method": "tap"
+    },
+    "AC-078": {
+      "status": "pass",
+      "testName": "@spec:AC-078 delete inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-079": {
+      "status": "pass",
+      "testName": "@spec:AC-079 delete com referência retorna 409",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

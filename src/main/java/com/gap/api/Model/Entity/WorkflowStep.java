@@ -30,4 +30,10 @@ public class WorkflowStep {
     @Enumerated(EnumType.STRING)
     @Column(name = "responsible_unit_type", nullable = false)
     private OrgUnit.OrgUnitType responsibleUnitType;
+
+    @Column(name = "step_name", nullable = false, length = 255)
+    private String stepName;
+
+    @Column(name = "step_description", nullable = false, length = 255)
+    private String stepDescription;
 }

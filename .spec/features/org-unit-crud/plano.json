@@ -1,0 +1,85 @@
+{
+  "runId": "gap-api-org-unit-crud-mvizjgw9",
+  "feature": "org-unit-crud",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-10-22 03:32",
+  "branchTrabalho": "spec/org-unit-crud",
+  "baseDir": ".spec/features/org-unit-crud",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-org-unit-crud-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-023",
+      "titulo": "Mapear e completar testes HTTP/integração",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/OrgUnitControllerTest.java",
+        "src/test/java/com/gap/api/Service/OrgUnitServiceTest.java",
+        "src/test/java/com/gap/api/Integration/OrgUnitServiceIntegrationTest.java",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-022",
+        "AC-068",
+        "AC-069",
+        "AC-070",
+        "AC-071",
+        "US-023",
+        "AC-072",
+        "AC-073",
+        "AC-074",
+        "US-024",
+        "AC-075",
+        "AC-076",
+        "US-025",
+        "AC-077",
+        "AC-078",
+        "AC-079"
+      ]
+    },
+    {
+      "id": "T-024",
+      "titulo": "Verificar e auditar a feature",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        ".spec/features/org-unit-crud/spec.md",
+        ".spec/features/org-unit-crud/tasks.md",
+        ".spec/verification/org-unit-crud.json",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-022",
+        "AC-068",
+        "AC-069",
+        "AC-070",
+        "AC-071",
+        "US-023",
+        "AC-072",
+        "AC-073",
+        "AC-074",
+        "US-024",
+        "AC-075",
+        "AC-076",
+        "US-025",
+        "AC-077",
+        "AC-078",
+        "AC-079"
+      ]
+    }
+  ],
+  "concluidas": [
+    "T-022"
+  ],
+  "avisos": [
+    "T-023 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}

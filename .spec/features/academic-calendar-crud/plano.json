@@ -1,0 +1,135 @@
+{
+  "runId": "gap-api-academic-calendar-crud-mvifpqtg",
+  "feature": "academic-calendar-crud",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": "gpt-5.6-luna",
+  "esforcoForcado": "low",
+  "geradoEm": "2026-10-21 18:17",
+  "branchTrabalho": "spec/academic-calendar-crud",
+  "baseDir": ".spec/features/academic-calendar-crud",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-academic-calendar-crud-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-007",
+      "titulo": "Especificar o contrato do CRUD existente",
+      "modelo": "gpt-5.6-luna",
+      "esforco": "low",
+      "arquivos": [
+        ".spec/features/academic-calendar-crud/spec.md",
+        "src/main/java/com/gap/api/Controller/AcademicCalendarController.java",
+        "src/main/java/com/gap/api/Service/AcademicCalendarService.java",
+        "src/main/java/com/gap/api/Model/DTO/AcademicCalendarRequest.java",
+        "src/main/java/com/gap/api/Model/Entity/AcademicCalendar.java"
+      ],
+      "refs": [
+        "US-008",
+        "AC-015",
+        "AC-016",
+        "AC-017",
+        "US-009",
+        "AC-018",
+        "AC-019",
+        "AC-020",
+        "AC-021",
+        "AC-022",
+        "AC-023",
+        "US-010",
+        "AC-024",
+        "AC-025",
+        "AC-026",
+        "AC-027",
+        "AC-028",
+        "US-011",
+        "AC-029",
+        "AC-030"
+      ]
+    },
+    {
+      "id": "T-008",
+      "titulo": "Mapear os testes atuais aos critérios cobertos",
+      "modelo": "gpt-5.6-luna",
+      "esforco": "low",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java",
+        "src/test/java/com/gap/api/Service/AcademicCalendarServiceTest.java"
+      ],
+      "refs": [
+        "US-008",
+        "AC-016",
+        "US-009",
+        "AC-018"
+      ]
+    },
+    {
+      "id": "T-009",
+      "titulo": "Completar testes de contrato HTTP e validação",
+      "modelo": "gpt-5.6-luna",
+      "esforco": "low",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java",
+        "src/test/java/com/gap/api/Service/AcademicCalendarServiceTest.java"
+      ],
+      "refs": [
+        "US-008",
+        "AC-015",
+        "AC-017",
+        "US-009",
+        "AC-019",
+        "AC-020",
+        "AC-021",
+        "AC-023",
+        "US-010",
+        "AC-024",
+        "AC-027",
+        "AC-028",
+        "US-011",
+        "AC-029",
+        "AC-030"
+      ]
+    },
+    {
+      "id": "T-010",
+      "titulo": "Verificar a feature e atualizar o inventário rastreado",
+      "modelo": "gpt-5.6-luna",
+      "esforco": "low",
+      "arquivos": [
+        ".spec/features/academic-calendar-crud/spec.md",
+        ".spec/features/academic-calendar-crud/tasks.md",
+        ".spec/features/codebase-baseline/tasks.md",
+        ".spec/verification/academic-calendar-crud.json"
+      ],
+      "refs": [
+        "US-008",
+        "AC-015",
+        "AC-016",
+        "AC-017",
+        "US-009",
+        "AC-018",
+        "AC-019",
+        "AC-020",
+        "AC-021",
+        "AC-022",
+        "AC-023",
+        "US-010",
+        "AC-024",
+        "AC-025",
+        "AC-026",
+        "AC-027",
+        "AC-028",
+        "US-011",
+        "AC-029",
+        "AC-030"
+      ]
+    }
+  ],
+  "concluidas": [],
+  "avisos": [
+    "T-007 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}

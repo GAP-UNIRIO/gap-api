@@ -56,6 +56,13 @@ public class WorkflowEngineService {
             case DIRECAO ->   course.getDirecao();
             case REITORIA -> course.getReitoria();
             case ESCOLA -> course.getEscola();
+            case DEPARTAMENTO -> {
+                if (course.getDepartment() == null) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,
+                            "Course has no department associated: " + course.getId());
+                }
+                yield course.getDepartment();
+            }
 
             default ->  throw new IllegalArgumentException("Invalid target type");
         };

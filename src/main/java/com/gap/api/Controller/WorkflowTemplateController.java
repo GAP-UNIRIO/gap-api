@@ -5,6 +5,7 @@ import com.gap.api.Model.DTO.BaseResponseDTO;
 import com.gap.api.Model.DTO.WorkflowTemplateRequest;
 import com.gap.api.Model.DTO.WorkflowTemplateResponse;
 import com.gap.api.Service.Interface.IWorkflowTemplateService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class WorkflowTemplateController {
     private final IWorkflowTemplateService WorkflowTemplateService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<WorkflowTemplateResponse>> createTemplate(@RequestBody WorkflowTemplateRequest dto) {
+    public ResponseEntity<BaseResponse<WorkflowTemplateResponse>> createTemplate(@Valid @RequestBody WorkflowTemplateRequest dto) {
         var entity = WorkflowTemplateService.createTemplate(dto);
         return ResponseEntity.ok(BaseResponse.success("Workflow template created successfully", entity));
     }

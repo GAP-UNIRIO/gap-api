@@ -45,6 +45,8 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
             step.setStepOrder(stepDto.stepOrder());
             step.setStageType(stepDto.stageType());
             step.setResponsibleUnitType(stepDto.responsibleUnitType());
+            step.setStepName(stepDto.stepName());
+            step.setStepDescription(stepDto.stepDescription());
             step.setTemplate(template);
             return step;
         }).toList();

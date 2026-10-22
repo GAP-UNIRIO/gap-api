@@ -1,0 +1,77 @@
+{
+  "feature": "role-crud",
+  "timestamp": "2026-10-22T04:06:58.494Z",
+  "gitRev": "fe105ab",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 198,
+  "results": {
+    "AC-080": {
+      "status": "pass",
+      "testName": "@spec:AC-080 findAll retorna papéis ordenados",
+      "method": "tap"
+    },
+    "AC-081": {
+      "status": "pass",
+      "testName": "@spec:AC-081 findAll sem papéis retorna lista vazia",
+      "method": "tap"
+    },
+    "AC-082": {
+      "status": "pass",
+      "testName": "@spec:AC-082 findById retorna o papel quando existe",
+      "method": "tap"
+    },
+    "AC-083": {
+      "status": "pass",
+      "testName": "@spec:AC-083 findById inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-084": {
+      "status": "pass",
+      "testName": "@spec:AC-084 create retorna 201 e o papel criado",
+      "method": "tap"
+    },
+    "AC-085": {
+      "status": "pass",
+      "testName": "@spec:AC-085 update rejeita autoridade branca",
+      "method": "tap"
+    },
+    "AC-086": {
+      "status": "pass",
+      "testName": "@spec:AC-086 create com authority duplicada retorna 409",
+      "method": "tap"
+    },
+    "AC-087": {
+      "status": "pass",
+      "testName": "@spec:AC-087 update retorna 200 ao alterar o papel",
+      "method": "tap"
+    },
+    "AC-088": {
+      "status": "pass",
+      "testName": "@spec:AC-088 update com authority de outro papel retorna 409",
+      "method": "tap"
+    },
+    "AC-089": {
+      "status": "pass",
+      "testName": "@spec:AC-089 update inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-090": {
+      "status": "pass",
+      "testName": "@spec:AC-090 delete retorna 200 ao remover o papel",
+      "method": "tap"
+    },
+    "AC-091": {
+      "status": "pass",
+      "testName": "@spec:AC-091 delete inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-092": {
+      "status": "pass",
+      "testName": "@spec:AC-092 delete papel associado a usuário retorna 409",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

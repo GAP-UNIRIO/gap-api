@@ -1139,19 +1139,19 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "flyway-migrations",
       "ref": "—",
-      "ocorrencias": 3,
+      "ocorrencias": 7,
       "primeiraVez": "2026-10-21T04:29:19.394Z",
-      "ultimaVez": "2026-10-21T17:29:03.267Z",
-      "gitRev": "c908973"
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
     },
     "VERIFY_OBSOLETO::order-create::—": {
       "codigo": "VERIFY_OBSOLETO",
       "feature": "order-create",
       "ref": "—",
-      "ocorrencias": 3,
+      "ocorrencias": 8,
       "primeiraVez": "2026-10-21T04:29:19.394Z",
-      "ultimaVez": "2026-10-21T17:07:12.925Z",
-      "gitRev": "c908973"
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
     },
     "ARQUIVO_ORFAO::—::src/test/resources/application.properties": {
       "codigo": "ARQUIVO_ORFAO",
@@ -1166,10 +1166,10 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "codebase-baseline",
       "ref": "—",
-      "ocorrencias": 2,
+      "ocorrencias": 7,
       "primeiraVez": "2026-10-21T17:07:12.923Z",
-      "ultimaVez": "2026-10-21T17:29:03.266Z",
-      "gitRev": "c908973"
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
     },
     "AC_SEM_TESTE::order-create::AC-013": {
       "codigo": "AC_SEM_TESTE",
@@ -1179,6 +1179,672 @@
       "primeiraVez": "2026-10-21T17:07:12.925Z",
       "ultimaVez": "2026-10-21T17:07:12.925Z",
       "gitRev": "c908973"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::academic-calendar-crud::T-007": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "academic-calendar-crud",
+      "ref": "T-007",
+      "ocorrencias": 16,
+      "primeiraVez": "2026-10-21T18:06:29.540Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-015": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-015",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-016": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-016",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-017": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-017",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-018": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-018",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-019": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-019",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-020": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-020",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-021": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-021",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-022": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-022",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-023": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-023",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-024": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-024",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-025": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-025",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-026": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-026",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-027": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-027",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-028": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-028",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-029": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-029",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_TESTE::academic-calendar-crud::AC-030": {
+      "codigo": "AC_SEM_TESTE",
+      "feature": "academic-calendar-crud",
+      "ref": "AC-030",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T18:06:29.541Z",
+      "ultimaVez": "2026-10-21T18:06:29.541Z",
+      "gitRev": "fe105ab"
+    },
+    "ID_DUPLICADO::order-create::Q-001": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "order-create",
+      "ref": "Q-001",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.004Z",
+      "ultimaVez": "2026-10-21T19:48:07.010Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_OBSOLETO::academic-calendar-crud::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "academic-calendar-crud",
+      "ref": "—",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
+    },
+    "ARQUIVO_INEXISTENTE::course-crud::T-014": {
+      "codigo": "ARQUIVO_INEXISTENTE",
+      "feature": "course-crud",
+      "ref": "T-014",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-031": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-031",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-032": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-032",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-033": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-033",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-034": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-034",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-035": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-035",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-036": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-036",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-037": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-037",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-038": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-038",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-039": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-039",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-040": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-040",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-041": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-041",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-042": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-042",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::course-crud::AC-043": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-043",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-21T19:48:07.011Z",
+      "ultimaVez": "2026-10-21T19:48:07.011Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_OBSOLETO::course-crud::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "course-crud",
+      "ref": "—",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-045": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-045",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-046": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-046",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-047": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-047",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-048": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-048",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-049": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-049",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-050": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-050",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-051": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-051",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-052": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-052",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-053": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-053",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-054": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-054",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-055": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-055",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-056": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-056",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-057": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-057",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-058": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-058",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-059": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-059",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_INCOMPLETO::institution-crud::AC-060": {
+      "codigo": "AC_INCOMPLETO",
+      "feature": "institution-crud",
+      "ref": "AC-060",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "TASK_STATUS_INVALIDO::institution-crud::T-017": {
+      "codigo": "TASK_STATUS_INVALIDO",
+      "feature": "institution-crud",
+      "ref": "T-017",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::institution-crud::T-016": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "T-016",
+      "ocorrencias": 16,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-045": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-045",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-046": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-046",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-047": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-047",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-048": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-048",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-049": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-049",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-050": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-050",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-051": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-051",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-052": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-052",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-053": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-053",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-054": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-054",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-055": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-055",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-056": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-056",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-057": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-057",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-058": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-058",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-059": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-059",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "AC_SEM_PROVA::institution-crud::AC-060": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "institution-crud",
+      "ref": "AC-060",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:06:38.659Z",
+      "ultimaVez": "2026-10-22T03:06:38.659Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_FALHOU::workflow-template-create::AC-096": {
+      "codigo": "VERIFY_FALHOU",
+      "feature": "workflow-template-create",
+      "ref": "AC-096",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T03:51:55.768Z",
+      "ultimaVez": "2026-10-22T03:51:55.768Z",
+      "gitRev": "fe105ab"
+    },
+    "ID_DUPLICADO::order-create::ASM-004": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "order-create",
+      "ref": "ASM-004",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T04:03:40.978Z",
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_OBSOLETO::institution-crud::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "institution-crud",
+      "ref": "—",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T04:03:40.979Z",
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_OBSOLETO::org-unit-crud::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "org-unit-crud",
+      "ref": "—",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T04:03:40.979Z",
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_OBSOLETO::role-crud::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "role-crud",
+      "ref": "—",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T04:03:40.979Z",
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
+    },
+    "VERIFY_OBSOLETO::user-profile::—": {
+      "codigo": "VERIFY_OBSOLETO",
+      "feature": "user-profile",
+      "ref": "—",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T04:03:40.979Z",
+      "ultimaVez": "2026-10-22T04:03:40.979Z",
+      "gitRev": "fe105ab"
     }
   }
 }

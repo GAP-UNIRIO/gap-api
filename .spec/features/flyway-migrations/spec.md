@@ -1,7 +1,7 @@
 # Spec: Flyway migrations
 
 > feature: flyway-migrations
-> status: rascunho
+> status: implementada
 
 ## Contexto
 
@@ -39,10 +39,15 @@ Como responsável pela produção, quero que o Hibernate valide em vez de altera
 - **Quando** a aplicação inicia
 - **Então** Hibernate usa `ddl-auto: validate` e Flyway gerencia as migrations
 
+#### AC-111 — Evoluir cursos com departamento sem perder registros legados
+- **Dado** banco existente baselineado em V1
+- **Quando** Flyway aplica V2
+- **Então** adiciona `courses.department_id` anulável e sua chave estrangeira para `org_units`, preservando cursos já cadastrados
+
 ## Fora de escopo
 
 - Desligar `ddl-auto` nos perfis de desenvolvimento e teste.
-- Alterações funcionais nas entidades ou migração de dados de negócio.
+- Migração automática de dados de negócio para atribuir departamentos a cursos existentes.
 
 ## Suposições
 

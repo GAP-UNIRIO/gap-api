@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const migration = await readFile('src/main/resources/db/migration/V1__initial_schema.sql', 'utf8');
+const departmentMigration = await readFile('src/main/resources/db/migration/V2__add_course_department.sql', 'utf8');
 const production = await readFile('src/main/resources/application-prod.yaml', 'utf8');
 
 test('@spec:AC-001 migration inicial cobre tabelas e tipos PostgreSQL das entidades', () => {
@@ -44,4 +45,11 @@ test('@spec:AC-002 perfil de produção configura baseline na versão inicial', 
 
 test('@spec:AC-003 Hibernate valida schema sem DDL automático em produção', () => {
   assert.match(production, /ddl-auto:\s*validate/i);
+});
+
+test('@spec:AC-111 V2 adiciona departamento opcional a cursos existentes com chave estrangeira', () => {
+  assert.match(departmentMigration, /alter\s+table\s+courses\s+add\s+column\s+department_id\s+bigint\s*;/i);
+  assert.match(departmentMigration, /foreign\s+key\s*\(\s*department_id\s*\)\s+references\s+org_units\s*\(\s*id\s*\)/i);
+  assert.doesNotMatch(departmentMigration, /department_id\s+bigint\s+not\s+null/i);
+  assert.doesNotMatch(migration, /department_id/i, 'V1 stays immutable for databases already baselined at version 1');
 });

@@ -1,0 +1,87 @@
+{
+  "runId": "gap-api-role-crud-mvizqv5v",
+  "feature": "role-crud",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-10-22 03:38",
+  "branchTrabalho": "spec/role-crud",
+  "baseDir": ".spec/features/role-crud",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-role-crud-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-026",
+      "titulo": "Anotar e completar testes de HTTP e banco",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/RoleControllerTest.java",
+        "src/test/java/com/gap/api/Service/RoleServiceTest.java",
+        "src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-026",
+        "AC-080",
+        "AC-081",
+        "AC-082",
+        "AC-083",
+        "US-027",
+        "AC-084",
+        "AC-085",
+        "AC-086",
+        "US-028",
+        "AC-087",
+        "AC-088",
+        "AC-089",
+        "US-029",
+        "AC-090",
+        "AC-091",
+        "AC-092"
+      ]
+    },
+    {
+      "id": "T-027",
+      "titulo": "Verificar feature e auditar especificações",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        ".spec/features/role-crud/spec.md",
+        ".spec/features/role-crud/tasks.md",
+        ".spec/verification/role-crud.json",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-026",
+        "AC-080",
+        "AC-081",
+        "AC-082",
+        "AC-083",
+        "US-027",
+        "AC-084",
+        "AC-085",
+        "AC-086",
+        "US-028",
+        "AC-087",
+        "AC-088",
+        "AC-089",
+        "US-029",
+        "AC-090",
+        "AC-091",
+        "AC-092"
+      ]
+    }
+  ],
+  "concluidas": [
+    "T-025"
+  ],
+  "avisos": [
+    "T-026 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}

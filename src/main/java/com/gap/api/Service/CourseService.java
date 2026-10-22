@@ -4,7 +4,9 @@ import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.User;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Repository.CourseRepository;
+import com.gap.api.Repository.OrgUnitRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.ICourseService;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ public class CourseService implements ICourseService {
 
     private final CourseRepository repository;
     private final UserRepository userRepository;
+    private final OrgUnitRepository orgUnitRepository;
 
 
     @Transactional(readOnly = true)
@@ -39,6 +42,7 @@ public class CourseService implements ICourseService {
         Course course = new Course();
         course.setName(courseRequest.name());
         setCDS(course, courseRequest.coordinatorId(), courseRequest.directorId(), courseRequest.secretaryId());
+        setDepartment(course, courseRequest.departmentId());
         return CourseResponse.from(repository.save(course));
     }
 
@@ -47,6 +51,7 @@ public class CourseService implements ICourseService {
         Course course = getOrThrow(id);
         course.setName(courseRequest.name());
         setCDS(course, courseRequest.coordinatorId(), courseRequest.directorId(), courseRequest.secretaryId());
+        setDepartment(course, courseRequest.departmentId());
         return CourseResponse.from(repository.save(course));
     }
 
@@ -63,6 +68,15 @@ public class CourseService implements ICourseService {
         course.setDirector(director);
         User secretary = userRepository.getReferenceById(secretaryId);
         course.setSecretary(secretary);
+    }
+
+    private void setDepartment(Course course, Long departmentId) {
+        OrgUnit department = orgUnitRepository.findById(departmentId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, "Department not found: " + departmentId));
+        if (department.getType() != OrgUnit.OrgUnitType.DEPARTAMENTO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Org unit must have type DEPARTAMENTO");
+        }
+        course.setDepartment(department);
     }
 
     private Course getOrThrow(Long id) {

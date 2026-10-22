@@ -1,0 +1,92 @@
+{
+  "feature": "workflow-template-create",
+  "timestamp": "2026-10-22T04:02:08.499Z",
+  "gitRev": "fe105ab",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 198,
+  "results": {
+    "AC-093": {
+      "status": "pass",
+      "testName": "@spec:AC-093 @spec:AC-095 @spec:AC-106 createTemplate retorna sucesso, curso e etapas completas",
+      "method": "tap"
+    },
+    "AC-094": {
+      "status": "pass",
+      "testName": "@spec:AC-094 createTemplate padrão retorna course null",
+      "method": "tap"
+    },
+    "AC-095": {
+      "status": "pass",
+      "testName": "@spec:AC-093 @spec:AC-095 @spec:AC-106 createTemplate retorna sucesso, curso e etapas completas",
+      "method": "tap"
+    },
+    "AC-096": {
+      "status": "pass",
+      "testName": "@spec:AC-096 createTemplate de curso inexistente retorna 400",
+      "method": "tap"
+    },
+    "AC-097": {
+      "status": "pass",
+      "testName": "@spec:AC-097 @spec:AC-098 duplicidade de template retorna 400",
+      "method": "tap"
+    },
+    "AC-098": {
+      "status": "pass",
+      "testName": "@spec:AC-097 @spec:AC-098 duplicidade de template retorna 400",
+      "method": "tap"
+    },
+    "AC-099": {
+      "status": "pass",
+      "testName": "@spec:AC-099 persiste nome e descrição da etapa no template",
+      "method": "tap"
+    },
+    "AC-100": {
+      "status": "pass",
+      "testName": "@spec:AC-100 createTemplate rejeita lista de etapas vazia ou omitida",
+      "method": "tap"
+    },
+    "AC-105": {
+      "status": "pass",
+      "testName": "@spec:AC-105 createTemplate rejeita nome ou descrição de etapa inválidos",
+      "method": "tap"
+    },
+    "AC-106": {
+      "status": "pass",
+      "testName": "@spec:AC-093 @spec:AC-095 @spec:AC-106 createTemplate retorna sucesso, curso e etapas completas",
+      "method": "tap"
+    },
+    "AC-110": {
+      "status": "pass",
+      "testName": "@spec:AC-110 resolve DEPARTAMENTO usa a unidade associada ao curso",
+      "method": "tap"
+    },
+    "AC-112": {
+      "status": "pass",
+      "testName": "@spec:AC-112 rejeita etapa de departamento quando o curso legado não tem vínculo",
+      "method": "tap"
+    },
+    "AC-101": {
+      "status": "pass",
+      "testName": "@spec:AC-009 @spec:AC-101 prefere template específico do curso",
+      "method": "tap"
+    },
+    "AC-102": {
+      "status": "pass",
+      "testName": "@spec:AC-009 @spec:AC-102 usa template padrão quando não existe template de curso",
+      "method": "tap"
+    },
+    "AC-103": {
+      "status": "pass",
+      "testName": "@spec:AC-103 instancia etapas ordenadas, pendentes e associadas ao pedido/unidade",
+      "method": "tap"
+    },
+    "AC-104": {
+      "status": "pass",
+      "testName": "@spec:AC-009 @spec:AC-104 retorna 503 quando não existe template e não salva etapas",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

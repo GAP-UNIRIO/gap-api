@@ -1,0 +1,70 @@
+{
+  "runId": "gap-api-user-profile-mviz8mzz",
+  "feature": "user-profile",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-10-22 03:24",
+  "branchTrabalho": "spec/user-profile",
+  "baseDir": ".spec/features/user-profile",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-user-profile-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-020",
+      "titulo": "Anotar e completar testes do perfil",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Controller/UserControllerTest.java",
+        "src/test/java/com/gap/api/Service/UserServiceTest.java",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-020",
+        "AC-061",
+        "AC-062",
+        "AC-063",
+        "US-021",
+        "AC-064",
+        "AC-065",
+        "AC-066",
+        "AC-067"
+      ]
+    },
+    {
+      "id": "T-021",
+      "titulo": "Verificar feature e auditar especificações",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        ".spec/features/user-profile/spec.md",
+        ".spec/features/user-profile/tasks.md",
+        ".spec/verification/user-profile.json",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-020",
+        "AC-061",
+        "AC-062",
+        "AC-063",
+        "US-021",
+        "AC-064",
+        "AC-065",
+        "AC-066",
+        "AC-067"
+      ]
+    }
+  ],
+  "concluidas": [
+    "T-019"
+  ],
+  "avisos": [
+    "T-020 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "feature": "academic-calendar-crud",
+  "timestamp": "2026-10-22T04:04:59.161Z",
+  "gitRev": "fe105ab",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 198,
+  "results": {
+    "AC-015": {
+      "status": "pass",
+      "testName": "@spec:AC-015 GET /academic-calendars lista calendários",
+      "method": "tap"
+    },
+    "AC-016": {
+      "status": "pass",
+      "testName": "@spec:AC-016 GET /academic-calendars/{id} retorna calendário específico",
+      "method": "tap"
+    },
+    "AC-017": {
+      "status": "pass",
+      "testName": "@spec:AC-017 GET de calendário inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-018": {
+      "status": "pass",
+      "testName": "@spec:AC-018 POST /academic-calendars cria calendário válido",
+      "method": "tap"
+    },
+    "AC-019": {
+      "status": "pass",
+      "testName": "@spec:AC-019 POST rejeita semestre em branco",
+      "method": "tap"
+    },
+    "AC-020": {
+      "status": "pass",
+      "testName": "@spec:AC-020 create lança 400 quando o término é anterior ao início",
+      "method": "tap"
+    },
+    "AC-021": {
+      "status": "pass",
+      "testName": "@spec:AC-021 create lança 409 quando o semestre já existe",
+      "method": "tap"
+    },
+    "AC-022": {
+      "status": "pass",
+      "testName": "@spec:AC-022 create sem active salva inativo e não desativa os demais",
+      "method": "tap"
+    },
+    "AC-023": {
+      "status": "pass",
+      "testName": "@spec:AC-023 create aceita data de término igual à data de início",
+      "method": "tap"
+    },
+    "AC-024": {
+      "status": "pass",
+      "testName": "@spec:AC-024 PUT atualiza calendário",
+      "method": "tap"
+    },
+    "AC-025": {
+      "status": "pass",
+      "testName": "@spec:AC-025 update sem active mantém o calendário inativo",
+      "method": "tap"
+    },
+    "AC-026": {
+      "status": "pass",
+      "testName": "@spec:AC-026 update com active=true ativa e desativa os demais",
+      "method": "tap"
+    },
+    "AC-027": {
+      "status": "pass",
+      "testName": "@spec:AC-027 update lança 409 quando o semestre pertence a outro calendário",
+      "method": "tap"
+    },
+    "AC-028": {
+      "status": "pass",
+      "testName": "@spec:AC-028 PUT de calendário inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-029": {
+      "status": "pass",
+      "testName": "@spec:AC-029 DELETE remove calendário existente",
+      "method": "tap"
+    },
+    "AC-030": {
+      "status": "pass",
+      "testName": "@spec:AC-030 DELETE de calendário inexistente retorna 404",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}
