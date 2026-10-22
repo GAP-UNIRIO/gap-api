@@ -1,11 +1,11 @@
 {
   "feature": "academic-calendar-crud",
-  "timestamp": "2026-10-22T04:04:59.161Z",
-  "gitRev": "fe105ab",
+  "timestamp": "2026-10-22T16:34:59.273Z",
+  "gitRev": "1f7a58a",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 198,
+  "testsParsed": 207,
   "results": {
     "AC-015": {
       "status": "pass",
@@ -85,6 +85,31 @@
     "AC-030": {
       "status": "pass",
       "testName": "@spec:AC-030 DELETE de calendário inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-113": {
+      "status": "pass",
+      "testName": "@spec:AC-113 POST rejeita formato de semestre inválido",
+      "method": "tap"
+    },
+    "AC-114": {
+      "status": "pass",
+      "testName": "@spec:AC-114 create aceita janela flexível do segundo semestre",
+      "method": "tap"
+    },
+    "AC-115": {
+      "status": "pass",
+      "testName": "@spec:AC-115 create rejeita datas que não são futuras",
+      "method": "tap"
+    },
+    "AC-116": {
+      "status": "pass",
+      "testName": "@spec:AC-116 POST rejeita mapa de prazos ausente ou vazio",
+      "method": "tap"
+    },
+    "AC-117": {
+      "status": "pass",
+      "testName": "@spec:AC-117 POST aceita chave desconhecida e limite zero",
       "method": "tap"
     }
   },

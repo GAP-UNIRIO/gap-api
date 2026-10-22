@@ -32,6 +32,26 @@ import static org.hamcrest.Matchers.nullValue;
 @Import(SecurityConfig.class)
 class AcademicCalendarControllerTest {
 
+    private static final int YEAR = LocalDate.now().getYear() + 1;
+    private static final String FIRST_SEMESTER = YEAR + ".1";
+    private static final String SECOND_SEMESTER = YEAR + ".2";
+    private static final LocalDate START = LocalDate.of(YEAR, 2, 1);
+    private static final LocalDate END = LocalDate.of(YEAR, 6, 30);
+    private static final Map<String, LocalDate> DEADLINES = Map.of("matricula", LocalDate.of(YEAR, 3, 1));
+
+    private LocalDate startFor(String semester) {
+        return semester.endsWith(".2") ? LocalDate.of(YEAR, 8, 1) : START;
+    }
+
+    private LocalDate endFor(String semester) {
+        return semester.endsWith(".2") ? LocalDate.of(YEAR, 12, 15) : END;
+    }
+
+    private Map<String, LocalDate> deadlinesFor(String semester) {
+        return Map.of("matricula", semester.endsWith(".2")
+                ? LocalDate.of(YEAR, 9, 1) : DEADLINES.get("matricula"));
+    }
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -47,15 +67,15 @@ class AcademicCalendarControllerTest {
     // Métodos auxiliares
     private AcademicCalendarResponse response(Long id, String semester, boolean active) {
         return new AcademicCalendarResponse(
-                id, semester, LocalDate.of(2026, 2, 1), LocalDate.of(2026, 6, 30),
-                Map.of(), Map.of(), active
+                id, semester, startFor(semester), endFor(semester),
+                deadlinesFor(semester), Map.of("maxCreditos", 24), active
         );
     }
 
     private AcademicCalendarRequest request(String semester, boolean active) {
         return new AcademicCalendarRequest(
-                semester, LocalDate.of(2026, 2, 1), LocalDate.of(2026, 6, 30),
-                null, null, active
+                semester, startFor(semester), endFor(semester),
+                deadlinesFor(semester), Map.of("maxCreditos", 24), active
         );
     }
 
@@ -109,8 +129,8 @@ class AcademicCalendarControllerTest {
     @Test
     @DisplayName("@spec:AC-018 POST /academic-calendars cria calendário válido")
     void create() throws Exception {
-        AcademicCalendarRequest calendarRequest = request("2026.1", true);
-        AcademicCalendarResponse calendarResponse = response(1L, "2026.1", true);
+        AcademicCalendarRequest calendarRequest = request(FIRST_SEMESTER, true);
+        AcademicCalendarResponse calendarResponse = response(1L, FIRST_SEMESTER, true);
 
         when(academicCalendarService.create(any(AcademicCalendarRequest.class))).thenReturn(calendarResponse);
 
@@ -122,7 +142,7 @@ class AcademicCalendarControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.semester").value("2026.1"));
+                .andExpect(jsonPath("$.data.semester").value(FIRST_SEMESTER));
     }
 
     @Test
@@ -172,10 +192,81 @@ class AcademicCalendarControllerTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-113 POST rejeita formato de semestre inválido")
+    void create_invalidSemesterFormat_returnsBadRequest() throws Exception {
+        var invalidRequest = request(YEAR + ".3", false);
+        String body = objectMapper.writeValueAsString(invalidRequest);
+
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(put("/academic-calendars/1").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-116 POST rejeita mapa de prazos ausente ou vazio")
+    void create_missingOrEmptyDeadlines_returnsBadRequest() throws Exception {
+        for (String deadlines : new String[]{"null", "{}"}) {
+            String body = "{\"semester\":\"" + FIRST_SEMESTER + "\",\"startDate\":\"" + START
+                    + "\",\"endDate\":\"" + END + "\",\"deadlines\":" + deadlines
+                    + ",\"academicLimits\":{\"maxCreditos\":24}}";
+            mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-116 POST rejeita prazo nulo e chave em branco")
+    void create_invalidDeadlineEntry_returnsBadRequest() throws Exception {
+        for (String deadlines : new String[]{"{\"matricula\":null}", "{\" \":\"" + START + "\"}"}) {
+            String body = "{\"semester\":\"" + FIRST_SEMESTER + "\",\"startDate\":\"" + START
+                    + "\",\"endDate\":\"" + END + "\",\"deadlines\":" + deadlines
+                    + ",\"academicLimits\":{\"maxCreditos\":24}}";
+            mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-117 POST rejeita limites ausentes, vazios ou negativos")
+    void create_invalidAcademicLimits_returnsBadRequest() throws Exception {
+        for (String limits : new String[]{"null", "{}", "{\"maxCreditos\":-1}",
+                "{\"maxCreditos\":null}", "{\" \":1}"}) {
+            String body = "{\"semester\":\"" + FIRST_SEMESTER + "\",\"startDate\":\"" + START
+                    + "\",\"endDate\":\"" + END + "\",\"deadlines\":{\"matricula\":\""
+                    + DEADLINES.get("matricula") + "\"},\"academicLimits\":" + limits + "}";
+            mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-117 POST aceita chave desconhecida e limite zero")
+    void create_unknownAcademicLimitWithZero_isAccepted() throws Exception {
+        var validRequest = new AcademicCalendarRequest(FIRST_SEMESTER, START, END, DEADLINES,
+                Map.of("futureLimit", 0), false);
+        when(academicCalendarService.create(any(AcademicCalendarRequest.class)))
+                .thenReturn(response(1L, FIRST_SEMESTER, false));
+
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
     @DisplayName("@spec:AC-024 PUT atualiza calendário")
     void update() throws Exception {
-        var updateRequest = request("2026.2", false);
-        var updated = response(1L, "2026.2", false);
+        var updateRequest = request(SECOND_SEMESTER, false);
+        var updated = response(1L, SECOND_SEMESTER, false);
         when(academicCalendarService.update(1L, updateRequest)).thenReturn(updated);
 
         mockMvc.perform(put("/academic-calendars/1").with(oidcLogin()).with(csrf())
@@ -183,13 +274,13 @@ class AcademicCalendarControllerTest {
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.semester").value("2026.2"));
+                .andExpect(jsonPath("$.data.semester").value(SECOND_SEMESTER));
     }
 
     @Test
     @DisplayName("@spec:AC-028 PUT de calendário inexistente retorna 404")
     void update_notFound() throws Exception {
-        var updateRequest = request("2026.2", false);
+        var updateRequest = request(SECOND_SEMESTER, false);
         when(academicCalendarService.update(99L, updateRequest)).thenThrow(
                 new org.springframework.web.server.ResponseStatusException(
                         org.springframework.http.HttpStatus.NOT_FOUND, "Calendário acadêmico não encontrado: 99"));

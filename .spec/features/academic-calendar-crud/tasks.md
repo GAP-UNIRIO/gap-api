@@ -21,3 +21,8 @@
 - Refs: US-008, AC-015, AC-016, AC-017, US-009, AC-018, AC-019, AC-020, AC-021, AC-022, AC-023, US-010, AC-024, AC-025, AC-026, AC-027, AC-028, US-011, AC-029, AC-030
 - Arquivos: `.spec/features/academic-calendar-crud/spec.md`, `.spec/features/academic-calendar-crud/tasks.md`, `.spec/features/codebase-baseline/tasks.md`, `.spec/verification/academic-calendar-crud.json`
 - Notas: Rodar `verify` e `audit`; atualizar o inventário para mapear arquivos novos ou alterados conforme o mecanismo do projeto.
+
+## T-033 — Implementar validações do contrato de calendário [concluida]
+- Refs: US-032, AC-113, AC-114, AC-115, AC-116, AC-117
+- Arquivos: `src/main/java/com/gap/api/Model/DTO/AcademicCalendarRequest.java`, `src/main/java/com/gap/api/Service/AcademicCalendarService.java`, `src/test/java/com/gap/api/Service/AcademicCalendarServiceTest.java`, `src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java`
+- Notas: Validar formato, janelas de datas, datas futuras, prazos no intervalo e limites genéricos não negativos; verificar todos os critérios via `onp-spec verify` e `onp-spec audit --ci`.

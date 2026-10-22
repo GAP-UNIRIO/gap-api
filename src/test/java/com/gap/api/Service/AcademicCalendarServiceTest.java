@@ -35,9 +35,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AcademicCalendarServiceTest {
 
-    private static final LocalDate START = LocalDate.of(2026, 2, 1);
-    private static final LocalDate END = LocalDate.of(2026, 6, 30);
-    private static final Map<String, LocalDate> DEADLINES = Map.of("matricula", LocalDate.of(2026, 1, 20));
+    private static final int YEAR = LocalDate.now().getYear() + 1;
+    private static final String FIRST_SEMESTER = YEAR + ".1";
+    private static final String SECOND_SEMESTER = YEAR + ".2";
+    private static final LocalDate START = LocalDate.of(YEAR, 2, 1);
+    private static final LocalDate END = LocalDate.of(YEAR, 6, 30);
+    private static final Map<String, LocalDate> DEADLINES = Map.of("matricula", LocalDate.of(YEAR, 3, 1));
     private static final Map<String, Integer> LIMITS = Map.of("maxCreditos", 24);
 
     @Mock
@@ -59,7 +62,7 @@ class AcademicCalendarServiceTest {
     }
 
     private AcademicCalendarRequest request(String semester, LocalDate start, LocalDate end, Boolean active) {
-        return new AcademicCalendarRequest(semester, start, end, DEADLINES, LIMITS, active);
+        return new AcademicCalendarRequest(semester, start, end, Map.of("matricula", start), LIMITS, active);
     }
 
     private void assertStatus(Throwable ex, HttpStatus expected) {
@@ -74,12 +77,12 @@ class AcademicCalendarServiceTest {
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(
                 calendar(1L, "2025.2", false),
-                calendar(2L, "2026.1", true)));
+                calendar(2L, FIRST_SEMESTER, true)));
 
         List<AcademicCalendarResponse> result = service.findAll();
 
         assertThat(result).extracting(AcademicCalendarResponse::semester)
-                .containsExactly("2025.2", "2026.1");
+                .containsExactly("2025.2", FIRST_SEMESTER);
         assertThat(result).extracting(AcademicCalendarResponse::active)
                 .containsExactly(false, true);
     }
@@ -95,12 +98,12 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-016 findById retorna o calendário quando existe")
     void findById_found() {
-        when(repository.findById(1L)).thenReturn(Optional.of(calendar(1L, "2026.1", true)));
+        when(repository.findById(1L)).thenReturn(Optional.of(calendar(1L, FIRST_SEMESTER, true)));
 
         AcademicCalendarResponse result = service.findById(1L);
 
         assertThat(result.id()).isEqualTo(1L);
-        assertThat(result.semester()).isEqualTo("2026.1");
+        assertThat(result.semester()).isEqualTo(FIRST_SEMESTER);
         assertThat(result.startDate()).isEqualTo(START);
         assertThat(result.endDate()).isEqualTo(END);
         assertThat(result.deadlines()).isEqualTo(DEADLINES);
@@ -122,22 +125,22 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-022 create sem active salva inativo e não desativa os demais")
     void create_defaultsToInactive() {
-        when(repository.existsBySemester("2026.1")).thenReturn(false);
+        when(repository.existsBySemester(FIRST_SEMESTER)).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> {
             AcademicCalendar c = inv.getArgument(0);
             c.setId(1L);
             return c;
         });
 
-        AcademicCalendarResponse result = service.create(request("2026.1", START, END, null));
+        AcademicCalendarResponse result = service.create(request(FIRST_SEMESTER, START, END, null));
 
         ArgumentCaptor<AcademicCalendar> captor = ArgumentCaptor.forClass(AcademicCalendar.class);
         verify(repository).save(captor.capture());
         AcademicCalendar saved = captor.getValue();
-        assertThat(saved.getSemester()).isEqualTo("2026.1");
+        assertThat(saved.getSemester()).isEqualTo(FIRST_SEMESTER);
         assertThat(saved.getStartDate()).isEqualTo(START);
         assertThat(saved.getEndDate()).isEqualTo(END);
-        assertThat(saved.getDeadlines()).isEqualTo(DEADLINES);
+        assertThat(saved.getDeadlines()).isEqualTo(Map.of("matricula", START));
         assertThat(saved.getAcademicLimits()).isEqualTo(LIMITS);
         assertThat(saved.isActive()).isFalse();
         assertThat(result.id()).isEqualTo(1L);
@@ -148,14 +151,14 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-026 create com active=true desativa os outros calendários")
     void create_active_deactivatesOthers() {
-        when(repository.existsBySemester("2026.1")).thenReturn(false);
+        when(repository.existsBySemester(FIRST_SEMESTER)).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> {
             AcademicCalendar c = inv.getArgument(0);
             c.setId(3L);
             return c;
         });
 
-        AcademicCalendarResponse result = service.create(request("2026.1", START, END, true));
+        AcademicCalendarResponse result = service.create(request(FIRST_SEMESTER, START, END, true));
 
         assertThat(result.active()).isTrue();
         InOrder order = inOrder(repository);
@@ -166,10 +169,10 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("create com active=false explícito não deve desativar os demais")
     void create_explicitInactive() {
-        when(repository.existsBySemester("2026.1")).thenReturn(false);
+        when(repository.existsBySemester(FIRST_SEMESTER)).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        AcademicCalendarResponse result = service.create(request("2026.1", START, END, false));
+        AcademicCalendarResponse result = service.create(request(FIRST_SEMESTER, START, END, false));
 
         assertThat(result.active()).isFalse();
         verify(repository, never()).deactivateAllExcept(anyLong());
@@ -178,10 +181,10 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-023 create aceita data de término igual à data de início")
     void create_sameStartAndEnd_isValid() {
-        when(repository.existsBySemester("2026.1")).thenReturn(false);
+        when(repository.existsBySemester(FIRST_SEMESTER)).thenReturn(false);
         when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        AcademicCalendarResponse result = service.create(request("2026.1", START, START, null));
+        AcademicCalendarResponse result = service.create(request(FIRST_SEMESTER, START, START, null));
 
         assertThat(result.startDate()).isEqualTo(START);
         assertThat(result.endDate()).isEqualTo(START);
@@ -190,7 +193,62 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-020 create lança 400 quando o término é anterior ao início")
     void create_invalidDates() {
-        AcademicCalendarRequest invalid = request("2026.1", END, START, null);
+        AcademicCalendarRequest invalid = request(FIRST_SEMESTER, END, START, null);
+
+        assertThatThrownBy(() -> service.create(invalid))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+
+        verifyNoInteractions(repository);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-114 create aceita janela flexível do segundo semestre")
+    void create_secondSemesterWindow_isValid() {
+        LocalDate secondStart = LocalDate.of(YEAR, 8, 1);
+        LocalDate secondEnd = LocalDate.of(YEAR + 1, 3, 31);
+        Map<String, LocalDate> secondDeadlines = Map.of("matricula", LocalDate.of(YEAR, 9, 1));
+        when(repository.existsBySemester(SECOND_SEMESTER)).thenReturn(false);
+        when(repository.save(any(AcademicCalendar.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        AcademicCalendarRequest request = new AcademicCalendarRequest(SECOND_SEMESTER, secondStart, secondEnd,
+                secondDeadlines, LIMITS, false);
+
+        AcademicCalendarResponse result = service.create(request);
+
+        assertThat(result.semester()).isEqualTo(SECOND_SEMESTER);
+        assertThat(result.endDate()).isEqualTo(secondEnd);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-114 create rejeita datas fora da janela do semestre")
+    void create_datesOutsideSemesterWindow_returnsBadRequest() {
+        AcademicCalendarRequest invalid = request(FIRST_SEMESTER,
+                LocalDate.of(YEAR, 8, 1), LocalDate.of(YEAR, 9, 1), false);
+
+        assertThatThrownBy(() -> service.create(invalid))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+
+        verifyNoInteractions(repository);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-115 create rejeita datas que não são futuras")
+    void create_pastDates_returnsBadRequest() {
+        LocalDate pastStart = LocalDate.now().minusDays(1);
+        AcademicCalendarRequest invalid = request(FIRST_SEMESTER, pastStart, pastStart, false);
+
+        assertThatThrownBy(() -> service.create(invalid))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+
+        verifyNoInteractions(repository);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-116 create rejeita prazo fora do período")
+    void create_deadlineOutsidePeriod_returnsBadRequest() {
+        Map<String, LocalDate> outOfRange = Map.of("matricula", START.minusDays(1));
+        AcademicCalendarRequest invalid = new AcademicCalendarRequest(FIRST_SEMESTER, START, END,
+                outOfRange, LIMITS, false);
 
         assertThatThrownBy(() -> service.create(invalid))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
@@ -201,9 +259,9 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-021 create lança 409 quando o semestre já existe")
     void create_semesterConflict() {
-        when(repository.existsBySemester("2026.1")).thenReturn(true);
+        when(repository.existsBySemester(FIRST_SEMESTER)).thenReturn(true);
 
-        assertThatThrownBy(() -> service.create(request("2026.1", START, END, null)))
+        assertThatThrownBy(() -> service.create(request(FIRST_SEMESTER, START, END, null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
 
         verify(repository, never()).save(any());
@@ -215,27 +273,27 @@ class AcademicCalendarServiceTest {
     @DisplayName("@spec:AC-024 update altera os campos do calendário")
     void update_success() {
         AcademicCalendar existing = calendar(1L, "2025.2", false);
-        LocalDate newStart = LocalDate.of(2026, 8, 1);
-        LocalDate newEnd = LocalDate.of(2026, 12, 15);
+        LocalDate newStart = LocalDate.of(YEAR, 8, 1);
+        LocalDate newEnd = LocalDate.of(YEAR, 12, 15);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.existsBySemester("2026.2")).thenReturn(false);
+        when(repository.existsBySemester(SECOND_SEMESTER)).thenReturn(false);
 
-        AcademicCalendarResponse result = service.update(1L, request("2026.2", newStart, newEnd, null));
+        AcademicCalendarResponse result = service.update(1L, request(SECOND_SEMESTER, newStart, newEnd, null));
 
-        assertThat(existing.getSemester()).isEqualTo("2026.2");
+        assertThat(existing.getSemester()).isEqualTo(SECOND_SEMESTER);
         assertThat(existing.getStartDate()).isEqualTo(newStart);
         assertThat(existing.getEndDate()).isEqualTo(newEnd);
-        assertThat(result.semester()).isEqualTo("2026.2");
+        assertThat(result.semester()).isEqualTo(SECOND_SEMESTER);
         verify(repository, never()).deactivateAllExcept(anyLong());
     }
 
     @Test
     @DisplayName("update com o mesmo semestre não deve checar duplicidade")
     void update_sameSemester_skipsExistsCheck() {
-        AcademicCalendar existing = calendar(1L, "2026.1", false);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        service.update(1L, request("2026.1", START, END, null));
+        service.update(1L, request(FIRST_SEMESTER, START, END, null));
 
         verify(repository, never()).existsBySemester(anyString());
     }
@@ -243,10 +301,10 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-026 update com active=true ativa e desativa os demais")
     void update_activate_deactivatesOthers() {
-        AcademicCalendar existing = calendar(1L, "2026.1", false);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        AcademicCalendarResponse result = service.update(1L, request("2026.1", START, END, true));
+        AcademicCalendarResponse result = service.update(1L, request(FIRST_SEMESTER, START, END, true));
 
         assertThat(existing.isActive()).isTrue();
         assertThat(result.active()).isTrue();
@@ -256,10 +314,10 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-025 update com active=false desativa o calendário")
     void update_deactivate() {
-        AcademicCalendar existing = calendar(1L, "2026.1", true);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        AcademicCalendarResponse result = service.update(1L, request("2026.1", START, END, false));
+        AcademicCalendarResponse result = service.update(1L, request(FIRST_SEMESTER, START, END, false));
 
         assertThat(existing.isActive()).isFalse();
         assertThat(result.active()).isFalse();
@@ -269,10 +327,10 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-025 update sem active mantém o calendário ativo")
     void update_nullActive_keepsActiveAndDeactivatesOthers() {
-        AcademicCalendar existing = calendar(1L, "2026.1", true);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        AcademicCalendarResponse result = service.update(1L, request("2026.1", START, END, null));
+        AcademicCalendarResponse result = service.update(1L, request(FIRST_SEMESTER, START, END, null));
 
         assertThat(result.active()).isTrue();
         verify(repository).deactivateAllExcept(1L);
@@ -281,10 +339,10 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-025 update sem active mantém o calendário inativo")
     void update_nullActive_keepsInactive() {
-        AcademicCalendar existing = calendar(1L, "2026.1", false);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        AcademicCalendarResponse result = service.update(1L, request("2026.1", START, END, null));
+        AcademicCalendarResponse result = service.update(1L, request(FIRST_SEMESTER, START, END, null));
 
         assertThat(result.active()).isFalse();
         verify(repository, never()).deactivateAllExcept(anyLong());
@@ -295,17 +353,17 @@ class AcademicCalendarServiceTest {
     void update_notFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.update(99L, request("2026.1", START, END, null)))
+        assertThatThrownBy(() -> service.update(99L, request(FIRST_SEMESTER, START, END, null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
     }
 
     @Test
     @DisplayName("@spec:AC-020 update lança 400 quando o término é anterior ao início")
     void update_invalidDates() {
-        AcademicCalendar existing = calendar(1L, "2026.1", false);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        assertThatThrownBy(() -> service.update(1L, request("2026.1", END, START, null)))
+        assertThatThrownBy(() -> service.update(1L, request(FIRST_SEMESTER, END, START, null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
 
         assertThat(existing.getStartDate()).isEqualTo(START);
@@ -317,9 +375,9 @@ class AcademicCalendarServiceTest {
     void update_semesterConflict() {
         AcademicCalendar existing = calendar(1L, "2025.2", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.existsBySemester("2026.1")).thenReturn(true);
+        when(repository.existsBySemester(FIRST_SEMESTER)).thenReturn(true);
 
-        assertThatThrownBy(() -> service.update(1L, request("2026.1", START, END, null)))
+        assertThatThrownBy(() -> service.update(1L, request(FIRST_SEMESTER, START, END, null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
 
         assertThat(existing.getSemester()).isEqualTo("2025.2");
@@ -330,7 +388,7 @@ class AcademicCalendarServiceTest {
     @Test
     @DisplayName("@spec:AC-029 delete remove o calendário")
     void delete_success() {
-        AcademicCalendar existing = calendar(1L, "2026.1", false);
+        AcademicCalendar existing = calendar(1L, FIRST_SEMESTER, false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
         service.delete(1L);

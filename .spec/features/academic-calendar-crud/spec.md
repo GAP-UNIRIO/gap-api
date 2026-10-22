@@ -121,11 +121,43 @@ Como gestor acadêmico, quero excluir um calendário existente para remover um r
 - **Quando** o cliente envia `DELETE /academic-calendars/{id}`
 - **Então** recebe HTTP 404 e nenhum registro é removido
 
+### US-032 — Validar consistência dos dados do semestre
+
+Como gestor acadêmico, quero que o sistema valide o código do semestre, o período e os prazos para evitar calendários inconsistentes.
+
+#### AC-113 — Validar formato e semestre permitido
+- **Dado** `semester` fora do formato `XXXX.Y`, com ano de quatro dígitos ou período diferente de `1` e `2`
+- **Quando** o cliente cria ou atualiza um calendário
+- **Então** recebe HTTP 400 e o calendário não é persistido
+
+#### AC-114 — Conferir datas compatíveis com o semestre
+- **Dado** `semester=XXXX.1` com início entre 1º de janeiro e 31 de julho de XXXX e término até 30 de setembro de XXXX, ou `semester=XXXX.2` com início entre 1º de maio e 31 de dezembro de XXXX e término até 31 de março de XXXX+1; início e término são futuros
+- **Quando** o cliente cria ou atualiza um calendário
+- **Então** as datas são aceitas se também respeitarem a ordem temporal; datas fora da janela correspondente recebem HTTP 400
+
+#### AC-115 — Exigir datas futuras
+- **Dado** `startDate` ou `endDate` igual ou anterior à data atual
+- **Quando** o cliente cria ou atualiza um calendário
+- **Então** recebe HTTP 400 e o calendário não é persistido
+
+#### AC-116 — Exigir prazos definidos dentro do período
+- **Dado** `deadlines` ausente, nulo, vazio, com chave em branco, valor nulo ou data fora de `[startDate, endDate]`
+- **Quando** o cliente cria ou atualiza um calendário
+- **Então** recebe HTTP 400 e o calendário não é persistido
+
+#### AC-117 — Validar genericamente os limites acadêmicos
+- **Dado** `academicLimits` ausente, nulo, vazio, com chave em branco, valor nulo ou valor negativo
+- **Quando** o cliente cria ou atualiza um calendário
+- **Então** recebe HTTP 400; chaves desconhecidas são aceitas até existir catálogo completo
+
 ## Regras observadas no código
 
-- `semester` é obrigatório, tem no máximo 10 caracteres e deve ser único.
+- `semester` é obrigatório, segue exatamente `XXXX.1` ou `XXXX.2` e deve ser único.
 - `startDate` e `endDate` são obrigatórias; igualdade é permitida, mas `endDate` anterior a `startDate` é rejeitada.
-- `deadlines` e `academicLimits` são opcionais e retornados como mapas.
+- `semester` segue `XXXX.Y`, com ano de quatro dígitos e semestre `1` ou `2`.
+- As datas são futuras, obedecem à janela ampla do semestre e `endDate` não precede `startDate`.
+- `deadlines` é obrigatório e não vazio; chaves não brancas mapeiam datas não nulas no intervalo inclusivo do calendário.
+- `academicLimits` é obrigatório e não vazio; as chaves podem ser desconhecidas até que o catálogo completo seja definido. Cada entrada requer chave não branca e valor inteiro não nulo maior ou igual a zero.
 - No cadastro, `active` omitido ou `false` mantém o calendário inativo.
 - Na atualização, `active` omitido preserva o valor atual; `true` ativa esse calendário e desativa os demais; `false` desativa somente este.
 - A listagem é ordenada por `id` crescente.
@@ -133,7 +165,7 @@ Como gestor acadêmico, quero excluir um calendário existente para remover um r
 
 ## Fora de escopo
 
-- Definir o significado, catálogo de chaves ou validação interna dos mapas `deadlines` e `academicLimits`.
+- Definir o significado ou catálogo de chaves de `deadlines` e `academicLimits`.
 - Adicionar operações de ativação ou consulta diferentes dos endpoints CRUD existentes.
 - Alterar regras de autorização ou segurança globais.
 
@@ -141,9 +173,12 @@ Como gestor acadêmico, quero excluir um calendário existente para remover um r
 
 | ID | Suposição | Status | Resolução |
 |---|---|---|---|
-| ASM-008 | Os mapas de prazos e limites podem ser omitidos ou enviados como `null`, pois não têm validação obrigatória no DTO. | confirmada | `AcademicCalendarRequest` não marca esses campos como obrigatórios; serviço os persiste diretamente. |
+| ASM-008 | Os mapas de prazos e limites são obrigatórios e não vazios; enquanto não houver catálogo de limites, aceitam chaves não brancas ainda desconhecidas. | confirmada | O usuário determinou prazos obrigatórios e pediu validação genérica de limites antes de mapear todos os tipos. |
 | ASM-009 | O CRUD de calendário segue a autenticação e a proteção CSRF globais da API. | confirmada | Os testes de controller usam login OIDC e CSRF em operações de escrita; a configuração está em `SecurityConfig`. |
 
 ## Perguntas em aberto
 
-Nenhuma. Esta especificação documenta o comportamento já implementado; regras de domínio não inferíveis do código foram mantidas fora do escopo.
+| ID | Pergunta | Status | Resposta |
+|---|---|---|---|
+| Q-011 | Qual janela flexível de datas deve relacionar cada semestre ao ano `XXXX`? | respondida | Confirmado: `.1` inicia entre janeiro e julho e termina até setembro de XXXX; `.2` inicia entre maio e dezembro de XXXX e termina até março de XXXX+1. Ambas as datas devem ser futuras. |
+| Q-012 | Qual faixa numérica genérica deve ser permitida nos limites acadêmicos enquanto o catálogo de chaves não está pronto? | respondida | Confirmado: mapa não vazio, chaves não brancas, valores inteiros não nulos e maiores ou iguais a zero; chaves desconhecidas são aceitas. |
