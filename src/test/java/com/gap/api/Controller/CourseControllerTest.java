@@ -173,14 +173,24 @@ class CourseControllerTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-037 create retorna 409 quando o nome está ausente")
-    void create_missingName_returnsConflict() throws Exception {
-        when(service.create(any(CourseRequest.class))).thenThrow(new DataIntegrityViolationException("not null"));
-
+    @DisplayName("@spec:AC-037 create rejeita nome ausente com 400")
+    void create_missingName_returnsBadRequest() throws Exception {
         mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40}"))
-                .andExpect(status().isConflict());
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-118 create e update rejeitam nome vazio ou composto por espaços")
+    void write_blankName_returnsBadRequest() throws Exception {
+        String request = "{\"name\":\"   \",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40}";
+        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(request))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(request))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

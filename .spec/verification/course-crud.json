@@ -1,11 +1,11 @@
 {
   "feature": "course-crud",
-  "timestamp": "2026-10-22T16:36:39.615Z",
-  "gitRev": "1f7a58a",
+  "timestamp": "2026-10-22T18:37:08.088Z",
+  "gitRev": "ed86e1f",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 0,
-  "testsParsed": 207,
+  "exitCode": 1,
+  "testsParsed": 208,
   "results": {
     "AC-031": {
       "status": "pass",
@@ -44,7 +44,12 @@
     },
     "AC-037": {
       "status": "pass",
-      "testName": "@spec:AC-037 create retorna 409 quando o nome está ausente",
+      "testName": "@spec:AC-037 create rejeita nome ausente com 400",
+      "method": "tap"
+    },
+    "AC-118": {
+      "status": "pass",
+      "testName": "@spec:AC-118 create e update rejeitam nome vazio ou composto por espaços",
       "method": "tap"
     },
     "AC-038": {

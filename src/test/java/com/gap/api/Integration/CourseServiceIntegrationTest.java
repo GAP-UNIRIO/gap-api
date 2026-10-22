@@ -57,7 +57,7 @@ class CourseServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-037 banco rejeita nome ausente")
+    @DisplayName("chamada direta ao serviço preserva a restrição NOT NULL do banco")
     void create_missingName_isRejectedByDatabase() {
         Fixture fixture = fixture("missing-name");
         try {
