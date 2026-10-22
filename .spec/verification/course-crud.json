@@ -1,11 +1,11 @@
 {
   "feature": "course-crud",
-  "timestamp": "2026-10-22T18:47:29.707Z",
-  "gitRev": "35f6f5d",
+  "timestamp": "2026-10-22T18:51:13.713Z",
+  "gitRev": "435cfd7",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 212,
+  "testsParsed": 216,
   "results": {
     "AC-031": {
       "status": "pass",
@@ -105,6 +105,11 @@
     "AC-120": {
       "status": "pass",
       "testName": "@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais",
+      "method": "tap"
+    },
+    "AC-121": {
+      "status": "pass",
+      "testName": "@spec:AC-121 create retorna 400 quando o serviço sinaliza unidade incompatível",
       "method": "tap"
     },
     "AC-122": {

@@ -166,9 +166,13 @@ class CourseControllerTest {
                 .andExpect(jsonPath("$.data.reitoria.id").value(41L))
                 .andExpect(jsonPath("$.data.reitoria.name").value("Reitoria"))
                 .andExpect(jsonPath("$.data.coordenacao.id").value(42L))
+                .andExpect(jsonPath("$.data.coordenacao.name").value("Coordenação"))
                 .andExpect(jsonPath("$.data.direcao.id").value(43L))
+                .andExpect(jsonPath("$.data.direcao.name").value("Direção"))
                 .andExpect(jsonPath("$.data.secretaria.id").value(44L))
-                .andExpect(jsonPath("$.data.escola.id").value(45L));
+                .andExpect(jsonPath("$.data.secretaria.name").value("Secretaria"))
+                .andExpect(jsonPath("$.data.escola.id").value(45L))
+                .andExpect(jsonPath("$.data.escola.name").value("Escola"));
     }
 
     @Test
@@ -227,6 +231,18 @@ class CourseControllerTest {
                 .andExpect(status().isBadRequest());
         mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(content))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-121 create retorna 400 quando o serviço sinaliza unidade incompatível")
+    void create_incompatibleOrganizationalUnit_returnsBadRequest() throws Exception {
+        when(service.create(any(CourseRequest.class))).thenThrow(new org.springframework.web.server.ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Field reitoriaId with ID 41 must reference unit type REITORIA, but was ESCOLA"));
+
+        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request("Curso"))))
                 .andExpect(status().isBadRequest());
     }
 
@@ -294,7 +310,8 @@ class CourseControllerTest {
                 .andExpect(jsonPath("$.data.coordenacao.id").value(42L))
                 .andExpect(jsonPath("$.data.direcao.id").value(43L))
                 .andExpect(jsonPath("$.data.secretaria.id").value(44L))
-                .andExpect(jsonPath("$.data.escola.id").value(45L));
+                .andExpect(jsonPath("$.data.escola.id").value(45L))
+                .andExpect(jsonPath("$.data.escola.name").value("Escola"));
     }
 
     @Test

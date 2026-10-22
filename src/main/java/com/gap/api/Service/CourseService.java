@@ -43,6 +43,7 @@ public class CourseService implements ICourseService {
         Course course = new Course();
         course.setName(courseRequest.name());
         setCDS(course, courseRequest.coordinatorId(), courseRequest.directorId(), courseRequest.secretaryId());
+        setOrganizationalUnits(course, courseRequest);
         setDepartment(course, courseRequest.departmentId());
         return CourseResponse.from(repository.save(course));
     }
@@ -52,6 +53,7 @@ public class CourseService implements ICourseService {
         Course course = getOrThrow(id);
         course.setName(courseRequest.name());
         setCDS(course, courseRequest.coordinatorId(), courseRequest.directorId(), courseRequest.secretaryId());
+        setOrganizationalUnits(course, courseRequest);
         setDepartment(course, courseRequest.departmentId());
         return CourseResponse.from(repository.save(course));
     }
@@ -89,6 +91,26 @@ public class CourseService implements ICourseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Org unit must have type DEPARTAMENTO");
         }
         course.setDepartment(department);
+    }
+
+    private void setOrganizationalUnits(Course course, CourseRequest request) {
+        course.setReitoria(findOrganizationalUnit(request.reitoriaId(), "reitoriaId", OrgUnit.OrgUnitType.REITORIA));
+        course.setCoordenacao(findOrganizationalUnit(request.coordenacaoId(), "coordenacaoId", OrgUnit.OrgUnitType.COORDENACAO));
+        course.setDirecao(findOrganizationalUnit(request.direcaoId(), "direcaoId", OrgUnit.OrgUnitType.DIRECAO));
+        course.setSecretaria(findOrganizationalUnit(request.secretariaId(), "secretariaId", OrgUnit.OrgUnitType.SECRETARIA));
+        course.setEscola(findOrganizationalUnit(request.escolaId(), "escolaId", OrgUnit.OrgUnitType.ESCOLA));
+    }
+
+    private OrgUnit findOrganizationalUnit(Long id, String field, OrgUnit.OrgUnitType expectedType) {
+        OrgUnit unit = orgUnitRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Field " + field + " references missing " + expectedType + " unit: " + id));
+        if (unit.getType() != expectedType) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Field " + field + " with ID " + id + " must reference unit type " + expectedType
+                            + ", but was " + unit.getType());
+        }
+        return unit;
     }
 
     private Course getOrThrow(Long id) {

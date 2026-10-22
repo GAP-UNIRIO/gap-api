@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -91,6 +92,47 @@ class CourseServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-120 create e update persistem e devolvem os cinco resumos de unidades")
+    void organizationalUnits_arePersistedAndReturned() {
+        Fixture fixture = fixture("organizational-units");
+        try {
+            var created = courseService.create(fixture.request("Curso " + fixture.suffix()));
+            assertThat(created.reitoria().id()).isEqualTo(fixture.reitoria().getId());
+            assertThat(created.coordenacao().id()).isEqualTo(fixture.coordenacao().getId());
+            assertThat(created.direcao().id()).isEqualTo(fixture.direcao().getId());
+            assertThat(created.secretaria().id()).isEqualTo(fixture.secretaria().getId());
+            assertThat(created.escola().id()).isEqualTo(fixture.escola().getId());
+
+            var updated = courseService.update(created.id(), fixture.request("Curso atualizado " + fixture.suffix()));
+            assertThat(updated.reitoria().id()).isEqualTo(fixture.reitoria().getId());
+            assertThat(updated.coordenacao().id()).isEqualTo(fixture.coordenacao().getId());
+            assertThat(updated.direcao().id()).isEqualTo(fixture.direcao().getId());
+            assertThat(updated.secretaria().id()).isEqualTo(fixture.secretaria().getId());
+            assertThat(updated.escola().id()).isEqualTo(fixture.escola().getId());
+        } finally {
+            cleanup(fixture);
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-121 cada tipo incompatível retorna 400 sem salvar")
+    void incompatibleOrganizationalUnitType_isRejectedWithoutSaving() {
+        Fixture fixture = fixture("incompatible-unit");
+        try {
+            for (int i = 0; i < fixture.units().size(); i++) {
+                CourseRequest request = fixture.requestWithUnitId(i, fixture.department().getId());
+                var exception = assertThrows(org.springframework.web.server.ResponseStatusException.class,
+                        () -> courseService.create(request));
+                assertThat(exception.getStatusCode()).isEqualTo(org.springframework.http.HttpStatus.BAD_REQUEST);
+                assertThat(exception.getReason()).contains(String.valueOf(fixture.department().getId()));
+                assertThat(courseRepository.findAll().stream().noneMatch(course -> course.getName() != null && course.getName().contains(fixture.suffix()))).isTrue();
+            }
+        } finally {
+            cleanup(fixture);
+        }
+    }
+
+    @Test
     @DisplayName("@spec:AC-043 banco impede excluir curso ainda referenciado por usuário")
     void delete_courseReferencedByUser_isRejectedByDatabase() {
         Fixture fixture = fixture("referenced-delete");
@@ -121,7 +163,15 @@ class CourseServiceIntegrationTest {
         department.setName("Course department " + suffix);
         department.setType(OrgUnit.OrgUnitType.DEPARTAMENTO);
         department = orgUnitRepository.saveAndFlush(department);
-        return new Fixture(suffix, users, department);
+        List<OrgUnit> units = new ArrayList<>();
+        for (OrgUnit.OrgUnitType type : List.of(OrgUnit.OrgUnitType.REITORIA, OrgUnit.OrgUnitType.COORDENACAO,
+                OrgUnit.OrgUnitType.DIRECAO, OrgUnit.OrgUnitType.SECRETARIA, OrgUnit.OrgUnitType.ESCOLA)) {
+            OrgUnit unit = new OrgUnit();
+            unit.setName(type + " " + suffix);
+            unit.setType(type);
+            units.add(orgUnitRepository.saveAndFlush(unit));
+        }
+        return new Fixture(suffix, users, department, units);
     }
 
     private Role role(String authority) {
@@ -147,11 +197,25 @@ class CourseServiceIntegrationTest {
         userRepository.flush();
         orgUnitRepository.delete(fixture.department());
         orgUnitRepository.flush();
+        fixture.units().forEach(orgUnitRepository::delete);
+        orgUnitRepository.flush();
     }
 
-    private record Fixture(String suffix, List<User> users, OrgUnit department) {
+    private record Fixture(String suffix, List<User> users, OrgUnit department, List<OrgUnit> units) {
+        OrgUnit reitoria() { return units.get(0); }
+        OrgUnit coordenacao() { return units.get(1); }
+        OrgUnit direcao() { return units.get(2); }
+        OrgUnit secretaria() { return units.get(3); }
+        OrgUnit escola() { return units.get(4); }
         CourseRequest request(String name) {
-            return new CourseRequest(name, users.get(0).getId(), users.get(1).getId(), users.get(2).getId(), department.getId(), null, null, null, null, null);
+            return new CourseRequest(name, users.get(0).getId(), users.get(1).getId(), users.get(2).getId(), department.getId(),
+                    reitoria().getId(), coordenacao().getId(), direcao().getId(), secretaria().getId(), escola().getId());
+        }
+        CourseRequest requestWithUnitId(int index, Long departmentId) {
+            Long[] ids = { reitoria().getId(), coordenacao().getId(), direcao().getId(), secretaria().getId(), escola().getId() };
+            ids[index] = departmentId;
+            return new CourseRequest("Curso " + suffix + " invalid-" + index, users.get(0).getId(), users.get(1).getId(), users.get(2).getId(), departmentId,
+                    ids[0], ids[1], ids[2], ids[3], ids[4]);
         }
     }
 }

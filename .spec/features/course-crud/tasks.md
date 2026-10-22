@@ -42,9 +42,9 @@
 - Arquivos: `.spec/features/course-crud/spec.md`, `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java`
 - Notas: Resolver usuários explicitamente e rejeitar ausência, inexistência ou papel incompatível.
 
-## T-035 — Resolver unidades organizacionais por tipo [pendente]
+## T-035 — Resolver unidades organizacionais por tipo [concluida]
 - Refs: US-016, AC-120, AC-121, AC-122
-- Arquivos: `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java`
+- Arquivos: `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java`
 - Notas: Resolver todas as associações obrigatórias e garantir tipo específico.
 
 ## T-036 — Verificar e auditar regras novas [pendente]
