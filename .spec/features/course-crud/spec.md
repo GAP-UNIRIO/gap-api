@@ -198,8 +198,8 @@ Como gestor, quero garantir que os usuários associados existem e exercem a fun�
 | Q-006 | Qual formato deve ser devolvido para `director`, `coordinator` e `secretary`: resumo (id, nome e e-mail) ou entidade `User` completa? A entidade completa contém relações de volta para o curso. | respondida | Resumo contendo somente id, nome e e-mail. |
 | Q-013 | Os IDs de diretor, coordenador e secretário são obrigatórios? | respondida | Sim, os três são obrigatórios. |
 | Q-014 | Qual resposta usar para IDs de responsáveis inexistentes? | respondida | HTTP 400 com mensagem específica para função e ID. |
-| Q-015 | Validar se cada responsável tem o papel correspondente? | respondida | Sim; nomes oficiais de papel ainda precisam ser confirmados. |
+| Q-015 | Validar se cada responsável tem o papel correspondente? | respondida | Sim; diretor exige `DIRECTOR`, coordenador exige `COORDINATOR` e secretário exige `SECRETARY`. |
 | Q-016 | O CRUD deve receber e atualizar os vínculos organizacionais? | respondida | Sim, deve administrar reitoria, coordenação, direção, secretaria e escola. |
 | Q-017 | Clientes antigos podem omitir `departmentId` em atualizações? | respondida | Não; a obrigatoriedade de `departmentId` deve ser mantida. |
-| Q-018 | Quais são as authorities oficiais para os papéis de diretor, coordenador e secretário? | aberta | Recomenda-se `DIRECTOR`, `COORDINATOR` e `SECRETARY`; confirmar antes de implementar a validação. |
+| Q-018 | Quais são as authorities oficiais para os papéis de diretor, coordenador e secretário? | respondida | `DIRECTOR`, `COORDINATOR` e `SECRETARY`, respectivamente. |
 | Q-019 | Os vínculos organizacionais são obrigatórios? Como tratar campos omitidos em `PUT`? | respondida | As cinco associações são obrigatórias em `POST` e `PUT`; não há campos omitidos permitidos. |

@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 
 public record CourseRequest(
         @NotBlank String name,
-        Long directorId,
-        Long coordinatorId,
-        Long secretaryId,
+        @NotNull Long directorId,
+        @NotNull Long coordinatorId,
+        @NotNull Long secretaryId,
         @NotNull Long departmentId,
         @NotNull Long reitoriaId,
         @NotNull Long coordenacaoId,

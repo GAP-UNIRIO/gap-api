@@ -4,8 +4,10 @@ import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Model.Entity.OrgUnit;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.OrgUnitRepository;
+import com.gap.api.Repository.RoleRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IStorageService;
@@ -38,6 +40,9 @@ class CourseServiceIntegrationTest {
 
     @Autowired
     private OrgUnitRepository orgUnitRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @MockitoBean
     private IStorageService storageService;
@@ -104,10 +109,12 @@ class CourseServiceIntegrationTest {
     private Fixture fixture(String label) {
         String suffix = label + "-" + UUID.randomUUID();
         List<User> users = new ArrayList<>();
+        List<String> authorities = List.of("DIRECTOR", "COORDINATOR", "SECRETARY");
         for (int i = 0; i < 3; i++) {
             User user = new User();
             user.setEmail("course-" + suffix + "-" + i + "@example.test");
             user.setName("Course test user " + i);
+            user.addRole(role(authorities.get(i)));
             users.add(userRepository.saveAndFlush(user));
         }
         OrgUnit department = new OrgUnit();
@@ -115,6 +122,13 @@ class CourseServiceIntegrationTest {
         department.setType(OrgUnit.OrgUnitType.DEPARTAMENTO);
         department = orgUnitRepository.saveAndFlush(department);
         return new Fixture(suffix, users, department);
+    }
+
+    private Role role(String authority) {
+        return roleRepository.findAll().stream()
+                .filter(role -> authority.equals(role.getAuthority()))
+                .findFirst()
+                .orElseGet(() -> roleRepository.saveAndFlush(new Role(null, authority)));
     }
 
     private void cleanup(Fixture fixture) {
@@ -137,7 +151,7 @@ class CourseServiceIntegrationTest {
 
     private record Fixture(String suffix, List<User> users, OrgUnit department) {
         CourseRequest request(String name) {
-            return new CourseRequest(name, users.get(0).getId(), users.get(1).getId(), users.get(2).getId(), department.getId());
+            return new CourseRequest(name, users.get(0).getId(), users.get(1).getId(), users.get(2).getId(), department.getId(), null, null, null, null, null);
         }
     }
 }

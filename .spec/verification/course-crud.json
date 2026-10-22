@@ -1,11 +1,11 @@
 {
   "feature": "course-crud",
-  "timestamp": "2026-10-22T18:37:08.088Z",
-  "gitRev": "ed86e1f",
+  "timestamp": "2026-10-22T18:47:29.707Z",
+  "gitRev": "35f6f5d",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 1,
-  "testsParsed": 208,
+  "exitCode": 0,
+  "testsParsed": 212,
   "results": {
     "AC-031": {
       "status": "pass",
@@ -34,7 +34,7 @@
     },
     "AC-035": {
       "status": "pass",
-      "testName": "@spec:AC-035 @spec:AC-108 create retorna 201 com resumo do departamento",
+      "testName": "@spec:AC-035 @spec:AC-108 @spec:AC-120 create retorna 201 com resumos de unidades",
       "method": "tap"
     },
     "AC-036": {
@@ -52,9 +52,14 @@
       "testName": "@spec:AC-118 create e update rejeitam nome vazio ou composto por espaços",
       "method": "tap"
     },
+    "AC-119": {
+      "status": "pass",
+      "testName": "@spec:AC-119 create e update rejeitam directorId, coordinatorId e secretaryId ausentes ou nulos",
+      "method": "tap"
+    },
     "AC-038": {
       "status": "pass",
-      "testName": "@spec:AC-038 update retorna 200 ao alterar o curso",
+      "testName": "@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais",
       "method": "tap"
     },
     "AC-039": {
@@ -89,12 +94,32 @@
     },
     "AC-108": {
       "status": "pass",
-      "testName": "@spec:AC-035 @spec:AC-108 create retorna 201 com resumo do departamento",
+      "testName": "@spec:AC-035 @spec:AC-108 @spec:AC-120 create retorna 201 com resumos de unidades",
       "method": "tap"
     },
     "AC-109": {
       "status": "pass",
       "testName": "@spec:AC-109 create e update rejeitam unidade inexistente ou que não seja departamento",
+      "method": "tap"
+    },
+    "AC-120": {
+      "status": "pass",
+      "testName": "@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais",
+      "method": "tap"
+    },
+    "AC-122": {
+      "status": "pass",
+      "testName": "@spec:AC-122 create e update rejeitam qualquer vínculo organizacional ausente",
+      "method": "tap"
+    },
+    "AC-123": {
+      "status": "pass",
+      "testName": "@spec:AC-123 @spec:AC-124 create e update retornam 400 para responsável inválido",
+      "method": "tap"
+    },
+    "AC-124": {
+      "status": "pass",
+      "testName": "@spec:AC-123 @spec:AC-124 create e update retornam 400 para responsável inválido",
       "method": "tap"
     }
   },

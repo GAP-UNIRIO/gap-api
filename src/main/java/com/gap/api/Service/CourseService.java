@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -62,12 +63,23 @@ public class CourseService implements ICourseService {
     }
 
     private void setCDS(Course course, Long coordinatorId, Long directorId, Long secretaryId) {
-        User coordinator = userRepository.getReferenceById(coordinatorId);
+        User coordinator = findResponsible(coordinatorId, "Coordinator", "COORDINATOR");
+        User director = findResponsible(directorId, "Director", "DIRECTOR");
+        User secretary = findResponsible(secretaryId, "Secretary", "SECRETARY");
         course.setCoordinator(coordinator);
-        User director = userRepository.getReferenceById(directorId);
         course.setDirector(director);
-        User secretary = userRepository.getReferenceById(secretaryId);
         course.setSecretary(secretary);
+    }
+
+    private User findResponsible(Long id, String function, String authority) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, function + " not found: " + id));
+        if (!user.getRoles().stream().filter(Objects::nonNull)
+                .anyMatch(role -> authority.equals(role.getAuthority()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    function + " user " + id + " must have role " + authority);
+        }
+        return user;
     }
 
     private void setDepartment(Course course, Long departmentId) {

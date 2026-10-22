@@ -4,6 +4,7 @@ import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.OrgUnit;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.OrgUnitRepository;
@@ -60,9 +61,9 @@ class CourseServiceTest {
 
     @BeforeEach
     void setUp() {
-        director = user(DIRECTOR_ID, "diretor@gap.com");
-        coordinator = user(COORDINATOR_ID, "coordenador@gap.com");
-        secretary = user(SECRETARY_ID, "secretaria@gap.com");
+        director = userWithRole(DIRECTOR_ID, "diretor@gap.com", "DIRECTOR");
+        coordinator = userWithRole(COORDINATOR_ID, "coordenador@gap.com", "COORDINATOR");
+        secretary = userWithRole(SECRETARY_ID, "secretaria@gap.com", "SECRETARY");
         department = new OrgUnit();
         department.setId(DEPARTMENT_ID);
         department.setName("Departamento de Computação");
@@ -75,6 +76,12 @@ class CourseServiceTest {
         u.setEmail(email);
         u.setName(email);
         return u;
+    }
+
+    private User userWithRole(Long id, String email, String authority) {
+        User user = user(id, email);
+        user.addRole(new Role(null, authority));
+        return user;
     }
 
     private Course course(Long id, String name) {
@@ -92,9 +99,9 @@ class CourseServiceTest {
     }
 
     private void stubUserReferences() {
-        when(userRepository.getReferenceById(DIRECTOR_ID)).thenReturn(director);
-        when(userRepository.getReferenceById(COORDINATOR_ID)).thenReturn(coordinator);
-        when(userRepository.getReferenceById(SECRETARY_ID)).thenReturn(secretary);
+        when(userRepository.findById(DIRECTOR_ID)).thenReturn(Optional.of(director));
+        when(userRepository.findById(COORDINATOR_ID)).thenReturn(Optional.of(coordinator));
+        when(userRepository.findById(SECRETARY_ID)).thenReturn(Optional.of(secretary));
         when(orgUnitRepository.findById(DEPARTMENT_ID)).thenReturn(Optional.of(department));
     }
 
@@ -178,6 +185,28 @@ class CourseServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-123 @spec:AC-124 create rejeita responsável inexistente ou com papel incompatível sem salvar")
+    void create_rejectsMissingOrInvalidResponsible() {
+        when(userRepository.findById(COORDINATOR_ID)).thenReturn(Optional.of(coordinator));
+        when(userRepository.findById(DIRECTOR_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.create(request("Curso")))
+                .satisfies(ex -> {
+                    assertStatus(ex, HttpStatus.BAD_REQUEST);
+                    assertThat(((ResponseStatusException) ex).getReason()).contains("Director", "10");
+                });
+
+        User wrongDirector = userWithRole(DIRECTOR_ID, "diretor@gap.com", "COORDINATOR");
+        when(userRepository.findById(DIRECTOR_ID)).thenReturn(Optional.of(wrongDirector));
+        assertThatThrownBy(() -> service.create(request("Curso")))
+                .satisfies(ex -> {
+                    assertStatus(ex, HttpStatus.BAD_REQUEST);
+                    assertThat(((ResponseStatusException) ex).getReason()).contains("Director", "DIRECTOR");
+                });
+        verify(repository, never()).save(any());
+    }
+
+    @Test
     @DisplayName("@spec:AC-109 create e update rejeitam unidade inexistente ou que não seja departamento")
     void create_rejectsInvalidDepartment() {
         stubUserReferences();
@@ -206,9 +235,12 @@ class CourseServiceTest {
         User newCoordinator = user(21L, "novo.coordenador@gap.com");
         User newSecretary = user(31L, "nova.secretaria@gap.com");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(userRepository.getReferenceById(11L)).thenReturn(newDirector);
-        when(userRepository.getReferenceById(21L)).thenReturn(newCoordinator);
-        when(userRepository.getReferenceById(31L)).thenReturn(newSecretary);
+        newDirector.addRole(new Role(null, "DIRECTOR"));
+        newCoordinator.addRole(new Role(null, "COORDINATOR"));
+        newSecretary.addRole(new Role(null, "SECRETARY"));
+        when(userRepository.findById(11L)).thenReturn(Optional.of(newDirector));
+        when(userRepository.findById(21L)).thenReturn(Optional.of(newCoordinator));
+        when(userRepository.findById(31L)).thenReturn(Optional.of(newSecretary));
         when(orgUnitRepository.findById(DEPARTMENT_ID)).thenReturn(Optional.of(department));
         when(repository.save(existing)).thenReturn(existing);
 
@@ -234,7 +266,7 @@ class CourseServiceTest {
                 .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
 
         verify(repository, never()).save(any());
-        verify(userRepository, never()).getReferenceById(anyLong());
+        verify(userRepository, never()).findById(anyLong());
     }
 
     // ---------- delete ----------

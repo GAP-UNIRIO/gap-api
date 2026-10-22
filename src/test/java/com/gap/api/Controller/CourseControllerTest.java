@@ -188,14 +188,52 @@ class CourseControllerTest {
     void create_missingName_returnsBadRequest() throws Exception {
         mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40}"))
+                        .content("{\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-119 create e update rejeitam directorId, coordinatorId e secretaryId ausentes ou nulos")
+    void write_missingResponsibleIds_returnsBadRequest() throws Exception {
+        for (String field : new String[]{"directorId", "coordinatorId", "secretaryId"}) {
+            String content = "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
+            for (String value : new String[]{"", "null"}) {
+                String body = content.replace(",\"" + field + "\":" + switch (field) {
+                    case "directorId" -> "10";
+                    case "coordinatorId" -> "20";
+                    default -> "30";
+                }, value.isEmpty() ? "" : ",\"" + field + "\":null");
+                mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON).content(body))
+                        .andExpect(status().isBadRequest());
+                mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON).content(body))
+                        .andExpect(status().isBadRequest());
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-123 @spec:AC-124 create e update retornam 400 para responsável inválido")
+    void write_invalidResponsible_returnsBadRequest() throws Exception {
+        String content = objectMapper.writeValueAsString(request("Curso"));
+        when(service.create(any(CourseRequest.class))).thenThrow(new org.springframework.web.server.ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Director not found: 99"));
+        when(service.update(eq(1L), any(CourseRequest.class))).thenThrow(new org.springframework.web.server.ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Director user 99 must have role DIRECTOR"));
+
+        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(content))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(content))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("@spec:AC-118 create e update rejeitam nome vazio ou composto por espaços")
     void write_blankName_returnsBadRequest() throws Exception {
-        String request = "{\"name\":\"   \",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40}";
+        String request = "{\"name\":\"   \",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
         mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
@@ -207,7 +245,7 @@ class CourseControllerTest {
     @Test
     @DisplayName("@spec:AC-107 create rejeita curso sem departmentId")
     void create_missingDepartment_returnsBadRequest() throws Exception {
-        String request = "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30}";
+        String request = "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
         mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
@@ -241,7 +279,7 @@ class CourseControllerTest {
     // ---------- update ----------
 
     @Test
-    @DisplayName("@spec:AC-038 update retorna 200 ao alterar o curso")
+    @DisplayName("@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais")
     void update_success() throws Exception {
         when(service.update(eq(1L), any(CourseRequest.class))).thenReturn(response(1L, "Nome novo"));
 
@@ -251,7 +289,12 @@ class CourseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Nome novo"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.name").value("Nome novo"));
+                .andExpect(jsonPath("$.data.name").value("Nome novo"))
+                .andExpect(jsonPath("$.data.reitoria.id").value(41L))
+                .andExpect(jsonPath("$.data.coordenacao.id").value(42L))
+                .andExpect(jsonPath("$.data.direcao.id").value(43L))
+                .andExpect(jsonPath("$.data.secretaria.id").value(44L))
+                .andExpect(jsonPath("$.data.escola.id").value(45L));
     }
 
     @Test

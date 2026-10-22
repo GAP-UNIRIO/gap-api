@@ -37,9 +37,9 @@
 - Arquivos: `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Model/DTO/CourseResponse.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`
 - Notas: Adicionar IDs obrigatórios, resumos de resposta e cenários HTTP para vínculos e tipos incompatíveis.
 
-## T-034 — Validar responsáveis obrigatórios e seus papéis [pendente]
+## T-034 — Validar responsáveis obrigatórios e seus papéis [concluida]
 - Refs: US-013, US-014, AC-119, US-017, AC-123, AC-124
-- Arquivos: `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java`
+- Arquivos: `.spec/features/course-crud/spec.md`, `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Service/CourseService.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`, `src/test/java/com/gap/api/Service/CourseServiceTest.java`, `src/test/java/com/gap/api/Integration/CourseServiceIntegrationTest.java`
 - Notas: Resolver usuários explicitamente e rejeitar ausência, inexistência ou papel incompatível.
 
 ## T-035 — Resolver unidades organizacionais por tipo [pendente]
