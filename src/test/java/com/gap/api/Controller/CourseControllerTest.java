@@ -50,7 +50,12 @@ class CourseControllerTest {
 
     private CourseResponse response(Long id, String name) {
         return new CourseResponse(id, name, null, null, null,
-                new CourseResponse.OrgUnitSummary(40L, "Departamento"));
+                new CourseResponse.OrgUnitSummary(40L, "Departamento"),
+                new CourseResponse.OrgUnitSummary(41L, "Reitoria"),
+                new CourseResponse.OrgUnitSummary(42L, "Coordenação"),
+                new CourseResponse.OrgUnitSummary(43L, "Direção"),
+                new CourseResponse.OrgUnitSummary(44L, "Secretaria"),
+                new CourseResponse.OrgUnitSummary(45L, "Escola"));
     }
 
     private Course course(Long id, String name) {
@@ -58,7 +63,7 @@ class CourseControllerTest {
     }
 
     private CourseRequest request(String name) {
-        return new CourseRequest(name, 10L, 20L, 30L, 40L);
+        return new CourseRequest(name, 10L, 20L, 30L, 40L, 41L, 42L, 43L, 44L, 45L);
     }
 
     // ---------- findAll / findById ----------
@@ -144,7 +149,7 @@ class CourseControllerTest {
     // ---------- create ----------
 
     @Test
-    @DisplayName("@spec:AC-035 @spec:AC-108 create retorna 201 com resumo do departamento")
+    @DisplayName("@spec:AC-035 @spec:AC-108 @spec:AC-120 create retorna 201 com resumos de unidades")
     void create_success() throws Exception {
         when(service.create(any(CourseRequest.class))).thenReturn(response(1L, "Sistemas de Informação"));
 
@@ -157,7 +162,13 @@ class CourseControllerTest {
                 .andExpect(header().exists("Location"))
                 .andExpect(jsonPath("$.data.id").value(1L))
                 .andExpect(jsonPath("$.data.department.id").value(40L))
-                .andExpect(jsonPath("$.data.department.name").value("Departamento"));
+                .andExpect(jsonPath("$.data.department.name").value("Departamento"))
+                .andExpect(jsonPath("$.data.reitoria.id").value(41L))
+                .andExpect(jsonPath("$.data.reitoria.name").value("Reitoria"))
+                .andExpect(jsonPath("$.data.coordenacao.id").value(42L))
+                .andExpect(jsonPath("$.data.direcao.id").value(43L))
+                .andExpect(jsonPath("$.data.secretaria.id").value(44L))
+                .andExpect(jsonPath("$.data.escola.id").value(45L));
     }
 
     @Test
@@ -203,6 +214,28 @@ class CourseControllerTest {
         mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-122 create e update rejeitam qualquer vínculo organizacional ausente")
+    void write_missingOrganizationalUnit_returnsBadRequest() throws Exception {
+        String[] fields = {"reitoriaId", "coordenacaoId", "direcaoId", "secretariaId", "escolaId"};
+        for (String field : fields) {
+            String content = "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
+            content = content.replace(",\"" + field + "\":" + switch (field) {
+                case "reitoriaId" -> "41";
+                case "coordenacaoId" -> "42";
+                case "direcaoId" -> "43";
+                case "secretariaId" -> "44";
+                default -> "45";
+            }, "");
+            mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(content))
+                    .andExpect(status().isBadRequest());
+            mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(content))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
     // ---------- update ----------

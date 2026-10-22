@@ -9,7 +9,12 @@ public record CourseResponse(
         ResponsibleSummary director,
         ResponsibleSummary coordinator,
         ResponsibleSummary secretary,
-        OrgUnitSummary department
+        OrgUnitSummary department,
+        OrgUnitSummary reitoria,
+        OrgUnitSummary coordenacao,
+        OrgUnitSummary direcao,
+        OrgUnitSummary secretaria,
+        OrgUnitSummary escola
 ) {
     public static CourseResponse from(Course course) {
         return new CourseResponse(
@@ -18,7 +23,12 @@ public record CourseResponse(
                 ResponsibleSummary.from(course.getDirector()),
                 ResponsibleSummary.from(course.getCoordinator()),
                 ResponsibleSummary.from(course.getSecretary()),
-                OrgUnitSummary.from(course.getDepartment())
+                OrgUnitSummary.from(course.getDepartment()),
+                OrgUnitSummary.from(course.getReitoria()),
+                OrgUnitSummary.from(course.getCoordenacao()),
+                OrgUnitSummary.from(course.getDirecao()),
+                OrgUnitSummary.from(course.getSecretaria()),
+                OrgUnitSummary.from(course.getEscola())
         );
     }
 

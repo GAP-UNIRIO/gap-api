@@ -32,7 +32,7 @@
 - Arquivos: `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`, `.spec/features/course-crud/spec.md`
 - Notas: Aplicar validação não vazia e cobrir criação e atualização por HTTP.
 
-## T-033 — Expandir contrato para unidades organizacionais [pendente]
+## T-033 — Expandir contrato para unidades organizacionais [em-andamento]
 - Refs: US-016, AC-120, AC-121, AC-122
 - Arquivos: `src/main/java/com/gap/api/Model/DTO/CourseRequest.java`, `src/main/java/com/gap/api/Model/DTO/CourseResponse.java`, `src/test/java/com/gap/api/Controller/CourseControllerTest.java`
 - Notas: Adicionar IDs obrigatórios, resumos de resposta e cenários HTTP para vínculos e tipos incompatíveis.
