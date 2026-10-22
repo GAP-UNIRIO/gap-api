@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -80,10 +81,44 @@ public class AcademicCalendarService implements IAcademicCalendarService {
     }
 
     private void validateDates(AcademicCalendarRequest request) {
-        if (request.endDate().isBefore(request.startDate())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A data de término não pode ser anterior à data de início.");
+        LocalDate today = LocalDate.now();
+        if (!request.startDate().isAfter(today) || !request.endDate().isAfter(today)) {
+            throw invalidCalendar("As datas de início e término devem ser futuras.");
         }
+        if (request.endDate().isBefore(request.startDate())) {
+            throw invalidCalendar("A data de término não pode ser anterior à data de início.");
+        }
+
+        int year = Integer.parseInt(request.semester().substring(0, 4));
+        boolean firstSemester = request.semester().endsWith(".1");
+        if (!firstSemester && year == 9999) {
+            throw invalidCalendar("O semestre 9999.2 não pode ter término no ano seguinte.");
+        }
+        LocalDate earliestStart = firstSemester
+                ? LocalDate.of(year, 1, 1)
+                : LocalDate.of(year, 5, 1);
+        LocalDate latestStart = firstSemester
+                ? LocalDate.of(year, 7, 31)
+                : LocalDate.of(year, 12, 31);
+        LocalDate latestEnd = firstSemester
+                ? LocalDate.of(year, 9, 30)
+                : LocalDate.of(year + 1, 3, 31);
+
+        if (request.startDate().isBefore(earliestStart)
+                || request.startDate().isAfter(latestStart)
+                || request.endDate().isAfter(latestEnd)) {
+            throw invalidCalendar("As datas não correspondem à janela permitida para o semestre.");
+        }
+
+        boolean deadlineOutsidePeriod = request.deadlines().values().stream()
+                .anyMatch(deadline -> deadline.isBefore(request.startDate()) || deadline.isAfter(request.endDate()));
+        if (deadlineOutsidePeriod) {
+            throw invalidCalendar("Todos os prazos devem estar dentro do período do calendário.");
+        }
+    }
+
+    private ResponseStatusException invalidCalendar(String message) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
     private ResponseStatusException semesterConflict() {
