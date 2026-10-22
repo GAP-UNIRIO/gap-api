@@ -1,27 +1,20 @@
 # Plano de execução — course-crud
 
-> gerado por `onp-spec plano` em 2026-10-21 19:53 — NÃO edite à mão;
+> gerado por `onp-spec plano` em 2026-10-22 18:51 — NÃO edite à mão;
 > mudou tasks.md ou a config? Regenere: `onp-spec plano course-crud --sequencial --modelo gpt-5.6-luna --esforco low`
 
 ## Resumo — o que vai acontecer
 
-- **modo SEQUENCIAL (escolha do usuário)**: 3 tarefa(s) pendente(s), UMA APÓS A OUTRA, na árvore principal (2 já concluída(s): T-012, T-013)
+- **modo SEQUENCIAL (escolha do usuário)**: 1 tarefa(s) pendente(s), UMA APÓS A OUTRA, na árvore principal (10 já concluída(s): T-011, T-012, T-013, T-014, T-015, T-032, T-033, T-034, T-035, T-031)
 - sem worktrees e sem paralelismo — cada tarefa roda numa janela de contexto limpa, na ordem do tasks.md
 - **custo travado pelo usuário**: modelo `gpt-5.6-luna` · esforço `low` em TODAS as tarefas (vence tasks.md e config)
 - tudo acontece na branch de trabalho `spec/course-crud`; levar para a main é decisão sua
-
-### Avisos
-
-- ⚠ T-011 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar
-- ⚠ T-014 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar
 
 ## Ordem de execução (uma tarefa após a outra)
 
 | tarefa | título | modelo | esforço |
 |---|---|---|---|
-| T-011 | Especificar comportamento atual do CRUD | `gpt-5.6-luna` | low |
-| T-014 | Projetar responsáveis em formato de resumo | `gpt-5.6-luna` | low |
-| T-015 | Verificar a feature e auditar as especificações | `gpt-5.6-luna` | low |
+| T-036 | Verificar e auditar regras novas | `gpt-5.6-luna` | low |
 
 ## Gestão de branches e commits
 

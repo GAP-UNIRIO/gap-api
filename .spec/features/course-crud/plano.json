@@ -1,12 +1,12 @@
 {
-  "runId": "gap-api-course-crud-mvij4w0f",
+  "runId": "gap-api-course-crud-mvjwdjg8",
   "feature": "course-crud",
   "agent": "codex",
   "modo": "sequencial",
   "paralelizar": null,
   "modeloForcado": "gpt-5.6-luna",
   "esforcoForcado": "low",
-  "geradoEm": "2026-10-21 19:53",
+  "geradoEm": "2026-10-22 18:51",
   "branchTrabalho": "spec/course-crud",
   "baseDir": ".spec/features/course-crud",
   "specDir": ".spec",
@@ -16,95 +16,38 @@
   "faixas": [],
   "sequenciais": [
     {
-      "id": "T-011",
-      "titulo": "Especificar comportamento atual do CRUD",
-      "modelo": "gpt-5.6-luna",
-      "esforco": "low",
-      "arquivos": [
-        ".spec/features/course-crud/spec.md",
-        "src/main/java/com/gap/api/Controller/CourseController.java",
-        "src/main/java/com/gap/api/Service/CourseService.java",
-        "src/main/java/com/gap/api/Model/DTO/CourseRequest.java",
-        "src/main/java/com/gap/api/Model/DTO/CourseResponse.java",
-        "src/main/java/com/gap/api/Model/Entity/Course.java"
-      ],
-      "refs": [
-        "US-012",
-        "AC-031",
-        "AC-032",
-        "AC-033",
-        "AC-034",
-        "AC-044",
-        "US-013",
-        "AC-035",
-        "AC-036",
-        "AC-037",
-        "US-014",
-        "AC-038",
-        "AC-039",
-        "AC-040",
-        "US-015",
-        "AC-041",
-        "AC-042",
-        "AC-043"
-      ]
-    },
-    {
-      "id": "T-014",
-      "titulo": "Projetar responsáveis em formato de resumo",
-      "modelo": "gpt-5.6-luna",
-      "esforco": "low",
-      "arquivos": [
-        "src/main/java/com/gap/api/Model/DTO/CourseResponse.java",
-        "src/test/java/com/gap/api/Controller/CourseControllerTest.java",
-        "src/test/java/com/gap/api/Service/CourseServiceTest.java"
-      ],
-      "refs": [
-        "US-012",
-        "AC-044"
-      ]
-    },
-    {
-      "id": "T-015",
-      "titulo": "Verificar a feature e auditar as especificações",
+      "id": "T-036",
+      "titulo": "Verificar e auditar regras novas",
       "modelo": "gpt-5.6-luna",
       "esforco": "low",
       "arquivos": [
         ".spec/features/course-crud/spec.md",
         ".spec/features/course-crud/tasks.md",
-        ".spec/verification/academic-calendar-crud.json",
-        ".spec/verification/codebase-baseline.json",
-        ".spec/verification/flyway-migrations.json",
-        ".spec/verification/order-create.json"
+        ".spec/verification/course-crud.json"
       ],
       "refs": [
-        "US-012",
-        "AC-031",
-        "AC-032",
-        "AC-033",
-        "AC-034",
-        "AC-044",
-        "US-013",
-        "AC-035",
-        "AC-036",
         "AC-037",
-        "US-014",
-        "AC-038",
-        "AC-039",
-        "AC-040",
-        "US-015",
-        "AC-041",
-        "AC-042",
-        "AC-043"
+        "AC-118",
+        "AC-119",
+        "AC-120",
+        "AC-121",
+        "AC-122",
+        "AC-123",
+        "AC-124"
       ]
     }
   ],
   "concluidas": [
+    "T-011",
     "T-012",
-    "T-013"
+    "T-013",
+    "T-014",
+    "T-015",
+    "T-032",
+    "T-033",
+    "T-034",
+    "T-035",
+    "T-031"
   ],
-  "avisos": [
-    "T-011 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar",
-    "T-014 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
-  ]
+  "avisos": []
 }

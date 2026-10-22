@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# executar-tarefas.sh — gerado por `onp-spec plano course-crud` em 2026-10-21 19:53
+# executar-tarefas.sh — gerado por `onp-spec plano course-crud` em 2026-10-22 18:51
 # NÃO edite à mão: mudou tasks.md ou a config, regenere o plano.
 #
 # uso:
@@ -14,7 +14,7 @@
 set -u
 set -o pipefail
 
-RUN_ID='gap-api-course-crud-mvij4w0f'
+RUN_ID='gap-api-course-crud-mvjwdjg8'
 FEATURE='course-crud'
 BASE_BRANCH='spec/course-crud'
 ENGINE='.agents/skills/onp-spec-driven/scripts/onp-spec.mjs'
@@ -168,17 +168,17 @@ iniciar_resumos() {
   trap 'parar_resumos; node "$ENGINE" resumo "$FEATURE" --gravar >/dev/null 2>&1 || true' EXIT
 }
 
-# ── sequencial T-011 (ordem do tasks.md) ──
-executar_seq_T_011() {
-  info 'sequencial T-011 — Especificar comportamento atual do CRUD'
-  if rodar_tarefa seq 'T-011' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
+# ── sequencial T-036 (ordem do tasks.md) ──
+executar_seq_T_036() {
+  info 'sequencial T-036 — Verificar e auditar regras novas'
+  if rodar_tarefa seq 'T-036' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
 Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
 
 Sua tarefa (somente ela):
-T-011 — "Especificar comportamento atual do CRUD"
-  critérios/refs: AC-031 (Listar cursos por identificador), AC-032 (Listar sem cursos cadastrados), AC-033 (Consultar curso existente), AC-034 (Informar curso inexistente na consulta), AC-044 (Retornar resumo dos responsáveis), AC-035 (Criar curso), AC-036 (Rejeitar nome duplicado na criação), AC-037 (Rejeitar nome ausente), AC-038 (Atualizar nome e responsáveis), AC-039 (Informar curso inexistente na atualização), AC-040 (Rejeitar nome duplicado na atualização), AC-041 (Excluir curso sem referências), AC-042 (Informar curso inexistente na exclusão), AC-043 (Rejeitar exclusão de curso referenciado)
-  arquivos permitidos (e seus testes): .spec/features/course-crud/spec.md, src/main/java/com/gap/api/Controller/CourseController.java, src/main/java/com/gap/api/Service/CourseService.java, src/main/java/com/gap/api/Model/DTO/CourseRequest.java, src/main/java/com/gap/api/Model/DTO/CourseResponse.java, src/main/java/com/gap/api/Model/Entity/Course.java
-  mensagem de commit: "T-011 course-crud: Especificar comportamento atual do CRUD"
+T-036 — "Verificar e auditar regras novas"
+  critérios/refs: AC-037 (Rejeitar nome ausente na requisição), AC-118 (Rejeitar nome vazio ou composto por espaços), AC-119 (Exigir os três responsáveis), AC-120 (Persistir e devolver vínculos organizacionais), AC-121 (Rejeitar tipo de unidade incompatível), AC-122 (Exigir os cinco vínculos organizacionais), AC-123 (Rejeitar ID de responsável inexistente), AC-124 (Exigir papel correspondente ao responsável)
+  arquivos permitidos (e seus testes): .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md, .spec/verification/course-crud.json
+  mensagem de commit: "T-036 course-crud: Verificar e auditar regras novas"
 
 Regras inegociáveis:
 - Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
@@ -188,79 +188,15 @@ Regras inegociáveis:
 - Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low >> "$LOG_DIR/seq.log" 2>&1; then
     # commit de segurança se o agente esqueceu (rastreabilidade > perfeição)
     if [ -n "$(git status --porcelain)" ]; then
-      git add -A && git commit -q -m 'T-011 course-crud: Especificar comportamento atual do CRUD (auto-commit do plano)'
+      git add -A && git commit -q -m 'T-036 course-crud: Verificar e auditar regras novas (auto-commit do plano)'
     fi
-    marcar_concluidas T-011
-    verde "✔ T-011 concluída"
+    marcar_concluidas T-036
+    verde "✔ T-036 concluída"
     return 0
   fi
-  vermelho "✘ T-011 falhou (log: $LOG_DIR/seq.log)"
-  amarelo "  reexecute só ela: bash .spec/features/course-crud/executar-tarefas.sh --seq T-011"
-  FALHAS="$FALHAS T-011"
-  return 1
-}
-
-# ── sequencial T-014 (ordem do tasks.md) ──
-executar_seq_T_014() {
-  info 'sequencial T-014 — Projetar responsáveis em formato de resumo'
-  if rodar_tarefa seq 'T-014' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
-Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
-
-Sua tarefa (somente ela):
-T-014 — "Projetar responsáveis em formato de resumo"
-  critérios/refs: AC-044 (Retornar resumo dos responsáveis)
-  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Model/DTO/CourseResponse.java, src/test/java/com/gap/api/Controller/CourseControllerTest.java, src/test/java/com/gap/api/Service/CourseServiceTest.java
-  mensagem de commit: "T-014 course-crud: Projetar responsáveis em formato de resumo"
-
-Regras inegociáveis:
-- Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
-- NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
-- Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
-- NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low >> "$LOG_DIR/seq.log" 2>&1; then
-    # commit de segurança se o agente esqueceu (rastreabilidade > perfeição)
-    if [ -n "$(git status --porcelain)" ]; then
-      git add -A && git commit -q -m 'T-014 course-crud: Projetar responsáveis em formato de resumo (auto-commit do plano)'
-    fi
-    marcar_concluidas T-014
-    verde "✔ T-014 concluída"
-    return 0
-  fi
-  vermelho "✘ T-014 falhou (log: $LOG_DIR/seq.log)"
-  amarelo "  reexecute só ela: bash .spec/features/course-crud/executar-tarefas.sh --seq T-014"
-  FALHAS="$FALHAS T-014"
-  return 1
-}
-
-# ── sequencial T-015 (ordem do tasks.md) ──
-executar_seq_T_015() {
-  info 'sequencial T-015 — Verificar a feature e auditar as especificações'
-  if rodar_tarefa seq 'T-015' 'Você executa UMA tarefa da feature "course-crud" (fluxo onp-spec, spec-anchored).
-Leia primeiro: .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md e .spec/constituicao.md.
-
-Sua tarefa (somente ela):
-T-015 — "Verificar a feature e auditar as especificações"
-  critérios/refs: AC-031 (Listar cursos por identificador), AC-032 (Listar sem cursos cadastrados), AC-033 (Consultar curso existente), AC-034 (Informar curso inexistente na consulta), AC-044 (Retornar resumo dos responsáveis), AC-035 (Criar curso), AC-036 (Rejeitar nome duplicado na criação), AC-037 (Rejeitar nome ausente), AC-038 (Atualizar nome e responsáveis), AC-039 (Informar curso inexistente na atualização), AC-040 (Rejeitar nome duplicado na atualização), AC-041 (Excluir curso sem referências), AC-042 (Informar curso inexistente na exclusão), AC-043 (Rejeitar exclusão de curso referenciado)
-  arquivos permitidos (e seus testes): .spec/features/course-crud/spec.md, .spec/features/course-crud/tasks.md, .spec/verification/academic-calendar-crud.json, .spec/verification/codebase-baseline.json, .spec/verification/flyway-migrations.json, .spec/verification/order-create.json
-  mensagem de commit: "T-015 course-crud: Verificar a feature e auditar as especificações"
-
-Regras inegociáveis:
-- Todo critério de aceite referenciado vira teste com @spec:AC-xxx no título.
-- NUNCA enfraqueça, pule (skip/todo) ou apague um teste para passar — teste pulado não é prova e o audit acusa.
-- Rode os testes localmente com `node test/run-onp-tests.mjs` até passarem.
-- NÃO edite tasks.md, NÃO rode onp-spec verify/audit e NÃO toque em outras tarefas — o orquestrador cuida disso.
-- Ao final de CADA tarefa: `git add` só no que você tocou e um commit próprio.' 'gpt-5.6-luna' low >> "$LOG_DIR/seq.log" 2>&1; then
-    # commit de segurança se o agente esqueceu (rastreabilidade > perfeição)
-    if [ -n "$(git status --porcelain)" ]; then
-      git add -A && git commit -q -m 'T-015 course-crud: Verificar a feature e auditar as especificações (auto-commit do plano)'
-    fi
-    marcar_concluidas T-015
-    verde "✔ T-015 concluída"
-    return 0
-  fi
-  vermelho "✘ T-015 falhou (log: $LOG_DIR/seq.log)"
-  amarelo "  reexecute só ela: bash .spec/features/course-crud/executar-tarefas.sh --seq T-015"
-  FALHAS="$FALHAS T-015"
+  vermelho "✘ T-036 falhou (log: $LOG_DIR/seq.log)"
+  amarelo "  reexecute só ela: bash .spec/features/course-crud/executar-tarefas.sh --seq T-036"
+  FALHAS="$FALHAS T-036"
   return 1
 }
 
@@ -317,17 +253,13 @@ executar_tudo() {
   iniciar_resumos
   info "logs em: $LOG_DIR"
   info "resumo geral de andamento: a cada 1 min aqui no terminal (e via: onp-spec resumo)"
-  executar_seq_T_011 || true
-  executar_seq_T_014 || true
-  executar_seq_T_015 || true
+  executar_seq_T_036 || true
   encerrar tudo
 }
 
 listar() {
   echo "execução: $RUN_ID (feature $FEATURE, branch $BASE_BRANCH)"
-  echo "  seq       T-011 (sequencial)"
-  echo "  seq       T-014 (sequencial)"
-  echo "  seq       T-015 (sequencial)"
+  echo "  seq       T-036 (sequencial)"
   echo
   echo "reexecutar uma faixa:    --faixa <id>"
   echo "reexecutar sequencial:   --seq <T-xxx>"
@@ -362,9 +294,7 @@ case "$MODO" in
     esac ;;
   seq)
     case "$ALVO" in
-      T-011) evento --tipo inicio --escopo "seq:T-011"; iniciar_resumos; executar_seq_T_011 || true; encerrar "seq:T-011" ;;
-      T-014) evento --tipo inicio --escopo "seq:T-014"; iniciar_resumos; executar_seq_T_014 || true; encerrar "seq:T-014" ;;
-      T-015) evento --tipo inicio --escopo "seq:T-015"; iniciar_resumos; executar_seq_T_015 || true; encerrar "seq:T-015" ;;
+      T-036) evento --tipo inicio --escopo "seq:T-036"; iniciar_resumos; executar_seq_T_036 || true; encerrar "seq:T-036" ;;
       *) falhar "tarefa sequencial desconhecida: '$ALVO' — veja as disponíveis com --listar" ;;
     esac ;;
 esac

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +43,7 @@ public class CourseService implements ICourseService {
         Course course = new Course();
         course.setName(courseRequest.name());
         setCDS(course, courseRequest.coordinatorId(), courseRequest.directorId(), courseRequest.secretaryId());
+        setOrganizationalUnits(course, courseRequest);
         setDepartment(course, courseRequest.departmentId());
         return CourseResponse.from(repository.save(course));
     }
@@ -51,6 +53,7 @@ public class CourseService implements ICourseService {
         Course course = getOrThrow(id);
         course.setName(courseRequest.name());
         setCDS(course, courseRequest.coordinatorId(), courseRequest.directorId(), courseRequest.secretaryId());
+        setOrganizationalUnits(course, courseRequest);
         setDepartment(course, courseRequest.departmentId());
         return CourseResponse.from(repository.save(course));
     }
@@ -62,12 +65,23 @@ public class CourseService implements ICourseService {
     }
 
     private void setCDS(Course course, Long coordinatorId, Long directorId, Long secretaryId) {
-        User coordinator = userRepository.getReferenceById(coordinatorId);
+        User coordinator = findResponsible(coordinatorId, "Coordinator", "COORDINATOR");
+        User director = findResponsible(directorId, "Director", "DIRECTOR");
+        User secretary = findResponsible(secretaryId, "Secretary", "SECRETARY");
         course.setCoordinator(coordinator);
-        User director = userRepository.getReferenceById(directorId);
         course.setDirector(director);
-        User secretary = userRepository.getReferenceById(secretaryId);
         course.setSecretary(secretary);
+    }
+
+    private User findResponsible(Long id, String function, String authority) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST, function + " not found: " + id));
+        if (!user.getRoles().stream().filter(Objects::nonNull)
+                .anyMatch(role -> authority.equals(role.getAuthority()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    function + " user " + id + " must have role " + authority);
+        }
+        return user;
     }
 
     private void setDepartment(Course course, Long departmentId) {
@@ -77,6 +91,26 @@ public class CourseService implements ICourseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Org unit must have type DEPARTAMENTO");
         }
         course.setDepartment(department);
+    }
+
+    private void setOrganizationalUnits(Course course, CourseRequest request) {
+        course.setReitoria(findOrganizationalUnit(request.reitoriaId(), "reitoriaId", OrgUnit.OrgUnitType.REITORIA));
+        course.setCoordenacao(findOrganizationalUnit(request.coordenacaoId(), "coordenacaoId", OrgUnit.OrgUnitType.COORDENACAO));
+        course.setDirecao(findOrganizationalUnit(request.direcaoId(), "direcaoId", OrgUnit.OrgUnitType.DIRECAO));
+        course.setSecretaria(findOrganizationalUnit(request.secretariaId(), "secretariaId", OrgUnit.OrgUnitType.SECRETARIA));
+        course.setEscola(findOrganizationalUnit(request.escolaId(), "escolaId", OrgUnit.OrgUnitType.ESCOLA));
+    }
+
+    private OrgUnit findOrganizationalUnit(Long id, String field, OrgUnit.OrgUnitType expectedType) {
+        OrgUnit unit = orgUnitRepository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Field " + field + " references missing " + expectedType + " unit: " + id));
+        if (unit.getType() != expectedType) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Field " + field + " with ID " + id + " must reference unit type " + expectedType
+                            + ", but was " + unit.getType());
+        }
+        return unit;
     }
 
     private Course getOrThrow(Long id) {
