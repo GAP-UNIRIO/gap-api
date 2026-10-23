@@ -1139,19 +1139,19 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "flyway-migrations",
       "ref": "—",
-      "ocorrencias": 12,
+      "ocorrencias": 17,
       "primeiraVez": "2026-10-21T04:29:19.394Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:12:26.474Z",
+      "gitRev": "ea26494"
     },
     "VERIFY_OBSOLETO::order-create::—": {
       "codigo": "VERIFY_OBSOLETO",
       "feature": "order-create",
       "ref": "—",
-      "ocorrencias": 13,
+      "ocorrencias": 18,
       "primeiraVez": "2026-10-21T04:29:19.394Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:12:26.474Z",
+      "gitRev": "ea26494"
     },
     "ARQUIVO_ORFAO::—::src/test/resources/application.properties": {
       "codigo": "ARQUIVO_ORFAO",
@@ -1166,10 +1166,10 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "codebase-baseline",
       "ref": "—",
-      "ocorrencias": 12,
+      "ocorrencias": 17,
       "primeiraVez": "2026-10-21T17:07:12.923Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:14:50.111Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_TESTE::order-create::AC-013": {
       "codigo": "AC_SEM_TESTE",
@@ -1346,10 +1346,10 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "academic-calendar-crud",
       "ref": "—",
-      "ocorrencias": 8,
+      "ocorrencias": 12,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-22T18:52:04.711Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:10:35.716Z",
+      "gitRev": "ea26494"
     },
     "ARQUIVO_INEXISTENTE::course-crud::T-014": {
       "codigo": "ARQUIVO_INEXISTENTE",
@@ -1364,127 +1364,127 @@
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-031",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-032": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-032",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-033": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-033",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-034": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-034",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-035": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-035",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-036": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-036",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-037": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-037",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-038": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-038",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-039": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-039",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-040": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-040",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-041": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-041",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-042": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-042",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "AC_SEM_PROVA::course-crud::AC-043": {
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-043",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-21T19:48:07.011Z",
-      "ultimaVez": "2026-10-21T19:48:07.011Z",
-      "gitRev": "fe105ab"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "VERIFY_OBSOLETO::course-crud::—": {
       "codigo": "VERIFY_OBSOLETO",
       "feature": "course-crud",
       "ref": "—",
-      "ocorrencias": 3,
+      "ocorrencias": 7,
       "primeiraVez": "2026-10-22T03:06:38.659Z",
-      "ultimaVez": "2026-10-22T18:27:18.006Z",
-      "gitRev": "ed86e1f"
+      "ultimaVez": "2026-10-22T21:10:35.717Z",
+      "gitRev": "ea26494"
     },
     "AC_INCOMPLETO::institution-crud::AC-045": {
       "codigo": "AC_INCOMPLETO",
@@ -1814,37 +1814,37 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "institution-crud",
       "ref": "—",
-      "ocorrencias": 6,
+      "ocorrencias": 11,
       "primeiraVez": "2026-10-22T04:03:40.979Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:12:26.474Z",
+      "gitRev": "ea26494"
     },
     "VERIFY_OBSOLETO::org-unit-crud::—": {
       "codigo": "VERIFY_OBSOLETO",
       "feature": "org-unit-crud",
       "ref": "—",
-      "ocorrencias": 6,
+      "ocorrencias": 8,
       "primeiraVez": "2026-10-22T04:03:40.979Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:07:21.155Z",
+      "gitRev": "ea26494"
     },
     "VERIFY_OBSOLETO::role-crud::—": {
       "codigo": "VERIFY_OBSOLETO",
       "feature": "role-crud",
       "ref": "—",
-      "ocorrencias": 6,
+      "ocorrencias": 11,
       "primeiraVez": "2026-10-22T04:03:40.979Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:12:26.474Z",
+      "gitRev": "ea26494"
     },
     "VERIFY_OBSOLETO::user-profile::—": {
       "codigo": "VERIFY_OBSOLETO",
       "feature": "user-profile",
       "ref": "—",
-      "ocorrencias": 6,
+      "ocorrencias": 11,
       "primeiraVez": "2026-10-22T04:03:40.979Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:12:26.474Z",
+      "gitRev": "ea26494"
     },
     "ID_DUPLICADO::course-crud::US-012": {
       "codigo": "ID_DUPLICADO",
@@ -1868,10 +1868,10 @@
       "codigo": "VERIFY_OBSOLETO",
       "feature": "workflow-template-create",
       "ref": "—",
-      "ocorrencias": 5,
+      "ocorrencias": 10,
       "primeiraVez": "2026-10-22T16:34:59.760Z",
-      "ultimaVez": "2026-10-22T18:52:04.713Z",
-      "gitRev": "8a8313b"
+      "ultimaVez": "2026-10-22T21:12:26.474Z",
+      "gitRev": "ea26494"
     },
     "ID_DUPLICADO::course-crud::Q-011": {
       "codigo": "ID_DUPLICADO",
@@ -1886,10 +1886,10 @@
       "codigo": "ID_DUPLICADO",
       "feature": "workflow-template-create",
       "ref": "AC-110",
-      "ocorrencias": 1,
+      "ocorrencias": 2,
       "primeiraVez": "2026-10-22T18:27:18.006Z",
-      "ultimaVez": "2026-10-22T18:27:18.006Z",
-      "gitRev": "ed86e1f"
+      "ultimaVez": "2026-10-22T21:09:44.685Z",
+      "gitRev": "ea26494"
     },
     "ID_DUPLICADO::workflow-template-create::Q-007": {
       "codigo": "ID_DUPLICADO",
@@ -1985,28 +1985,28 @@
       "codigo": "TASK_CONCLUIDA_SEM_PROVA",
       "feature": "workflow-template-create",
       "ref": "T-028",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-22T18:27:18.006Z",
-      "ultimaVez": "2026-10-22T18:27:18.006Z",
-      "gitRev": "ed86e1f"
+      "ultimaVez": "2026-10-22T21:07:21.155Z",
+      "gitRev": "ea26494"
     },
     "TASK_CONCLUIDA_SEM_PROVA::workflow-template-create::T-029": {
       "codigo": "TASK_CONCLUIDA_SEM_PROVA",
       "feature": "workflow-template-create",
       "ref": "T-029",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-22T18:27:18.006Z",
-      "ultimaVez": "2026-10-22T18:27:18.006Z",
-      "gitRev": "ed86e1f"
+      "ultimaVez": "2026-10-22T21:07:21.155Z",
+      "gitRev": "ea26494"
     },
     "TASK_CONCLUIDA_SEM_PROVA::workflow-template-create::T-030": {
       "codigo": "TASK_CONCLUIDA_SEM_PROVA",
       "feature": "workflow-template-create",
       "ref": "T-030",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-22T18:27:18.006Z",
-      "ultimaVez": "2026-10-22T18:27:18.006Z",
-      "gitRev": "ed86e1f"
+      "ultimaVez": "2026-10-22T21:07:21.155Z",
+      "gitRev": "ea26494"
     },
     "Q_ABERTA::course-crud::Q-013": {
       "codigo": "Q_ABERTA",
@@ -2057,10 +2057,10 @@
       "codigo": "AC_SEM_PROVA",
       "feature": "course-crud",
       "ref": "AC-118",
-      "ocorrencias": 1,
+      "ocorrencias": 3,
       "primeiraVez": "2026-10-22T18:27:50.234Z",
-      "ultimaVez": "2026-10-22T18:27:50.234Z",
-      "gitRev": "ed86e1f"
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     },
     "ID_DUPLICADO::institution-crud::US-016": {
       "codigo": "ID_DUPLICADO",
@@ -2088,6 +2088,258 @@
       "primeiraVez": "2026-10-22T18:51:46.894Z",
       "ultimaVez": "2026-10-22T18:51:46.894Z",
       "gitRev": "8a8313b"
+    },
+    "ID_DUPLICADO::workflow-template-create::AC-093": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "workflow-template-create",
+      "ref": "AC-093",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:05:42.315Z",
+      "ultimaVez": "2026-10-22T21:05:42.322Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::org-unit-crud::T-022": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "org-unit-crud",
+      "ref": "T-022",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:05:42.322Z",
+      "ultimaVez": "2026-10-22T21:05:42.322Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::org-unit-crud::T-023": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "org-unit-crud",
+      "ref": "T-023",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:05:42.322Z",
+      "ultimaVez": "2026-10-22T21:05:42.322Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::org-unit-crud::AC-093": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "org-unit-crud",
+      "ref": "AC-093",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:05:42.322Z",
+      "ultimaVez": "2026-10-22T21:05:42.322Z",
+      "gitRev": "ea26494"
+    },
+    "ARQUIVO_ORFAO::—::src/main/resources/db/migration/V3__org_units_unique_name.sql": {
+      "codigo": "ARQUIVO_ORFAO",
+      "feature": "—",
+      "ref": "src/main/resources/db/migration/V3__org_units_unique_name.sql",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:05:42.322Z",
+      "ultimaVez": "2026-10-22T21:05:42.322Z",
+      "gitRev": "ea26494"
+    },
+    "ID_DUPLICADO::workflow-template-create::AC-105": {
+      "codigo": "ID_DUPLICADO",
+      "feature": "workflow-template-create",
+      "ref": "AC-105",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:07:21.147Z",
+      "ultimaVez": "2026-10-22T21:07:21.155Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::org-unit-crud::AC-105": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "org-unit-crud",
+      "ref": "AC-105",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-10-22T21:07:21.155Z",
+      "ultimaVez": "2026-10-22T21:07:21.155Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-011": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-011",
+      "ocorrencias": 28,
+      "primeiraVez": "2026-10-22T21:12:26.472Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-012": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-012",
+      "ocorrencias": 20,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-013": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-013",
+      "ocorrencias": 8,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-014": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-014",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-015": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-015",
+      "ocorrencias": 28,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-032": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-032",
+      "ocorrencias": 4,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-033": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-033",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-034": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-034",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-035": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-035",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-036": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-036",
+      "ocorrencias": 16,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "TASK_CONCLUIDA_SEM_PROVA::course-crud::T-031": {
+      "codigo": "TASK_CONCLUIDA_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "T-031",
+      "ocorrencias": 6,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-044": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-044",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-119": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-119",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-107": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-107",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-108": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-108",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-109": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-109",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-120": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-120",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-121": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-121",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-122": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-122",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-123": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-123",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
+    },
+    "AC_SEM_PROVA::course-crud::AC-124": {
+      "codigo": "AC_SEM_PROVA",
+      "feature": "course-crud",
+      "ref": "AC-124",
+      "ocorrencias": 2,
+      "primeiraVez": "2026-10-22T21:12:26.474Z",
+      "ultimaVez": "2026-10-22T21:14:50.113Z",
+      "gitRev": "ea26494"
     }
   }
 }

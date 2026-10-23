@@ -36,12 +36,16 @@ class OrgUnitServiceIntegrationTest {
     private IStorageService storageService;
 
     @Test
-    @DisplayName("@spec:AC-074 banco rejeita tipo ou nome nulo")
-    void create_nullRequiredField_isRejectedByDatabase() {
+    @DisplayName("@spec:AC-125 banco impede nomes duplicados globalmente")
+    void create_duplicateName_isRejectedByDatabase() {
+        String name = "Unidade duplicada " + UUID.randomUUID();
+        OrgUnit unit = new OrgUnit();
+        unit.setType(OrgUnit.OrgUnitType.ESCOLA);
+        unit.setName(name);
+        orgUnitRepository.saveAndFlush(unit);
+
         assertThrows(DataIntegrityViolationException.class,
-                () -> orgUnitService.create(new OrgUnitRequest(OrgUnit.OrgUnitType.ESCOLA, null)));
-        assertThrows(DataIntegrityViolationException.class,
-                () -> orgUnitService.create(new OrgUnitRequest(null, "Unidade")));
+                () -> orgUnitRepository.saveAndFlush(new OrgUnit(null, OrgUnit.OrgUnitType.DEPARTAMENTO, name, null)));
     }
 
     @Test

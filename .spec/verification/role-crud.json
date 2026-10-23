@@ -1,11 +1,11 @@
 {
   "feature": "role-crud",
-  "timestamp": "2026-10-22T18:55:49.617Z",
-  "gitRev": "8a8313b",
+  "timestamp": "2026-10-22T21:13:56.820Z",
+  "gitRev": "ea26494",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 216,
+  "testsParsed": 218,
   "results": {
     "AC-080": {
       "status": "pass",

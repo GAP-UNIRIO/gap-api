@@ -47,10 +47,16 @@ Como gestor, quero cadastrar unidade com tipo e nome.
 - **Quando** o cliente envia `POST /org-units`
 - **Então** recebe HTTP 400
 
-#### AC-074 — Rejeitar tipo ou nome nulo
-- **Dado** tipo ou nome nulo
-- **Quando** o serviço tenta persistir a unidade
-- **Então** a restrição `NOT NULL` do banco rejeita a operação e a API retorna HTTP 409
+#### AC-074 — Validar campos obrigatórios e nome
+- **Dado** tipo ausente, nome ausente/em branco ou nome com mais de 255 caracteres
+- **Quando** o cliente envia POST ou PUT para `/org-units`
+- **Então** a API retorna HTTP 400 antes de persistir
+
+#### AC-125 — Impedir nomes organizacionais duplicados globalmente
+- **Dado** uma unidade já cadastrada com determinado nome
+- **Quando** o cliente tenta cadastrar ou renomear outra unidade com o mesmo nome
+- **Então** a API retorna HTTP 409 e mantém os dados existentes
+- **E** a restrição única do banco impede duplicidade global, independentemente do tipo
 
 ### US-024 — Atualizar unidade organizacional
 
@@ -89,14 +95,14 @@ Como gestor, quero excluir unidade que não seja mais necessária.
 
 - A listagem é ordenada por id crescente.
 - Tipos aceitos: `REITORIA`, `COORDENACAO`, `DIRECAO`, `SECRETARIA`, `DEPARTAMENTO` e `ESCOLA`.
-- O DTO não aplica validação de presença/tamanho em tipo e nome. `type` e `name` são `NOT NULL` no banco; valores nulos falham na persistência e a API trata violações de integridade como HTTP 409.
-- Nome não possui restrição de unicidade no schema.
+- `type` é obrigatório. `name` é obrigatório, não pode ser branco e aceita até 255 caracteres, conforme o tamanho da coluna.
+- `name` é único globalmente entre todos os tipos de unidade; a aplicação retorna HTTP 409 para duplicatas e o banco aplica uma restrição única como proteção final.
 - As referências de curso (reitoria, coordenação, direção, secretaria e escola) e etapa de aprovação (`org_unit_id`) impedem a exclusão enquanto existirem.
 - Rotas estão sujeitas à autenticação e CSRF globais.
 
 ## Fora de escopo
 
-- Regras para nomes únicos, normalização ou limite de tamanho.
+- Normalização de nomes para comparação (por exemplo, ignorar maiúsculas/minúsculas ou espaços periféricos).
 - Alterar tipos de unidade ou relações com cursos/etapas.
 - Autorizações distintas das regras globais.
 

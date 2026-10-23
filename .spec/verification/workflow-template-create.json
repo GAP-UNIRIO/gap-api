@@ -1,11 +1,11 @@
 {
   "feature": "workflow-template-create",
-  "timestamp": "2026-10-22T18:56:47.143Z",
-  "gitRev": "8a8313b",
+  "timestamp": "2026-10-22T21:14:49.614Z",
+  "gitRev": "ea26494",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 216,
+  "testsParsed": 218,
   "results": {
     "AC-093": {
       "status": "pass",

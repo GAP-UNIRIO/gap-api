@@ -1,11 +1,11 @@
 {
   "feature": "user-profile",
-  "timestamp": "2026-10-22T18:56:17.882Z",
-  "gitRev": "8a8313b",
+  "timestamp": "2026-10-22T21:14:20.502Z",
+  "gitRev": "ea26494",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 216,
+  "testsParsed": 218,
   "results": {
     "AC-061": {
       "status": "pass",

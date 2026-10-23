@@ -127,14 +127,20 @@ class OrgUnitControllerTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-074 create com tipo ou nome nulo retorna 409 por restrição do banco")
-    void create_nullRequiredField_returnsConflict() throws Exception {
-        org.mockito.Mockito.when(service.create(any(OrgUnitRequest.class)))
-                .thenThrow(new DataIntegrityViolationException("not null"));
+    @DisplayName("@spec:AC-074 create valida tipo e nome obrigatórios e tamanho máximo")
+    void create_invalidRequiredFields_returnsBadRequest() throws Exception {
         mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"type\":\"ESCOLA\",\"name\":null}"))
-                .andExpect(status().isConflict());
+                        .content("{\"type\":null,\"name\":\"Unidade\"}"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"ESCOLA\",\"name\":\"   \"}"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"type\":\"ESCOLA\",\"name\":\"" + "x".repeat(256) + "\"}"))
+                .andExpect(status().isBadRequest());
     }
 
     // ---------- update ----------

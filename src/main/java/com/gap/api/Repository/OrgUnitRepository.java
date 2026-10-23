@@ -4,4 +4,7 @@ import com.gap.api.Model.Entity.OrgUnit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrgUnitRepository extends JpaRepository<OrgUnit, Long> {
+    boolean existsByName(String name);
+
+    boolean existsByNameAndIdNot(String name, Long id);
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "org_units")
+@Table(name = "org_units", uniqueConstraints = @UniqueConstraint(name = "uk_org_units_name", columnNames = "name"))
 public class
 OrgUnit {
 
@@ -24,7 +24,7 @@ OrgUnit {
     @Column(nullable = false)
     private OrgUnitType type;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
     @OneToMany(mappedBy = "responsibleUnit", fetch = FetchType.LAZY)
