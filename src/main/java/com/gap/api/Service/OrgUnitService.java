@@ -33,6 +33,7 @@ public class OrgUnitService implements IOrgUnitService {
     @Transactional
     public OrgUnitResponse create(OrgUnitRequest request) {
         OrgUnit unit = new OrgUnit();
+        ensureNameAvailable(request.name(), null);
         apply(unit, request);
         return OrgUnitResponse.from(repository.save(unit));
     }
@@ -40,6 +41,7 @@ public class OrgUnitService implements IOrgUnitService {
     @Transactional
     public OrgUnitResponse update(Long id, OrgUnitRequest request) {
         OrgUnit unit = getOrThrow(id);
+        ensureNameAvailable(request.name(), id);
         apply(unit, request);
         return OrgUnitResponse.from(unit);
     }
@@ -53,6 +55,16 @@ public class OrgUnitService implements IOrgUnitService {
     private void apply(OrgUnit unit, OrgUnitRequest request) {
         unit.setType(request.type());
         unit.setName(request.name());
+    }
+
+    private void ensureNameAvailable(String name, Long currentId) {
+        boolean exists = currentId == null
+                ? repository.existsByName(name)
+                : repository.existsByNameAndIdNot(name, currentId);
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Já existe uma unidade organizacional com o nome: " + name);
+        }
     }
 
     private OrgUnit getOrThrow(Long id) {

@@ -1,11 +1,11 @@
 {
   "feature": "org-unit-crud",
-  "timestamp": "2026-10-22T18:55:20.623Z",
-  "gitRev": "8a8313b",
+  "timestamp": "2026-10-22T21:10:33.587Z",
+  "gitRev": "ea26494",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 216,
+  "testsParsed": 218,
   "results": {
     "AC-068": {
       "status": "pass",
@@ -39,7 +39,12 @@
     },
     "AC-074": {
       "status": "pass",
-      "testName": "@spec:AC-074 create com tipo ou nome nulo retorna 409 por restrição do banco",
+      "testName": "@spec:AC-074 create valida tipo e nome obrigatórios e tamanho máximo",
+      "method": "tap"
+    },
+    "AC-125": {
+      "status": "pass",
+      "testName": "@spec:AC-125 banco impede nomes duplicados globalmente",
       "method": "tap"
     },
     "AC-075": {

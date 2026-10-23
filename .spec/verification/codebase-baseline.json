@@ -1,17 +1,1 @@
-{
-  "feature": "codebase-baseline",
-  "timestamp": "2026-10-22T18:53:21.910Z",
-  "gitRev": "8a8313b",
-  "command": "node test/run-onp-tests.mjs",
-  "reporter": "tap",
-  "exitCode": 0,
-  "testsParsed": 216,
-  "results": {
-    "AC-014": {
-      "status": "pass",
-      "testName": "@spec:AC-014 todo arquivo de produção está mapeado em uma tarefa",
-      "method": "tap"
-    }
-  },
-  "principles": {}
-}
+{  "feature": "codebase-baseline",  "timestamp": "2026-10-22T18:53:21.910Z",  "gitRev": "8a8313b",  "command": "node test/run-onp-tests.mjs",  "reporter": "tap",  "exitCode": 0,  "testsParsed": 216,  "results": {    "AC-014": {      "status": "pass",      "testName": "@spec:AC-014 todo arquivo de produção está mapeado em uma tarefa",      "method": "tap"    }  },  "principles": {}}

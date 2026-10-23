@@ -95,6 +95,7 @@ class OrgUnitServiceTest {
     @Test
     @DisplayName("@spec:AC-072 create deve salvar a unidade com tipo e nome do request")
     void create_success() {
+        when(repository.existsByName("Secretaria")).thenReturn(false);
         when(repository.save(any(OrgUnit.class))).thenAnswer(inv -> {
             OrgUnit u = inv.getArgument(0);
             u.setId(5L);
@@ -111,16 +112,39 @@ class OrgUnitServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-125 create deve rejeitar nome já utilizado globalmente")
+    void create_duplicateName_conflict() {
+        when(repository.existsByName("Secretaria")).thenReturn(true);
+
+        assertThatThrownBy(() -> service.create(new OrgUnitRequest(OrgUnitType.SECRETARIA, "Secretaria")))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
     @DisplayName("@spec:AC-075 update deve alterar tipo e nome da unidade existente")
     void update_success() {
         OrgUnit existing = unit(1L, OrgUnitType.ESCOLA, "Antigo");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.existsByNameAndIdNot("Novo", 1L)).thenReturn(false);
 
         OrgUnitResponse result = service.update(1L, new OrgUnitRequest(OrgUnitType.DEPARTAMENTO, "Novo"));
 
         assertThat(existing.getType()).isEqualTo(OrgUnitType.DEPARTAMENTO);
         assertThat(existing.getName()).isEqualTo("Novo");
         assertThat(result).isEqualTo(new OrgUnitResponse(1L, OrgUnitType.DEPARTAMENTO, "Novo"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-125 update deve rejeitar nome utilizado por outra unidade")
+    void update_duplicateName_conflict() {
+        OrgUnit existing = unit(1L, OrgUnitType.ESCOLA, "Antigo");
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.existsByNameAndIdNot("Secretaria", 1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> service.update(1L, new OrgUnitRequest(OrgUnitType.ESCOLA, "Secretaria")))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+        assertThat(existing.getName()).isEqualTo("Antigo");
     }
 
     @Test
