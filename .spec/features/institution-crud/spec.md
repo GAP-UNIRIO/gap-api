@@ -108,7 +108,7 @@ Como gestor, quero excluir uma instituição existente.
 ## Regras observadas
 
 - A listagem é ordenada por id crescente.
-- `name` tem limite de 255 caracteres; `code` tem limite de 50 e é único. O código é descrito na entidade como CNPJ, mas não há validação de formato, dígitos verificadores ou normalização.
+- `name` tem limite de 255 caracteres; `code` aceita CNPJ válido com ou sem pontuação, normaliza e persiste os 14 dígitos e é único. `settings` é JSON opcional limitado a 16 KiB serializados e profundidade 8. Regras detalhadas de validação estão em `institution-validation`.
 - Os provedores são enums persistidos como texto; os valores aceitos estão listados no critério AC-051.
 - `settings` é um mapa JSON opcional, retornado sem transformação.
 - Na criação, `active` omitido/nulo resulta em `true`; na atualização, omitido/nulo preserva o valor atual.
@@ -117,7 +117,7 @@ Como gestor, quero excluir uma instituição existente.
 
 ## Fora de escopo
 
-- Validar CNPJ ou impor regras específicas ao mapa `settings`.
+- Restringir chaves ou formatos internos de `settings`.
 - Alterar autenticação, autorização ou CSRF global.
 - Definir regras de domínio adicionais para seleção dos provedores.
 

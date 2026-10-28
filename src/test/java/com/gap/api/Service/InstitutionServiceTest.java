@@ -15,12 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -69,13 +71,13 @@ class InstitutionServiceTest {
     @DisplayName("@spec:AC-045 findAll deve retornar as instituições ordenadas por id")
     void findAll_returnsMappedList() {
         when(repository.findAll(Sort.by("id"))).thenReturn(List.of(
-                institution(1L, "Inst A", "111", true),
-                institution(2L, "Inst B", "222", false)));
+                institution(1L, "Inst A", "04252011000110", true),
+                institution(2L, "Inst B", "11222333000181", false)));
 
         List<InstitutionResponse> result = service.findAll();
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(InstitutionResponse::code).containsExactly("111", "222");
+        assertThat(result).extracting(InstitutionResponse::code).containsExactly("04252011000110", "11222333000181");
         assertThat(result).extracting(InstitutionResponse::active).containsExactly(true, false);
     }
 
@@ -90,13 +92,13 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-047 findById deve retornar a instituição quando existe")
     void findById_found() {
-        when(repository.findById(1L)).thenReturn(Optional.of(institution(1L, "Inst A", "111", true)));
+        when(repository.findById(1L)).thenReturn(Optional.of(institution(1L, "Inst A", "04252011000110", true)));
 
         InstitutionResponse result = service.findById(1L);
 
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.name()).isEqualTo("Inst A");
-        assertThat(result.code()).isEqualTo("111");
+        assertThat(result.code()).isEqualTo("04252011000110");
     }
 
     @Test
@@ -113,20 +115,20 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-053 create deve copiar os campos e ficar ativa quando active é null")
     void create_defaultsToActive() {
-        when(repository.existsByCode("123")).thenReturn(false);
-        when(repository.save(any(Institution.class))).thenAnswer(inv -> {
+        when(repository.existsByCode("04252011000110")).thenReturn(false);
+        when(repository.saveAndFlush(any(Institution.class))).thenAnswer(inv -> {
             Institution i = inv.getArgument(0);
             i.setId(7L);
             return i;
         });
 
-        InstitutionResponse result = service.create(request("Nova", "123", null));
+        InstitutionResponse result = service.create(request("Nova", "04252011000110", null));
 
         ArgumentCaptor<Institution> captor = ArgumentCaptor.forClass(Institution.class);
-        verify(repository).save(captor.capture());
+        verify(repository).saveAndFlush(captor.capture());
         Institution saved = captor.getValue();
         assertThat(saved.getName()).isEqualTo("Nova");
-        assertThat(saved.getCode()).isEqualTo("123");
+        assertThat(saved.getCode()).isEqualTo("04252011000110");
         assertThat(saved.getAuthProviderType()).isEqualTo(AuthProviderType.OAUTH2_CUSTOM);
         assertThat(saved.getSignatureProvider()).isEqualTo(SignatureProviderType.GOV_BR);
         assertThat(saved.getSettings()).isEqualTo(SETTINGS);
@@ -138,10 +140,10 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-053 create deve respeitar active=false")
     void create_respectsInactive() {
-        when(repository.existsByCode("123")).thenReturn(false);
-        when(repository.save(any(Institution.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(repository.existsByCode("04252011000110")).thenReturn(false);
+        when(repository.saveAndFlush(any(Institution.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        InstitutionResponse result = service.create(request("Nova", "123", false));
+        InstitutionResponse result = service.create(request("Nova", "04252011000110", false));
 
         assertThat(result.active()).isFalse();
     }
@@ -149,12 +151,57 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-052 create deve lançar 409 quando o código já existe")
     void create_conflict() {
-        when(repository.existsByCode("123")).thenReturn(true);
+        when(repository.existsByCode("04252011000110")).thenReturn(true);
 
-        assertThatThrownBy(() -> service.create(request("Nova", "123", null)))
+        assertThatThrownBy(() -> service.create(request("Nova", "04252011000110", null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
 
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-126 create normaliza CNPJ pontuado para 14 dígitos")
+    void create_normalizesCnpj() {
+        when(repository.existsByCode("04252011000110")).thenReturn(false);
+        when(repository.saveAndFlush(any(Institution.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        InstitutionResponse result = service.create(request("Nova", "04.252.011/0001-10", null));
+
+        assertThat(result.code()).isEqualTo("04252011000110");
+    }
+
+    @Test
+    @DisplayName("@spec:AC-126 update mantém CNPJ normalizado quando recebe pontuação")
+    void update_normalizesCnpj() {
+        Institution existing = institution(1L, "Antiga", "04252011000110", true);
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.saveAndFlush(any(Institution.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        InstitutionResponse result = service.update(1L, request("Atualizada", "04.252.011/0001-10", null));
+
+        assertThat(result.code()).isEqualTo("04252011000110");
+        verify(repository, never()).existsByCode(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-128 create compara CNPJ normalizado para evitar duplicidade por pontuação")
+    void create_punctuatedDuplicateConflicts() {
+        when(repository.existsByCode("04252011000110")).thenReturn(true);
+
+        assertThatThrownBy(() -> service.create(request("Nova", "04.252.011/0001-10", null)))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+        verify(repository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-131 create converte colisão da constraint única em 409")
+    void create_concurrentUniqueViolationConflicts() {
+        when(repository.existsByCode("04252011000110")).thenReturn(false);
+        when(repository.saveAndFlush(any(Institution.class))).thenThrow(new DataIntegrityViolationException(
+                "duplicate", new SQLException("duplicate key institutions_code_key", "23505")));
+
+        assertThatThrownBy(() -> service.create(request("Nova", "04252011000110", null)))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
     }
 
     // ---------- update ----------
@@ -162,27 +209,27 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-054 update deve alterar os campos e mudar o código quando ele está livre")
     void update_success() {
-        Institution existing = institution(1L, "Antiga", "111", true);
+        Institution existing = institution(1L, "Antiga", "04252011000110", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.existsByCode("999")).thenReturn(false);
+        when(repository.existsByCode("11222333000181")).thenReturn(false);
 
-        InstitutionResponse result = service.update(1L, request("Renomeada", "999", false));
+        InstitutionResponse result = service.update(1L, request("Renomeada", "11222333000181", false));
 
         assertThat(existing.getName()).isEqualTo("Renomeada");
-        assertThat(existing.getCode()).isEqualTo("999");
+        assertThat(existing.getCode()).isEqualTo("11222333000181");
         assertThat(existing.getAuthProviderType()).isEqualTo(AuthProviderType.OAUTH2_CUSTOM);
         assertThat(existing.getSignatureProvider()).isEqualTo(SignatureProviderType.GOV_BR);
         assertThat(existing.isActive()).isFalse();
-        assertThat(result.code()).isEqualTo("999");
+        assertThat(result.code()).isEqualTo("11222333000181");
     }
 
     @Test
     @DisplayName("@spec:AC-055 update com active null deve manter o valor atual")
     void update_nullActive_keepsCurrent() {
-        Institution existing = institution(1L, "Antiga", "111", false);
+        Institution existing = institution(1L, "Antiga", "04252011000110", false);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        InstitutionResponse result = service.update(1L, request("Renomeada", "111", null));
+        InstitutionResponse result = service.update(1L, request("Renomeada", "04252011000110", null));
 
         assertThat(existing.isActive()).isFalse();
         assertThat(result.active()).isFalse();
@@ -191,10 +238,10 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-056 update com o mesmo código não deve checar duplicidade")
     void update_sameCode_skipsExistsCheck() {
-        Institution existing = institution(1L, "Antiga", "111", true);
+        Institution existing = institution(1L, "Antiga", "04252011000110", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
-        service.update(1L, request("Renomeada", "111", null));
+        service.update(1L, request("Renomeada", "04252011000110", null));
 
         verify(repository, never()).existsByCode(any());
     }
@@ -202,14 +249,14 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-057 update deve lançar 409 quando o novo código pertence a outra instituição")
     void update_conflict() {
-        Institution existing = institution(1L, "Antiga", "111", true);
+        Institution existing = institution(1L, "Antiga", "04252011000110", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(repository.existsByCode("999")).thenReturn(true);
+        when(repository.existsByCode("11222333000181")).thenReturn(true);
 
-        assertThatThrownBy(() -> service.update(1L, request("Renomeada", "999", null)))
+        assertThatThrownBy(() -> service.update(1L, request("Renomeada", "11222333000181", null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
 
-        assertThat(existing.getCode()).isEqualTo("111");
+        assertThat(existing.getCode()).isEqualTo("04252011000110");
         assertThat(existing.getName()).isEqualTo("Antiga");
     }
 
@@ -227,7 +274,7 @@ class InstitutionServiceTest {
     @Test
     @DisplayName("@spec:AC-059 delete deve remover e dar flush, nessa ordem")
     void delete_success() {
-        Institution existing = institution(1L, "Inst", "111", true);
+        Institution existing = institution(1L, "Inst", "04252011000110", true);
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
         service.delete(1L);
