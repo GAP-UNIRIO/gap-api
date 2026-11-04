@@ -30,6 +30,7 @@ const gradleArgs = [
   '--tests', 'com.gap.api.Service.RoleServiceTest',
   '--tests', 'com.gap.api.Integration.RoleServiceIntegrationTest',
   '--tests', 'com.gap.api.Integration.OrderServiceIntegrationTest',
+  '--tests', 'com.gap.api.Integration.ApiDocsIntegrationTest',
 ];
 const gradle = process.platform === 'win32'
   ? spawnSync('cmd.exe', ['/d', '/s', '/c', '.\\gradlew.bat', ...gradleArgs], {
