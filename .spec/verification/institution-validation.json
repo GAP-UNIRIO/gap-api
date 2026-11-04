@@ -1,0 +1,42 @@
+{
+  "feature": "institution-validation",
+  "timestamp": "2026-11-04T18:05:58.788Z",
+  "gitRev": "074cfe1",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 230,
+  "results": {
+    "AC-126": {
+      "status": "pass",
+      "testName": "@spec:AC-126 update mantém CNPJ normalizado quando recebe pontuação",
+      "method": "tap"
+    },
+    "AC-127": {
+      "status": "pass",
+      "testName": "@spec:AC-127 create rejeita CNPJ inválido antes de chamar o serviço",
+      "method": "tap"
+    },
+    "AC-128": {
+      "status": "pass",
+      "testName": "@spec:AC-128 create compara CNPJ normalizado para evitar duplicidade por pontuação",
+      "method": "tap"
+    },
+    "AC-129": {
+      "status": "pass",
+      "testName": "@spec:AC-129 aceita configurações JSON opcionais dentro dos limites",
+      "method": "tap"
+    },
+    "AC-130": {
+      "status": "pass",
+      "testName": "@spec:AC-130 rejeita configurações grandes, profundas ou com tipos não JSON",
+      "method": "tap"
+    },
+    "AC-131": {
+      "status": "pass",
+      "testName": "@spec:AC-052 @spec:AC-131 create código duplicado retorna 409 no envelope padrão",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

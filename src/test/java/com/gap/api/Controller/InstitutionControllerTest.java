@@ -51,7 +51,7 @@ class InstitutionControllerTest {
     }
 
     private InstitutionRequest request(String name) {
-        return new InstitutionRequest(name, "UNIRIO", Institution.AuthProviderType.LOCAL, Institution.SignatureProviderType.NONE, null, true);
+        return new InstitutionRequest(name, "04252011000110", Institution.AuthProviderType.LOCAL, Institution.SignatureProviderType.NONE, null, true);
     }
 
     // ---------- findAll / findById ----------
@@ -130,6 +130,16 @@ class InstitutionControllerTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-127 create rejeita CNPJ inválido antes de chamar o serviço")
+    void create_invalidCnpj() throws Exception {
+        String body = "{\"name\":\"N\",\"code\":\"04.252.011/0001-11\",\"authProviderType\":\"LOCAL\",\"signatureProvider\":\"NONE\"}";
+        mockMvc.perform(post("/institutions").with(oidcLogin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value("error"));
+    }
+
+    @Test
     @DisplayName("@spec:AC-051 create rejeita valores de provedores desconhecidos")
     void create_invalidProvider() throws Exception {
         String body = "{\"name\":\"N\",\"code\":\"x\",\"authProviderType\":\"UNKNOWN\",\"signatureProvider\":\"NONE\"}";
@@ -139,12 +149,13 @@ class InstitutionControllerTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-052 create código duplicado retorna 409")
+    @DisplayName("@spec:AC-052 @spec:AC-131 create código duplicado retorna 409 no envelope padrão")
     void create_duplicateCode() throws Exception {
         when(service.create(any(InstitutionRequest.class))).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
         mockMvc.perform(post("/institutions").with(oidcLogin()).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request("N"))))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value("error"));
     }
 
     // ---------- update ----------
