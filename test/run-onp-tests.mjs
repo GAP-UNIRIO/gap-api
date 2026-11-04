@@ -21,6 +21,7 @@ const gradleArgs = [
   '--tests', 'com.gap.api.Integration.CourseServiceIntegrationTest',
   '--tests', 'com.gap.api.Controller.InstitutionControllerTest',
   '--tests', 'com.gap.api.Service.InstitutionServiceTest',
+  '--tests', 'com.gap.api.Validation.InstitutionValidationTest',
   '--tests', 'com.gap.api.Controller.UserControllerTest',
   '--tests', 'com.gap.api.Service.UserServiceTest',
   '--tests', 'com.gap.api.Controller.OrgUnitControllerTest',

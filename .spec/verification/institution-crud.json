@@ -1,11 +1,11 @@
 {
   "feature": "institution-crud",
-  "timestamp": "2026-10-22T21:13:09.160Z",
-  "gitRev": "ea26494",
+  "timestamp": "2026-10-28T20:19:41.768Z",
+  "gitRev": "c2f1403",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 0,
-  "testsParsed": 218,
+  "exitCode": 1,
+  "testsParsed": 40,
   "results": {
     "AC-045": {
       "status": "pass",
@@ -44,7 +44,7 @@
     },
     "AC-052": {
       "status": "pass",
-      "testName": "@spec:AC-052 create código duplicado retorna 409",
+      "testName": "@spec:AC-052 @spec:AC-131 create código duplicado retorna 409 no envelope padrão",
       "method": "tap"
     },
     "AC-053": {
