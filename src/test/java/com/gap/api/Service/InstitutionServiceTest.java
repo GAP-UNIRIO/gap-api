@@ -6,6 +6,7 @@ import com.gap.api.Model.Entity.Institution;
 import com.gap.api.Model.Entity.Institution.AuthProviderType;
 import com.gap.api.Model.Entity.Institution.SignatureProviderType;
 import com.gap.api.Repository.InstitutionRepository;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -202,6 +203,57 @@ class InstitutionServiceTest {
 
         assertThatThrownBy(() -> service.create(request("Nova", "04252011000110", null)))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-131 create converte constraint Hibernate nomeada para 409")
+    void create_namedCodeConstraintViolationConflicts() {
+        when(repository.existsByCode("04252011000110")).thenReturn(false);
+        ConstraintViolationException violation = new ConstraintViolationException(
+                "duplicate", new SQLException("duplicate key", "23505"), "institutions_code_key");
+        when(repository.saveAndFlush(any(Institution.class)))
+                .thenThrow(new DataIntegrityViolationException("duplicate", violation));
+
+        assertThatThrownBy(() -> service.create(request("Nova", "04252011000110", null)))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-131 create propaga violações de integridade que não são de código")
+    void create_nonCodeIntegrityViolationPropagates() {
+        DataIntegrityViolationException violation = new DataIntegrityViolationException(
+                "foreign key", new SQLException("foreign key violation", "23503"));
+        when(repository.existsByCode("04252011000110")).thenReturn(false);
+        when(repository.saveAndFlush(any(Institution.class))).thenThrow(violation);
+
+        assertThatThrownBy(() -> service.create(request("Nova", "04252011000110", null)))
+                .isSameAs(violation);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-131 update converte colisão concorrente do código em 409")
+    void update_concurrentUniqueViolationConflicts() {
+        Institution existing = institution(1L, "Antiga", "04252011000110", true);
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.existsByCode("11222333000181")).thenReturn(false);
+        when(repository.saveAndFlush(any(Institution.class))).thenThrow(new DataIntegrityViolationException(
+                "duplicate", new SQLException("duplicate key institutions_code_key", "23505")));
+
+        assertThatThrownBy(() -> service.update(1L, request("Atualizada", "11222333000181", null)))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-131 update propaga violações de integridade que não são de código")
+    void update_nonCodeIntegrityViolationPropagates() {
+        Institution existing = institution(1L, "Antiga", "04252011000110", true);
+        DataIntegrityViolationException violation = new DataIntegrityViolationException(
+                "foreign key", new SQLException("foreign key violation", "23503"));
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.saveAndFlush(any(Institution.class))).thenThrow(violation);
+
+        assertThatThrownBy(() -> service.update(1L, request("Atualizada", "04252011000110", null)))
+                .isSameAs(violation);
     }
 
     // ---------- update ----------
