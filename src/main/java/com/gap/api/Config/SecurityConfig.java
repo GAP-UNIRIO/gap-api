@@ -44,6 +44,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll() // Rotas abertas, se houver
+                        .requestMatchers("/doc", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Documentação (Swagger)
                         .anyRequest().authenticated() // Restante exige login
                 )
 
