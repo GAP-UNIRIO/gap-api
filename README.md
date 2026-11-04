@@ -297,6 +297,8 @@ export DEV_GOOGLE_CLIENT_SECRET="qualquer-valor-em-teste-local"
 
 Todas as rotas abaixo ficam sob o context path `/api` e exigem autenticação.
 
+A documentação interativa (Swagger UI) fica em `http://localhost:8080/api/doc` e o contrato OpenAPI em `/api/v3/api-docs`, ambos sem login. No perfil `prod` a documentação é desabilitada.
+
 ### Usuário
 
 | Método | Rota | Descrição |

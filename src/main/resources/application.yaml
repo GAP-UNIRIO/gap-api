@@ -1,3 +1,9 @@
 spring:
   profiles:
     active: dev
+
+springdoc:
+  swagger-ui:
+    path: /doc
+    csrf:
+      enabled: true

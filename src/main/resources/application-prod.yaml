@@ -23,6 +23,11 @@ spring:
 server:
   servlet:
     context-path: /api
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 app:
   security:
     allowed-domains: ${ALLOWED_DOMAINS}
