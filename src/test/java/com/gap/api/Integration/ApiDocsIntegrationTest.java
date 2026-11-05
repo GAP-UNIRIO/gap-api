@@ -28,7 +28,7 @@ class ApiDocsIntegrationTest {
     private IStorageService storageService;
 
     @Test
-    @DisplayName("@spec:AC-126 publica o contrato OpenAPI sem login")
+    @DisplayName("@spec:AC-141 publica o contrato OpenAPI sem login")
     void apiDocs_withoutLogin_returnsOpenApiContract() throws Exception {
         mockMvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk())
@@ -38,7 +38,7 @@ class ApiDocsIntegrationTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-127 abre a interface do Swagger em /doc sem login")
+    @DisplayName("@spec:AC-142 abre a interface do Swagger em /doc sem login")
     void doc_withoutLogin_redirectsToSwaggerUi() throws Exception {
         mockMvc.perform(get("/doc"))
                 .andExpect(status().is3xxRedirection())
@@ -49,7 +49,7 @@ class ApiDocsIntegrationTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-128 endpoints de negócio continuam exigindo login")
+    @DisplayName("@spec:AC-143 endpoints de negócio continuam exigindo login")
     void businessEndpoint_withoutLogin_redirectsToOauthLogin() throws Exception {
         mockMvc.perform(get("/users/me"))
                 .andExpect(status().is3xxRedirection())

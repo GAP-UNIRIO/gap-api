@@ -1,25 +1,25 @@
 {
   "feature": "api-docs",
-  "timestamp": "2026-11-04T18:05:52.985Z",
-  "gitRev": "c2f1403",
+  "timestamp": "2026-11-05T18:59:37.256Z",
+  "gitRev": "332532e",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 0,
-  "testsParsed": 221,
+  "exitCode": 1,
+  "testsParsed": 246,
   "results": {
-    "AC-126": {
+    "AC-141": {
       "status": "pass",
-      "testName": "@spec:AC-126 publica o contrato OpenAPI sem login",
+      "testName": "@spec:AC-141 publica o contrato OpenAPI sem login",
       "method": "tap"
     },
-    "AC-127": {
+    "AC-142": {
       "status": "pass",
-      "testName": "@spec:AC-127 abre a interface do Swagger em /doc sem login",
+      "testName": "@spec:AC-142 abre a interface do Swagger em /doc sem login",
       "method": "tap"
     },
-    "AC-128": {
+    "AC-143": {
       "status": "pass",
-      "testName": "@spec:AC-128 endpoints de negócio continuam exigindo login",
+      "testName": "@spec:AC-143 endpoints de negócio continuam exigindo login",
       "method": "tap"
     }
   },
