@@ -8,8 +8,11 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,6 +39,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_solicitacao", nullable = false)
     private OrderType orderType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 30)
+    private OrderStatus status = OrderStatus.ABERTA;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Annex> annexes = new ArrayList<>();
@@ -66,6 +73,40 @@ public class Order {
         PRORROGACAO_PRAZO_INTEGRALIZACAO,
         CANCELAMENTO_MATRICULA,
         TRANCAMENTO_DE_MATRICULA
+    }
+
+    /**
+     * Ciclo de vida da solicitação. As transições permitidas ficam no próprio enum;
+     * status sem transição de saída são finais.
+     */
+    public enum OrderStatus {
+        ABERTA,
+        EM_ANALISE,
+        EM_DILIGENCIA,
+        DEFERIDA,
+        INDEFERIDA,
+        CANCELADA,
+        CONCLUIDA;
+
+        private static final Map<OrderStatus, Set<OrderStatus>> TRANSITIONS = new EnumMap<>(OrderStatus.class);
+
+        static {
+            TRANSITIONS.put(ABERTA, EnumSet.of(EM_ANALISE, CANCELADA));
+            TRANSITIONS.put(EM_ANALISE, EnumSet.of(EM_DILIGENCIA, DEFERIDA, INDEFERIDA));
+            TRANSITIONS.put(EM_DILIGENCIA, EnumSet.of(EM_ANALISE, CANCELADA));
+            TRANSITIONS.put(DEFERIDA, EnumSet.of(CONCLUIDA));
+            TRANSITIONS.put(INDEFERIDA, EnumSet.noneOf(OrderStatus.class));
+            TRANSITIONS.put(CANCELADA, EnumSet.noneOf(OrderStatus.class));
+            TRANSITIONS.put(CONCLUIDA, EnumSet.noneOf(OrderStatus.class));
+        }
+
+        public boolean canTransitionTo(OrderStatus target) {
+            return TRANSITIONS.get(this).contains(target);
+        }
+
+        public boolean isFinal() {
+            return TRANSITIONS.get(this).isEmpty();
+        }
     }
 
 
