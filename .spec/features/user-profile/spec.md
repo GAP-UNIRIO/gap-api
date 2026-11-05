@@ -52,11 +52,27 @@ Como usuário autenticado, quero informar minha matrícula e curso para completa
 - **Quando** completa o cadastro
 - **Então** a conta alterada é aquela localizada pelo e-mail do principal, sem campo de identidade escolhido pelo cliente
 
+#### AC-132 — Aceitar o nome corrigido e o nome legado da matrícula
+- **Dado** cliente envia matrícula usando `registrationNumber` ou `registrarionNumber`
+- **Quando** completa o cadastro
+- **Então** a matrícula enviada é salva e o nome corrigido é o campo canônico do DTO
+
+#### AC-133 — Rejeitar matrícula ausente, vazia ou em branco
+- **Dado** cliente envia matrícula nula, vazia ou composta apenas por espaços
+- **Quando** completa o cadastro
+- **Então** recebe HTTP 400 com envelope `BaseResponse` e nenhuma operação de usuário ou curso é executada
+
+#### AC-134 — Rejeitar matrícula fora do formato numérico
+- **Dado** cliente envia matrícula com caracteres que não sejam dígitos ASCII
+- **Quando** completa o cadastro
+- **Então** recebe HTTP 400 com envelope `BaseResponse` e nenhuma operação de usuário ou curso é executada
+
 ## Regras observadas
 
 - `GET /users/me` deriva o e-mail do principal OIDC e retorna `UserResponse`, que não serializa as relações de pedidos e papéis.
 - `isCompletedCadaster` é calculado como matrícula não nula/não vazia **e** curso não nulo.
-- O DTO de complemento não tem anotações de validação e seu campo está escrito `registrarionNumber` (com essa grafia); não há validação de formato ou não vazio para matrícula.
+- O DTO de complemento exige matrícula não vazia composta apenas por dígitos ASCII; não impõe comprimento até definição institucional.
+- `registrationNumber` é o nome canônico da propriedade e do JSON; `registrarionNumber` permanece como alias JSON legado de entrada.
 - O serviço substitui matrícula e curso pelos valores enviados após localizar a conta autenticada. O curso é validado por existência; conta ou curso inexistente resulta em 404.
 - O cadastro de conta/perfil básico ocorre no login OIDC; este recurso não oferece criação independente de conta.
 - Rotas seguem a autenticação/CSRF definidos globalmente.
@@ -64,13 +80,13 @@ Como usuário autenticado, quero informar minha matrícula e curso para completa
 ## Fora de escopo
 
 - CRUD administrativo de usuários, alteração de e-mail/nome, administração de papéis ou pedidos.
-- Definir formato/obrigatoriedade da matrícula, imutabilidade após conclusão ou regra de domínio de vínculo com curso.
+- Definir comprimento oficial da matrícula; imutabilidade após conclusão ou regra de domínio de vínculo com curso.
 - Provisionamento e validação de domínio de e-mail no login OIDC.
 
 ## Suposições
 
-Nenhuma; os critérios descrevem o comportamento atual.
+- ASM-001 [aberta]: até que a instituição defina um comprimento oficial, qualquer sequência não vazia de dígitos ASCII é aceita como matrícula.
 
 ## Perguntas em aberto
 
-Nenhuma para documentar o comportamento atual. A ausência de validação de matrícula é registrada como comportamento observado, sem inferir uma regra desejada.
+- Q-001 [aberta]: qual é o comprimento oficial (fixo ou intervalo) da matrícula institucional?

@@ -122,6 +122,59 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-132 aceita o nome corrigido da matrícula")
+    void complementUser_acceptsCorrectRegistrationNumberName() throws Exception {
+        when(userService.completeUserCadaster(any(UserComplementRequest.class), any()))
+                .thenReturn(userResponseMock(1L, "aluno@edu.unirio.br", "Aluno Silva", true));
+
+        mockMvc.perform(put("/users/me/complemento")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"registrationNumber\":\"20260001\",\"courseId\":10}" ))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-132 mantém compatibilidade com o nome legado da matrícula")
+    void complementUser_acceptsLegacyRegistrationNumberName() throws Exception {
+        when(userService.completeUserCadaster(any(UserComplementRequest.class), any()))
+                .thenReturn(userResponseMock(1L, "aluno@edu.unirio.br", "Aluno Silva", true));
+
+        mockMvc.perform(put("/users/me/complemento")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"registrarionNumber\":\"20260001\",\"courseId\":10}" ))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-133 rejeita matrícula ausente, vazia ou em branco com BaseResponse")
+    void complementUser_rejectsBlankRegistrationNumber() throws Exception {
+        for (String value : new String[]{"null", "\"\"", "\"   \""}) {
+            mockMvc.perform(put("/users/me/complemento")
+                            .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                            .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"registrationNumber\":" + value + ",\"courseId\":10}"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value("error"))
+                    .andExpect(jsonPath("$.message").value("Dados inválidos."));
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-134 rejeita matrícula não numérica com BaseResponse")
+    void complementUser_rejectsNonNumericRegistrationNumber() throws Exception {
+        for (String registrationNumber : new String[]{"2026A001", "２０２６０００１"}) {
+            mockMvc.perform(put("/users/me/complemento")
+                            .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                            .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"registrationNumber\":\"" + registrationNumber + "\",\"courseId\":10}"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value("error"));
+        }
+    }
+
+    @Test
     @DisplayName("@spec:AC-065 PUT /users/me/complemento retorna 404 se a conta não existe")
     void complementUser_userNotFound() throws Exception {
         when(userService.completeUserCadaster(any(UserComplementRequest.class), any()))

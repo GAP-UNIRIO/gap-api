@@ -2,13 +2,13 @@ spring:
   application:
     name: gap-api
   datasource:
-    url: jdbc:postgresql://localhost:5432/core_api_test
+    url: jdbc:postgresql://localhost:5432/gap_api_test
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
   security:
     oauth2:
       client:

@@ -1,11 +1,11 @@
 {
   "feature": "user-profile",
-  "timestamp": "2026-10-22T21:14:20.502Z",
-  "gitRev": "ea26494",
-  "command": "node test/run-onp-tests.mjs",
-  "reporter": "tap",
+  "timestamp": "2026-11-04T21:01:22.535Z",
+  "gitRev": "332532e",
+  "command": "Gradle targeted UserControllerTest and UserServiceTest",
+  "reporter": "junit",
   "exitCode": 0,
-  "testsParsed": 218,
+  "testsParsed": 20,
   "results": {
     "AC-061": {
       "status": "pass",
@@ -41,6 +41,21 @@
       "status": "pass",
       "testName": "@spec:AC-064 @spec:AC-067 PUT /users/me/complemento completa o cadastro da identidade autenticada",
       "method": "tap"
+    },
+    "AC-132": {
+      "status": "pass",
+      "testName": "@spec:AC-132 mantém compatibilidade com o nome legado da matrícula",
+      "method": "junit"
+    },
+    "AC-133": {
+      "status": "pass",
+      "testName": "@spec:AC-133 rejeita matrícula ausente, vazia ou em branco com BaseResponse",
+      "method": "junit"
+    },
+    "AC-134": {
+      "status": "pass",
+      "testName": "@spec:AC-134 rejeita matrícula não numérica com BaseResponse",
+      "method": "junit"
     }
   },
   "principles": {}

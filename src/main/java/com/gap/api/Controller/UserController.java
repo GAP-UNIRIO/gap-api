@@ -5,6 +5,7 @@ import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PutMapping("/me/complemento")
-    public ResponseEntity<BaseResponse<UserResponse>> complementUser(@RequestBody UserComplementRequest userComplementRequest, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<BaseResponse<UserResponse>> complementUser(@Valid @RequestBody UserComplementRequest userComplementRequest, @AuthenticationPrincipal OidcUser oidcUser) {
         return ResponseEntity.ok(BaseResponse.success("User cadaster completed successfully" , userService.completeUserCadaster(userComplementRequest, oidcUser)));
     }
 }

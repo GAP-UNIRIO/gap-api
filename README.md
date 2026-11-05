@@ -308,10 +308,10 @@ A documentação interativa (Swagger UI) fica em `http://localhost:8080/api/doc`
 
 ```json
 // PUT /api/users/me/complemento
-{ "registrarionNumber": "202610012", "courseId": 1 }
+{ "registrationNumber": "202610012", "courseId": 1 }
 ```
 
-> O campo de matrícula é grafado `registrarionNumber` no contrato atual da API.
+> `registrarionNumber` continua aceito como nome legado durante a transição. A matrícula é obrigatória e deve conter somente dígitos ASCII; o comprimento oficial ainda precisa ser definido pela instituição.
 
 ### CRUDs
 
