@@ -8,7 +8,6 @@ import com.gap.api.Model.Entity.Order;
 import com.gap.api.Model.Entity.ApprovalStage;
 import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Model.Entity.WorkflowTemplate;
-import com.gap.api.Model.Entity.Course;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IWorkflowTemplateService;
 import org.junit.jupiter.api.DisplayName;
@@ -29,10 +28,15 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,9 +70,7 @@ class WorkflowTemplateControllerTest {
         WorkflowTemplateRequest requestDTO = new WorkflowTemplateRequest(Order.OrderType.APROVEITAMENTO_DE_DISCIPLINA, 1L,
                 List.of(new WorkflowStepRequest(1, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.COORDENACAO,
                         "Coordenação", "Análise pela coordenação")));
-        Course course = new Course();
-        course.setId(1L);
-        course.setName("Sistemas de Informação");
+        var course = new WorkflowTemplateResponse.CourseSummary(1L, "Sistemas de Informação");
         var response = new WorkflowTemplateResponse(1L, Order.OrderType.APROVEITAMENTO_DE_DISCIPLINA, course,
                 List.of(new WorkflowTemplateResponse.WorkflowStepSummary(1, ApprovalStage.ApprovalStageType.COORDINATOR,
                         OrgUnit.OrgUnitType.COORDENACAO, "Coordenação", "Análise pela coordenação")));
@@ -168,5 +170,111 @@ class WorkflowTemplateControllerTest {
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    // ---------- consulta, edição e exclusão (workflow-template-crud) ----------
+
+    @Test
+    @DisplayName("@spec:AC-158 GET lista os templates")
+    void findAll_returns200() throws Exception {
+        when(workflowTemplateService.findAll()).thenReturn(List.of(response(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA)));
+
+        mockMvc.perform(get("/workflow-template").with(admin()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data[0].id").value(5))
+                .andExpect(jsonPath("$.data[0].orderType").value("TRANCAMENTO_DE_MATRICULA"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-159 GET por id retorna o template")
+    void findById_returns200() throws Exception {
+        when(workflowTemplateService.findById(5L)).thenReturn(response(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA));
+
+        mockMvc.perform(get("/workflow-template/5").with(admin()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(5));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-160 GET de template inexistente retorna 404")
+    void findById_returns404() throws Exception {
+        when(workflowTemplateService.findById(99L))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Template de workflow não encontrado: 99"));
+
+        mockMvc.perform(get("/workflow-template/99").with(admin()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Template de workflow não encontrado: 99"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-161 PUT atualiza o template")
+    void update_returns200() throws Exception {
+        when(workflowTemplateService.update(eq(5L), any(WorkflowTemplateRequest.class)))
+                .thenReturn(response(5L, Order.OrderType.REVISAO_DE_PROVA));
+
+        mockMvc.perform(put("/workflow-template/5").with(admin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.orderType").value("REVISAO_DE_PROVA"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-162 PUT que duplica outro template retorna 409")
+    void update_returns409() throws Exception {
+        when(workflowTemplateService.update(eq(5L), any(WorkflowTemplateRequest.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um template para esse tipo de solicitação e curso."));
+
+        mockMvc.perform(put("/workflow-template/5").with(admin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-163 PUT com curso inexistente retorna 404")
+    void update_courseNotFound_returns404() throws Exception {
+        when(workflowTemplateService.update(eq(5L), any(WorkflowTemplateRequest.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: 77"));
+
+        mockMvc.perform(put("/workflow-template/5").with(admin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-164 PUT com stepOrder repetido retorna 400")
+    void update_duplicateStepOrder_returns400() throws Exception {
+        when(workflowTemplateService.update(eq(5L), any(WorkflowTemplateRequest.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "As etapas não podem repetir o stepOrder."));
+
+        mockMvc.perform(put("/workflow-template/5").with(admin()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("As etapas não podem repetir o stepOrder."));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-165 DELETE remove o template")
+    void delete_returns200() throws Exception {
+        mockMvc.perform(delete("/workflow-template/5").with(admin()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"));
+
+        verify(workflowTemplateService).delete(5L);
+    }
+
+    private org.springframework.test.web.servlet.request.RequestPostProcessor admin() {
+        return oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
+
+    private WorkflowTemplateRequest validRequest() {
+        return new WorkflowTemplateRequest(Order.OrderType.REVISAO_DE_PROVA, null,
+                List.of(new WorkflowStepRequest(1, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.COORDENACAO,
+                        "Coordenação", "Análise pela coordenação")));
     }
 }

@@ -1,0 +1,52 @@
+{
+  "feature": "workflow-template-crud",
+  "timestamp": "2026-11-06T17:40:31.824Z",
+  "gitRev": "b1b5e47",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 282,
+  "results": {
+    "AC-158": {
+      "status": "pass",
+      "testName": "@spec:AC-158 GET lista os templates",
+      "method": "tap"
+    },
+    "AC-159": {
+      "status": "pass",
+      "testName": "@spec:AC-159 GET por id retorna o template",
+      "method": "tap"
+    },
+    "AC-160": {
+      "status": "pass",
+      "testName": "@spec:AC-160 GET de template inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-161": {
+      "status": "pass",
+      "testName": "@spec:AC-161 PUT atualiza o template",
+      "method": "tap"
+    },
+    "AC-162": {
+      "status": "pass",
+      "testName": "@spec:AC-162 PUT que duplica outro template retorna 409",
+      "method": "tap"
+    },
+    "AC-163": {
+      "status": "pass",
+      "testName": "@spec:AC-163 PUT com curso inexistente retorna 404",
+      "method": "tap"
+    },
+    "AC-164": {
+      "status": "pass",
+      "testName": "@spec:AC-164 PUT com stepOrder repetido retorna 400",
+      "method": "tap"
+    },
+    "AC-165": {
+      "status": "pass",
+      "testName": "@spec:AC-165 DELETE remove o template",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}
