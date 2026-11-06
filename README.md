@@ -154,11 +154,11 @@ Exemplo de template (padrão da instituição para trancamento de matrícula):
 
 - **Login**: OAuth2/OIDC com **Google** (`spring-boot-starter-oauth2-client`).
 - **Restrição de domínio**: `CustomOidcUserService` valida o domínio do e-mail (claim `hd` do Google, com fallback para o domínio do e-mail) contra a lista `app.security.allowed-domains`. Domínios fora da lista são rejeitados.
-- **Provisionamento**: no primeiro login o usuário é criado com e-mail e nome; nos seguintes, o nome é atualizado. Matrícula e curso são preenchidos depois em `PUT /users/me/complemento`.
+- **Provisionamento**: no primeiro login o usuário é criado com e-mail, nome e o papel `ROLE_BASIC`; nos seguintes, o nome é atualizado. Matrícula e curso são preenchidos depois em `PUT /users/me/complemento`. Quem logar com um e-mail listado em `APP_SECURITY_ADMIN_EMAILS` recebe também `ROLE_ADMIN`.
 - **Sessão**: baseada em cookie `JSESSIONID`.
 - **CSRF**: token em cookie `XSRF-TOKEN` (legível pelo JavaScript). Requisições que alteram estado (`POST`, `PUT`, `DELETE`) devem enviar o valor no header `X-XSRF-TOKEN`.
 - **CORS**: libera apenas a origem configurada em `app.security.frontend-url`, com credenciais e métodos `GET`, `POST`, `PUT`, `DELETE` e `OPTIONS`.
-- **Autorização**: todas as rotas exigem usuário autenticado. Hoje não há restrição por papel (role) nos endpoints; as roles estão modeladas e prontas para uso.
+- **Autorização**: papéis `ROLE_BASIC` (aluno) e `ROLE_ADMIN` (servidores), carregados do banco no login. Cadastros (instituições, unidades, cursos, calendários): leitura para qualquer usuário logado, escrita só `ROLE_ADMIN`. Papéis (`/roles`), fluxos (`/workflow-template`) e atribuição de papéis (`PUT /users/{id}/roles`): só `ROLE_ADMIN`. Demais rotas: qualquer usuário logado. Chamada sem login responde **401** e acesso negado responde **403**, ambos no formato `BaseResponse`.
 - **Redirecionamentos**: sucesso vai para `{frontend-url}/home`; falha para `{frontend-url}/login?error=unauthorized`; logout para `{frontend-url}/login?logout=true`.
 
 Fluxo típico de login:
@@ -208,6 +208,7 @@ Em todos os perfis a API é servida sob o **context path `/api`** (porta padrão
 | `DB_USER` | prod | Usuário do banco |
 | `DB_PASSWORD` | prod | Senha do banco |
 | `ALLOWED_DOMAINS` | prod | Domínios de e-mail permitidos, separados por vírgula (ex.: `edu.unirio.br,uniriotec.br`) |
+| `APP_SECURITY_ADMIN_EMAILS` | todos | E-mails que recebem `ROLE_ADMIN` ao fazer login, separados por vírgula (opcional) |
 | `FRONTEND_URL` | prod | URL/origem do frontend (CORS e redirecionamentos) |
 | `SPRING_PROFILES_ACTIVE` | todos | Seleciona o perfil (padrão: `dev`) |
 
