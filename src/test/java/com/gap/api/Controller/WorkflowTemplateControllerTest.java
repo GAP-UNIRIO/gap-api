@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -75,7 +76,7 @@ class WorkflowTemplateControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/workflow-template")
-                        .with(oidcLogin())
+                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -96,7 +97,7 @@ class WorkflowTemplateControllerTest {
                         "Coordenação", "Análise pela coordenação")));
         when(workflowTemplateService.createTemplate(any(WorkflowTemplateRequest.class)))
                 .thenReturn(response(2L, request.orderType()));
-        mockMvc.perform(post("/workflow-template").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.course").doesNotExist());
     }
@@ -112,7 +113,7 @@ class WorkflowTemplateControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/workflow-template")
-                        .with(oidcLogin())
+                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -131,7 +132,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null,\"steps\":[]}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.status").value("error"));
@@ -146,7 +147,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }
@@ -163,7 +164,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"" + "x".repeat(256) + "\"}]}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }

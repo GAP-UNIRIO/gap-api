@@ -1,10 +1,13 @@
 package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.UserComplementRequest;
+import com.gap.api.Model.DTO.UserRolesRequest;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
+import com.gap.api.Repository.RoleRepository;
 import com.gap.api.Repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -36,6 +42,9 @@ class UserServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+
+    @Mock
+    private RoleRepository roleRepository;
 
     @Mock
     private OidcUser oidcUser;
@@ -61,6 +70,57 @@ class UserServiceTest {
     private void assertStatus(Throwable ex, HttpStatus expected) {
         assertThat(ex).isInstanceOfSatisfying(ResponseStatusException.class,
                 e -> assertThat(e.getStatusCode()).isEqualTo(expected));
+    }
+
+    // ---------- papéis ----------
+
+    @Test
+    @DisplayName("@spec:AC-148 findByEmail deve retornar os papéis do usuário")
+    void findByEmail_returnsRoles() {
+        User existing = user(EMAIL);
+        existing.setRoles(new HashSet<>(Set.of(new Role(2L, "ROLE_ADMIN"), new Role(1L, "ROLE_BASIC"))));
+        when(repository.findByEmail(EMAIL)).thenReturn(Optional.of(existing));
+
+        assertThat(service.findByEmail(EMAIL).roles()).containsExactly("ROLE_ADMIN", "ROLE_BASIC");
+    }
+
+    @Test
+    @DisplayName("@spec:AC-155 updateRoles deve substituir os papéis do usuário")
+    void updateRoles_replacesRoles() {
+        User existing = user(EMAIL);
+        existing.setRoles(new HashSet<>(Set.of(new Role(1L, "ROLE_BASIC"))));
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(roleRepository.findByAuthority("ROLE_ADMIN")).thenReturn(Optional.of(new Role(2L, "ROLE_ADMIN")));
+        when(repository.save(existing)).thenReturn(existing);
+
+        UserResponse response = service.updateRoles(1L, new UserRolesRequest(List.of("ROLE_ADMIN")));
+
+        assertThat(response.roles()).containsExactly("ROLE_ADMIN");
+        assertThat(existing.getRoles()).extracting(Role::getAuthority).containsExactly("ROLE_ADMIN");
+    }
+
+    @Test
+    @DisplayName("@spec:AC-157 updateRoles deve lançar 404 quando o usuário não existe")
+    void updateRoles_userNotFound() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.updateRoles(99L, new UserRolesRequest(List.of("ROLE_ADMIN"))))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-157 updateRoles deve lançar 404 e manter os papéis quando o papel não existe")
+    void updateRoles_roleNotFound() {
+        User existing = user(EMAIL);
+        existing.setRoles(new HashSet<>(Set.of(new Role(1L, "ROLE_BASIC"))));
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(roleRepository.findByAuthority("ROLE_INEXISTENTE")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.updateRoles(1L, new UserRolesRequest(List.of("ROLE_INEXISTENTE"))))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
+        assertThat(existing.getRoles()).extracting(Role::getAuthority).containsExactly("ROLE_BASIC");
+        verify(repository, never()).save(any());
     }
 
     // ---------- findByEmail ----------
