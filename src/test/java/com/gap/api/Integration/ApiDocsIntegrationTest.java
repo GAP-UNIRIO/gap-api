@@ -50,9 +50,9 @@ class ApiDocsIntegrationTest {
 
     @Test
     @DisplayName("@spec:AC-143 endpoints de negócio continuam exigindo login")
-    void businessEndpoint_withoutLogin_redirectsToOauthLogin() throws Exception {
+    void businessEndpoint_withoutLogin_returnsUnauthorized() throws Exception {
         mockMvc.perform(get("/users/me"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(header().string("Location", containsString("oauth2/authorization")));
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.status").value("error"));
     }
 }
