@@ -8,6 +8,7 @@ import com.gap.api.Model.Entity.Order;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.OrderRepository;
 import com.gap.api.Repository.UserRepository;
+import com.gap.api.Service.Interface.IOrderStatusService;
 import com.gap.api.Service.Interface.IStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +38,7 @@ class OrderServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private IStorageService storageService;
     @Mock private WorkflowEngineService workflowEngineService;
+    @Mock private IOrderStatusService orderStatusService;
     @InjectMocks private OrderService orderService;
 
     private User user;
@@ -277,6 +279,90 @@ class OrderServiceTest {
                 () -> create(request(List.of(annex("proof.pdf", "temporary/proof")))));
 
         verify(storageService).deleteObject("orders/23/opaque/proof.pdf");
+    }
+
+    @Test
+    @DisplayName("@spec:AC-132 cria a solicitação com status ABERTA")
+    void create_newOrder_startsWithStatusAberta() {
+        givenUserAndOrderSave();
+
+        var response = create(request(List.of()));
+
+        assertEquals(Order.OrderStatus.ABERTA, response.status());
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository, atLeastOnce()).save(orderCaptor.capture());
+        assertEquals(Order.OrderStatus.ABERTA, orderCaptor.getValue().getStatus());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-137 aluno cancela a própria solicitação aberta")
+    void cancel_ownOpenOrder_transitionsToCancelada() {
+        Order order = existingOrder(user, Order.OrderStatus.ABERTA);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+        when(orderStatusService.transition(order, Order.OrderStatus.CANCELADA, user)).thenAnswer(invocation -> {
+            order.setStatus(Order.OrderStatus.CANCELADA);
+            return order;
+        });
+
+        var response = orderService.cancel(23L, user.getEmail());
+
+        assertEquals(Order.OrderStatus.CANCELADA, response.status());
+        verify(orderStatusService).transition(order, Order.OrderStatus.CANCELADA, user);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-138 recusa cancelamento fora do status ABERTA com HTTP 422")
+    void cancel_orderNotOpen_throwsUnprocessable() {
+        Order order = existingOrder(user, Order.OrderStatus.EM_ANALISE);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.cancel(23L, user.getEmail()));
+
+        assertEquals(422, error.getStatusCode().value());
+        assertEquals(Order.OrderStatus.EM_ANALISE, order.getStatus());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-139 impede cancelar a solicitação de outro usuário")
+    void cancel_orderOfAnotherUser_throwsForbidden() {
+        User owner = new User();
+        owner.setId(8L);
+        Order order = existingOrder(owner, Order.OrderStatus.ABERTA);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.cancel(23L, user.getEmail()));
+
+        assertEquals(HttpStatus.FORBIDDEN, error.getStatusCode());
+        assertEquals(Order.OrderStatus.ABERTA, order.getStatus());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-140 informa 404 ao cancelar solicitação inexistente")
+    void cancel_unknownOrder_throwsNotFound() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(99L)).thenReturn(Optional.empty());
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.cancel(99L, user.getEmail()));
+
+        assertEquals(HttpStatus.NOT_FOUND, error.getStatusCode());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    private Order existingOrder(User owner, Order.OrderStatus status) {
+        Order order = new Order();
+        order.setId(23L);
+        order.setUser(owner);
+        order.setOrderType(Order.OrderType.INCLUSAO_DISCIPLINA);
+        order.setStatus(status);
+        return order;
     }
 
     private void givenUserAndOrderSave() {
