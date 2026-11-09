@@ -1,0 +1,82 @@
+{
+  "feature": "access-control",
+  "timestamp": "2026-11-06T17:05:55.246Z",
+  "gitRev": "11f9c5b",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 265,
+  "results": {
+    "AC-144": {
+      "status": "pass",
+      "testName": "@spec:AC-144 migration cadastra ROLE_BASIC e ROLE_ADMIN e dá ROLE_BASIC aos usuários existentes",
+      "method": "tap"
+    },
+    "AC-154": {
+      "status": "pass",
+      "testName": "@spec:AC-154 delete deve lançar 409 e não remover papéis do núcleo",
+      "method": "tap"
+    },
+    "AC-145": {
+      "status": "pass",
+      "testName": "@spec:AC-145 carrega os papéis do banco como autoridades da sessão",
+      "method": "tap"
+    },
+    "AC-146": {
+      "status": "pass",
+      "testName": "@spec:AC-146 cria o usuário novo com ROLE_BASIC",
+      "method": "tap"
+    },
+    "AC-147": {
+      "status": "pass",
+      "testName": "@spec:AC-147 não duplica ROLE_ADMIN de quem já é administrador",
+      "method": "tap"
+    },
+    "AC-148": {
+      "status": "pass",
+      "testName": "@spec:AC-148 findByEmail deve retornar os papéis do usuário",
+      "method": "tap"
+    },
+    "AC-149": {
+      "status": "pass",
+      "testName": "@spec:AC-149 usuário BASIC não altera cadastros",
+      "method": "tap"
+    },
+    "AC-150": {
+      "status": "pass",
+      "testName": "@spec:AC-150 administrador altera cadastros",
+      "method": "tap"
+    },
+    "AC-151": {
+      "status": "pass",
+      "testName": "@spec:AC-151 aplica a matriz de acesso por papel",
+      "method": "tap"
+    },
+    "AC-152": {
+      "status": "pass",
+      "testName": "@spec:AC-152 acesso negado responde 403 no padrão BaseResponse",
+      "method": "tap"
+    },
+    "AC-153": {
+      "status": "pass",
+      "testName": "@spec:AC-153 chamada sem login responde 401 no padrão BaseResponse",
+      "method": "tap"
+    },
+    "AC-155": {
+      "status": "pass",
+      "testName": "@spec:AC-155 administrador atribui papéis a um usuário",
+      "method": "tap"
+    },
+    "AC-156": {
+      "status": "pass",
+      "testName": "@spec:AC-156 usuário BASIC não atribui papéis",
+      "method": "tap"
+    },
+    "AC-157": {
+      "status": "pass",
+      "testName": "@spec:AC-157 atribuição com usuário ou papel inexistente responde 404",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

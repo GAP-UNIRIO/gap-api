@@ -30,7 +30,7 @@ Como desenvolvedor que consome a API, quero abrir a documentação interativa em
 
 - **Dado** a liberação das rotas de documentação
 - **Quando** um cliente sem sessão chama um endpoint de negócio, como `GET /users/me`
-- **Então** continua sendo redirecionado para o login OAuth2, sem receber dados
+- **Então** recebe HTTP 401, sem receber dados (comportamento definido pela feature access-control, Q-033)
 
 ## Fora de escopo
 

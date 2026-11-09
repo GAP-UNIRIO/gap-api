@@ -9,6 +9,7 @@ import com.gap.api.Service.Interface.IInstitutionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -63,7 +64,7 @@ class InstitutionControllerTest {
                 response(1L, "Universidade Federal do Estado do Rio de Janeiro")
         ));
 
-        mockMvc.perform(get("/institutions").with(oidcLogin()))
+        mockMvc.perform(get("/institutions").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].name").value("Universidade Federal do Estado do Rio de Janeiro"));
@@ -73,7 +74,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-046 findAll sem registros retorna lista vazia")
     void findAll_empty() throws Exception {
         when(service.findAll()).thenReturn(List.of());
-        mockMvc.perform(get("/institutions").with(oidcLogin()))
+        mockMvc.perform(get("/institutions").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -82,7 +83,7 @@ class InstitutionControllerTest {
     void findById_found() throws Exception {
         when(service.findById(1L)).thenReturn(response(1L, "UNIRIO"));
 
-        mockMvc.perform(get("/institutions/1").with(oidcLogin()))
+        mockMvc.perform(get("/institutions/1").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.name").value("UNIRIO"));
@@ -92,7 +93,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-048 findById inexistente retorna 404")
     void findById_notFound() throws Exception {
         when(service.findById(99L)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mockMvc.perform(get("/institutions/99").with(oidcLogin())).andExpect(status().isNotFound());
+        mockMvc.perform(get("/institutions/99").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))).andExpect(status().isNotFound());
     }
 
     // ---------- create ----------
@@ -103,7 +104,7 @@ class InstitutionControllerTest {
         when(service.create(any(InstitutionRequest.class))).thenReturn(response(1L, "UNIRIO"));
 
         mockMvc.perform(post("/institutions")
-                        .with(oidcLogin())
+                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("UNIRIO"))))
@@ -123,7 +124,7 @@ class InstitutionControllerTest {
                 "{\"name\":\"n\",\"code\":\"x\",\"authProviderType\":\"LOCAL\"}"
         };
         for (String body : invalid) {
-            mockMvc.perform(post("/institutions").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/institutions").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(body))
                     .andExpect(status().isBadRequest());
         }
@@ -133,7 +134,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-127 create rejeita CNPJ inválido antes de chamar o serviço")
     void create_invalidCnpj() throws Exception {
         String body = "{\"name\":\"N\",\"code\":\"04.252.011/0001-11\",\"authProviderType\":\"LOCAL\",\"signatureProvider\":\"NONE\"}";
-        mockMvc.perform(post("/institutions").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/institutions").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value("error"));
@@ -143,7 +144,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-051 create rejeita valores de provedores desconhecidos")
     void create_invalidProvider() throws Exception {
         String body = "{\"name\":\"N\",\"code\":\"x\",\"authProviderType\":\"UNKNOWN\",\"signatureProvider\":\"NONE\"}";
-        mockMvc.perform(post("/institutions").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/institutions").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isBadRequest());
     }
@@ -152,7 +153,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-052 @spec:AC-131 create código duplicado retorna 409 no envelope padrão")
     void create_duplicateCode() throws Exception {
         when(service.create(any(InstitutionRequest.class))).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
-        mockMvc.perform(post("/institutions").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/institutions").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request("N"))))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value("error"));
@@ -166,7 +167,7 @@ class InstitutionControllerTest {
         when(service.update(eq(1L), any(InstitutionRequest.class))).thenReturn(response(1L, "UNIRIO Atualizada"));
 
         mockMvc.perform(put("/institutions/1")
-                        .with(oidcLogin())
+                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("UNIRIO Atualizada"))))
@@ -178,7 +179,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-057 update código duplicado retorna 409")
     void update_duplicateCode() throws Exception {
         when(service.update(eq(1L), any(InstitutionRequest.class))).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
-        mockMvc.perform(put("/institutions/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/institutions/1").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request("N"))))
                 .andExpect(status().isConflict());
     }
@@ -187,7 +188,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-058 update inexistente retorna 404")
     void update_notFound() throws Exception {
         when(service.update(eq(99L), any(InstitutionRequest.class))).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mockMvc.perform(put("/institutions/99").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/institutions/99").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request("N"))))
                 .andExpect(status().isNotFound());
     }
@@ -198,7 +199,7 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-059 delete deve retornar 200 ao remover a instituição")
     void delete_success() throws Exception {
         mockMvc.perform(delete("/institutions/1")
-                        .with(oidcLogin())
+                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf()))
                 .andExpect(status().isOk());
 
@@ -209,6 +210,6 @@ class InstitutionControllerTest {
     @DisplayName("@spec:AC-060 delete inexistente retorna 404")
     void delete_notFound() throws Exception {
         org.mockito.Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(service).delete(99L);
-        mockMvc.perform(delete("/institutions/99").with(oidcLogin()).with(csrf())).andExpect(status().isNotFound());
+        mockMvc.perform(delete("/institutions/99").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())).andExpect(status().isNotFound());
     }
 }

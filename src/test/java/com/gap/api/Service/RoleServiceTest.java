@@ -174,7 +174,7 @@ class RoleServiceTest {
     @Test
     @DisplayName("@spec:AC-090 delete deve remover e dar flush, nessa ordem")
     void delete_success() {
-        Role existing = role(1L, "ROLE_ADMIN");
+        Role existing = role(1L, "ROLE_AUDITOR");
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
 
         service.delete(1L);
@@ -191,6 +191,20 @@ class RoleServiceTest {
 
         assertThatThrownBy(() -> service.delete(99L))
                 .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
+
+        verify(repository, never()).delete(any());
+        verify(repository, never()).flush();
+    }
+
+    @Test
+    @DisplayName("@spec:AC-154 delete deve lançar 409 e não remover papéis do núcleo")
+    void delete_coreRole_conflict() {
+        for (String core : List.of("ROLE_BASIC", "ROLE_ADMIN")) {
+            when(repository.findById(5L)).thenReturn(Optional.of(role(5L, core)));
+
+            assertThatThrownBy(() -> service.delete(5L))
+                    .satisfies(ex -> assertStatus(ex, HttpStatus.CONFLICT));
+        }
 
         verify(repository, never()).delete(any());
         verify(repository, never()).flush();

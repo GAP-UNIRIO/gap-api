@@ -2,8 +2,11 @@ package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserResponse;
+import com.gap.api.Model.DTO.UserRolesRequest;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
+import com.gap.api.Repository.RoleRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +16,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
 
     private final UserRepository repository;
     private final CourseRepository courseRepository;
+    private final RoleRepository roleRepository;
 
     public UserResponse findByEmail(String email) {
         return UserResponse.from(repository.findByEmail(email).orElseThrow(() ->
@@ -33,6 +40,19 @@ public class UserService implements IUserService {
         user.setCourse(courseRepository.findById(userComplementRequest.courseId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: " + userComplementRequest.courseId())));
         user.setRegistrationNumber(userComplementRequest.registrarionNumber());
+        return UserResponse.from(repository.save(user));
+    }
+
+    @Transactional
+    public UserResponse updateRoles(Long id, UserRolesRequest request) {
+        User user = repository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + id));
+        Set<Role> roles = new HashSet<>();
+        for (String authority : request.roles()) {
+            roles.add(roleRepository.findByAuthority(authority).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Papel não encontrado: " + authority)));
+        }
+        user.setRoles(roles);
         return UserResponse.from(repository.save(user));
     }
 
