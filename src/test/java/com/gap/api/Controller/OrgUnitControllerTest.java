@@ -1,11 +1,13 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.OrgUnitRequest;
 import com.gap.api.Model.DTO.OrgUnitResponse;
 import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IOrgUnitService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,6 +36,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(OrgUnitController.class)
 @Import(SecurityConfig.class)
 class OrgUnitControllerTest {
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUserForControllerTests() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,7 +75,7 @@ class OrgUnitControllerTest {
                 response(1L, "CCET", OrgUnit.OrgUnitType.COORDENACAO)
         ));
 
-        mockMvc.perform(get("/org-units").with(oidcLogin()))
+        mockMvc.perform(get("/org-units").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].name").value("CCET"))
@@ -75,7 +86,7 @@ class OrgUnitControllerTest {
     @DisplayName("@spec:AC-069 findAll retorna lista vazia")
     void findAll_empty() throws Exception {
         when(service.findAll()).thenReturn(List.of());
-        mockMvc.perform(get("/org-units").with(oidcLogin()))
+        mockMvc.perform(get("/org-units").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -84,7 +95,7 @@ class OrgUnitControllerTest {
     void findById_found() throws Exception {
         when(service.findById(1L)).thenReturn(response(1L, "CCET", OrgUnit.OrgUnitType.COORDENACAO));
 
-        mockMvc.perform(get("/org-units/1").with(oidcLogin()))
+        mockMvc.perform(get("/org-units/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.name").value("CCET"))
@@ -95,7 +106,7 @@ class OrgUnitControllerTest {
     @DisplayName("@spec:AC-071 findById inexistente retorna 404")
     void findById_notFound() throws Exception {
         when(service.findById(99L)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mockMvc.perform(get("/org-units/99").with(oidcLogin())).andExpect(status().isNotFound());
+        mockMvc.perform(get("/org-units/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))).andExpect(status().isNotFound());
     }
 
     // ---------- create ----------
@@ -106,7 +117,7 @@ class OrgUnitControllerTest {
         when(service.create(any(OrgUnitRequest.class))).thenReturn(response(1L, "CCET", OrgUnit.OrgUnitType.COORDENACAO));
 
         mockMvc.perform(post("/org-units")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request(OrgUnit.OrgUnitType.COORDENACAO, "CCET"))))
@@ -120,7 +131,7 @@ class OrgUnitControllerTest {
     @Test
     @DisplayName("@spec:AC-073 create rejeita tipo desconhecido")
     void create_invalidType() throws Exception {
-        mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/org-units").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"type\":\"UNKNOWN\",\"name\":\"Unidade\"}"))
                 .andExpect(status().isBadRequest());
@@ -129,15 +140,15 @@ class OrgUnitControllerTest {
     @Test
     @DisplayName("@spec:AC-074 create valida tipo e nome obrigatórios e tamanho máximo")
     void create_invalidRequiredFields_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/org-units").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"type\":null,\"name\":\"Unidade\"}"))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/org-units").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"type\":\"ESCOLA\",\"name\":\"   \"}"))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(post("/org-units").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/org-units").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"type\":\"ESCOLA\",\"name\":\"" + "x".repeat(256) + "\"}"))
                 .andExpect(status().isBadRequest());
@@ -151,7 +162,7 @@ class OrgUnitControllerTest {
         when(service.update(eq(1L), any(OrgUnitRequest.class))).thenReturn(response(1L, "CCET Atualizado", OrgUnit.OrgUnitType.DIRECAO));
 
         mockMvc.perform(put("/org-units/1")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request(OrgUnit.OrgUnitType.DIRECAO,"CCET Atualizado"))))
@@ -165,7 +176,7 @@ class OrgUnitControllerTest {
     void update_notFound() throws Exception {
         when(service.update(eq(99L), any(OrgUnitRequest.class)))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mockMvc.perform(put("/org-units/99").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/org-units/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request(OrgUnit.OrgUnitType.ESCOLA, "X"))))
                 .andExpect(status().isNotFound());
@@ -177,7 +188,7 @@ class OrgUnitControllerTest {
     @DisplayName("@spec:AC-077 delete retorna 200 ao remover a unidade")
     void delete_success() throws Exception {
         mockMvc.perform(delete("/org-units/1")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf()))
                 .andExpect(status().isOk());
 
@@ -188,7 +199,7 @@ class OrgUnitControllerTest {
     @DisplayName("@spec:AC-078 delete inexistente retorna 404")
     void delete_notFound() throws Exception {
         org.mockito.Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(service).delete(99L);
-        mockMvc.perform(delete("/org-units/99").with(oidcLogin()).with(csrf())).andExpect(status().isNotFound());
+        mockMvc.perform(delete("/org-units/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())).andExpect(status().isNotFound());
     }
 
     @Test
@@ -196,6 +207,6 @@ class OrgUnitControllerTest {
     void delete_referencedConflict() throws Exception {
         org.mockito.Mockito.doThrow(new DataIntegrityViolationException("foreign key"))
                 .when(service).delete(1L);
-        mockMvc.perform(delete("/org-units/1").with(oidcLogin()).with(csrf())).andExpect(status().isConflict());
+        mockMvc.perform(delete("/org-units/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())).andExpect(status().isConflict());
     }
 }

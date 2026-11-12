@@ -1,7 +1,7 @@
 # Especificação: perfil e conclusão de cadastro do usuário
 
 > feature: user-profile
-> status: implementada
+> status: em-implementacao
 
 ## Contexto
 
@@ -67,12 +67,27 @@ Como usuário autenticado, quero informar minha matrícula e curso para completa
 - **Quando** completa o cadastro
 - **Então** recebe HTTP 400 com envelope `BaseResponse` e nenhuma operação de usuário ou curso é executada
 
+### US-022 — Acessar o sistema somente com cadastro completo
+
+Como usuário autenticado, quero acessar as funcionalidades do sistema somente depois de concluir meu perfil acadêmico, para que as ações estejam vinculadas a uma matrícula e curso válidos.
+
+#### AC-135 — Bloquear recursos protegidos para cadastro incompleto
+- **Dado** usuário autenticado cuja matrícula está ausente/em branco, cujo curso está ausente ou cuja conta não existe
+- **Quando** acessa qualquer recurso protegido fora da consulta e complementação do próprio perfil
+- **Então** recebe HTTP 403 com `BaseResponse` e o serviço do recurso não é executado
+
+#### AC-136 — Autorizar recursos protegidos após completar o cadastro
+- **Dado** usuário autenticado com matrícula preenchida e curso associado no banco de dados
+- **Quando** acessa um recurso protegido
+- **Então** a autorização permite a requisição ao recurso
+
 ## Regras observadas
 
 - `GET /users/me` deriva o e-mail do principal OIDC e retorna `UserResponse`, que não serializa as relações de pedidos e papéis.
 - `isCompletedCadaster` é calculado como matrícula não nula/não vazia **e** curso não nulo.
 - O DTO de complemento exige matrícula não vazia composta apenas por dígitos ASCII; não impõe comprimento até definição institucional.
 - `registrationNumber` é o nome canônico da propriedade e do JSON; `registrarionNumber` permanece como alias JSON legado de entrada.
+- Todo recurso protegido exige matrícula e curso associados no estado persistido do usuário; `GET /users/me` e `PUT /users/me/complemento` permanecem disponíveis para permitir consultar e concluir o cadastro.
 - O serviço substitui matrícula e curso pelos valores enviados após localizar a conta autenticada. O curso é validado por existência; conta ou curso inexistente resulta em 404.
 - O cadastro de conta/perfil básico ocorre no login OIDC; este recurso não oferece criação independente de conta.
 - Rotas seguem a autenticação/CSRF definidos globalmente.

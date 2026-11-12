@@ -1,6 +1,7 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.Entity.Course;
@@ -8,6 +9,7 @@ import com.gap.api.Model.Entity.User;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IUserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import tools.jackson.databind.ObjectMapper;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
@@ -32,6 +35,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 @Import(SecurityConfig.class)
 class UserControllerTest {
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUserForControllerTests() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
 
     @Autowired
     private MockMvc mockMvc;

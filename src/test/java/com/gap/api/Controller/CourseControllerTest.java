@@ -1,12 +1,14 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.CourseRequest;
 import com.gap.api.Model.DTO.CourseResponse;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.doThrow;
@@ -35,6 +38,14 @@ import static org.hamcrest.Matchers.aMapWithSize;
 @WebMvcTest(CourseController.class)
 @Import(SecurityConfig.class)
 class CourseControllerTest {
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUserForControllerTests() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -76,7 +87,7 @@ class CourseControllerTest {
                 response(2L, "Engenharia")
         ));
 
-        mockMvc.perform(get("/courses").with(oidcLogin()))
+        mockMvc.perform(get("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data[0].name").value("Sistemas de Informação"))
@@ -88,7 +99,7 @@ class CourseControllerTest {
     void findAll_empty() throws Exception {
         when(service.findAll()).thenReturn(List.of());
 
-        mockMvc.perform(get("/courses").with(oidcLogin()))
+        mockMvc.perform(get("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -99,7 +110,7 @@ class CourseControllerTest {
     void findById_found() throws Exception {
         when(service.findById(1L)).thenReturn(CourseResponse.from(course(1L, "Sistemas de Informação"))); // Supondo ajuste no service para retornar DTO
 
-        mockMvc.perform(get("/courses/1").with(oidcLogin()))
+        mockMvc.perform(get("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.name").value("Sistemas de Informação"));
@@ -117,7 +128,7 @@ class CourseControllerTest {
         course.setSecretary(secretary);
         when(service.findById(1L)).thenReturn(CourseResponse.from(course));
 
-        mockMvc.perform(get("/courses/1").with(oidcLogin()))
+        mockMvc.perform(get("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.director.id").value(10))
                 .andExpect(jsonPath("$.data.director.name").value("Diretora"))
@@ -142,7 +153,7 @@ class CourseControllerTest {
         when(service.findById(99L)).thenThrow(new org.springframework.web.server.ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Curso não encontrado: 99"));
 
-        mockMvc.perform(get("/courses/99").with(oidcLogin()))
+        mockMvc.perform(get("/courses/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isNotFound());
     }
 
@@ -154,7 +165,7 @@ class CourseControllerTest {
         when(service.create(any(CourseRequest.class))).thenReturn(response(1L, "Sistemas de Informação"));
 
         mockMvc.perform(post("/courses")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Sistemas de Informação"))))
@@ -180,7 +191,7 @@ class CourseControllerTest {
     void create_duplicateName_returnsConflict() throws Exception {
         when(service.create(any(CourseRequest.class))).thenThrow(new DataIntegrityViolationException("duplicate"));
 
-        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Engenharia"))))
                 .andExpect(status().isConflict())
@@ -190,7 +201,7 @@ class CourseControllerTest {
     @Test
     @DisplayName("@spec:AC-037 create rejeita nome ausente com 400")
     void create_missingName_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}"))
                 .andExpect(status().isBadRequest());
@@ -207,10 +218,10 @@ class CourseControllerTest {
                     case "coordinatorId" -> "20";
                     default -> "30";
                 }, value.isEmpty() ? "" : ",\"" + field + "\":null");
-                mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+                mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                                 .contentType(MediaType.APPLICATION_JSON).content(body))
                         .andExpect(status().isBadRequest());
-                mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+                mockMvc.perform(put("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                                 .contentType(MediaType.APPLICATION_JSON).content(body))
                         .andExpect(status().isBadRequest());
             }
@@ -226,10 +237,10 @@ class CourseControllerTest {
         when(service.update(eq(1L), any(CourseRequest.class))).thenThrow(new org.springframework.web.server.ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Director user 99 must have role DIRECTOR"));
 
-        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(content))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(content))
                 .andExpect(status().isBadRequest());
     }
@@ -240,7 +251,7 @@ class CourseControllerTest {
         when(service.create(any(CourseRequest.class))).thenThrow(new org.springframework.web.server.ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "Field reitoriaId with ID 41 must reference unit type REITORIA, but was ESCOLA"));
 
-        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Curso"))))
                 .andExpect(status().isBadRequest());
@@ -250,10 +261,10 @@ class CourseControllerTest {
     @DisplayName("@spec:AC-118 create e update rejeitam nome vazio ou composto por espaços")
     void write_blankName_returnsBadRequest() throws Exception {
         String request = "{\"name\":\"   \",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
-        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
     }
@@ -262,10 +273,10 @@ class CourseControllerTest {
     @DisplayName("@spec:AC-107 create rejeita curso sem departmentId")
     void create_missingDepartment_returnsBadRequest() throws Exception {
         String request = "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
-        mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andExpect(status().isBadRequest());
     }
@@ -283,10 +294,10 @@ class CourseControllerTest {
                 case "secretariaId" -> "44";
                 default -> "45";
             }, "");
-            mockMvc.perform(post("/courses").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(content))
                     .andExpect(status().isBadRequest());
-            mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+            mockMvc.perform(put("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(content))
                     .andExpect(status().isBadRequest());
         }
@@ -300,7 +311,7 @@ class CourseControllerTest {
         when(service.update(eq(1L), any(CourseRequest.class))).thenReturn(response(1L, "Nome novo"));
 
         mockMvc.perform(put("/courses/1")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Nome novo"))))
@@ -320,7 +331,7 @@ class CourseControllerTest {
         when(service.update(eq(99L), any(CourseRequest.class))).thenThrow(
                 new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: 99"));
 
-        mockMvc.perform(put("/courses/99").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/courses/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Nome novo"))))
                 .andExpect(status().isNotFound());
@@ -331,7 +342,7 @@ class CourseControllerTest {
     void update_duplicateName_returnsConflict() throws Exception {
         when(service.update(eq(1L), any(CourseRequest.class))).thenThrow(new DataIntegrityViolationException("duplicate"));
 
-        mockMvc.perform(put("/courses/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request("Engenharia"))))
                 .andExpect(status().isConflict());
@@ -343,7 +354,7 @@ class CourseControllerTest {
     @DisplayName("@spec:AC-041 delete retorna 200 ao remover")
     void delete_success() throws Exception {
         mockMvc.perform(delete("/courses/1")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf()))
                 .andExpect(status().isOk());
 
@@ -356,7 +367,7 @@ class CourseControllerTest {
         doThrow(new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: 99"))
                 .when(service).delete(99L);
 
-        mockMvc.perform(delete("/courses/99").with(oidcLogin()).with(csrf()))
+        mockMvc.perform(delete("/courses/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf()))
                 .andExpect(status().isNotFound());
     }
 
@@ -366,7 +377,7 @@ class CourseControllerTest {
         doThrow(new DataIntegrityViolationException("referenced"))
                 .when(service).delete(1L);
 
-        mockMvc.perform(delete("/courses/1").with(oidcLogin()).with(csrf()))
+        mockMvc.perform(delete("/courses/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf()))
                 .andExpect(status().isConflict());
     }
 }

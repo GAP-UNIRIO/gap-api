@@ -1,6 +1,7 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.AnnexRequest;
 import com.gap.api.Model.DTO.AnnexResponse;
 import com.gap.api.Model.DTO.AnnexUploadRequest;
@@ -10,6 +11,7 @@ import com.gap.api.Model.DTO.OrderResponse;
 import com.gap.api.Model.Entity.Order;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IOrderService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -42,6 +45,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(SecurityConfig.class)
 class OrderControllerTest {
 
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUserForControllerTests() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -55,13 +66,13 @@ class OrderControllerTest {
     private CustomOidcUserService customOidcUserService;
 
     @Test
-    @DisplayName("@spec:AC-010 retorna autorização para upload assinado")
+    @DisplayName("@spec:AC-010 @spec:AC-136 permite recurso protegido para usuário com cadastro completo")
     void upload_returnsSignedPostFields() throws Exception {
         var response = new AnnexUploadResponse("https://uploads-test.s3.us-east-1.amazonaws.com/",
                 "temporary/opaque-key", Map.of("key", "temporary/opaque-key", "policy", "signed-policy"));
         when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class))).thenReturn(response);
 
-        mockMvc.perform(post("/orders/annex-upload").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new AnnexUploadRequest("record.pdf", "application/pdf"))))
                 .andExpect(status().isOk())
@@ -74,9 +85,25 @@ class OrderControllerTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-135 bloqueia ações quando o cadastro do usuário está incompleto")
+    void upload_deniesIncompleteUser() throws Exception {
+        when(userRepository.isCadasterCompleted("incomplete@example.test")).thenReturn(false);
+
+        mockMvc.perform(post("/orders/annex-upload")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "incomplete@example.test")))
+                        .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message")
+                        .value("Complete seu cadastro de usuário para acessar este recurso."));
+
+        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+    }
+
+    @Test
     @DisplayName("@spec:AC-011 rejeita metadados inválidos de upload")
     void upload_rejectsInvalidMetadata() throws Exception {
-        mockMvc.perform(post("/orders/annex-upload").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new AnnexUploadRequest(" ", ""))))
                 .andExpect(status().isBadRequest());
@@ -90,7 +117,7 @@ class OrderControllerTest {
         when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class)))
                 .thenThrow(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Storage unavailable"));
 
-        mockMvc.perform(post("/orders/annex-upload").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new AnnexUploadRequest("record.pdf", "application/pdf"))))
                 .andExpect(status().isServiceUnavailable());

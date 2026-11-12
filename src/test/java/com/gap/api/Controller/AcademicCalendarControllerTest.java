@@ -1,10 +1,12 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.AcademicCalendarRequest;
 import com.gap.api.Model.DTO.AcademicCalendarResponse;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IAcademicCalendarService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
@@ -31,6 +34,14 @@ import static org.hamcrest.Matchers.nullValue;
 @WebMvcTest(AcademicCalendarController.class)
 @Import(SecurityConfig.class)
 class AcademicCalendarControllerTest {
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUserForControllerTests() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
 
     private static final int YEAR = LocalDate.now().getYear() + 1;
     private static final String FIRST_SEMESTER = YEAR + ".1";
@@ -94,7 +105,7 @@ class AcademicCalendarControllerTest {
 
         when(academicCalendarService.findById(1L)).thenReturn(calendarResponse);
 
-        mockMvc.perform(get("/academic-calendars/1").with(oidcLogin()))
+        mockMvc.perform(get("/academic-calendars/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.semester").value("2026.1"))
@@ -107,7 +118,7 @@ class AcademicCalendarControllerTest {
         when(academicCalendarService.findAll()).thenReturn(java.util.List.of(
                 response(1L, "2025.2", false), response(2L, "2026.1", true)));
 
-        mockMvc.perform(get("/academic-calendars").with(oidcLogin()))
+        mockMvc.perform(get("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.length()").value(2))
@@ -120,7 +131,7 @@ class AcademicCalendarControllerTest {
     void findById_notFound() throws Exception {
         stubNotFound(99L);
 
-        mockMvc.perform(get("/academic-calendars/99").with(oidcLogin()))
+        mockMvc.perform(get("/academic-calendars/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))))
                 .andExpect(status().isNotFound());
     }
 
@@ -135,7 +146,7 @@ class AcademicCalendarControllerTest {
         when(academicCalendarService.create(any(AcademicCalendarRequest.class))).thenReturn(calendarResponse);
 
         mockMvc.perform(post("/academic-calendars")
-                        .with(oidcLogin())
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(calendarRequest)))
@@ -148,7 +159,7 @@ class AcademicCalendarControllerTest {
     @Test
     @DisplayName("@spec:AC-019 POST rejeita semestre em branco")
     void create_blankSemester_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"semester\":\" \",\"startDate\":\"2026-02-01\",\"endDate\":\"2026-06-30\"}"))
                 .andExpect(status().isBadRequest())
@@ -158,7 +169,7 @@ class AcademicCalendarControllerTest {
     @Test
     @DisplayName("@spec:AC-019 POST rejeita semestre ausente")
     void create_missingSemester_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"startDate\":\"2026-02-01\",\"endDate\":\"2026-06-30\"}"))
                 .andExpect(status().isBadRequest());
@@ -167,7 +178,7 @@ class AcademicCalendarControllerTest {
     @Test
     @DisplayName("@spec:AC-019 POST rejeita semestre acima de dez caracteres")
     void create_longSemester_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"semester\":\"12345678901\",\"startDate\":\"2026-02-01\",\"endDate\":\"2026-06-30\"}"))
                 .andExpect(status().isBadRequest());
@@ -176,7 +187,7 @@ class AcademicCalendarControllerTest {
     @Test
     @DisplayName("@spec:AC-019 POST rejeita data inicial ausente")
     void create_missingStartDate_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"semester\":\"2026.1\",\"endDate\":\"2026-06-30\"}"))
                 .andExpect(status().isBadRequest());
@@ -185,7 +196,7 @@ class AcademicCalendarControllerTest {
     @Test
     @DisplayName("@spec:AC-019 POST rejeita data final ausente")
     void create_missingEndDate_returnsBadRequest() throws Exception {
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"semester\":\"2026.1\",\"startDate\":\"2026-02-01\"}"))
                 .andExpect(status().isBadRequest());
@@ -197,12 +208,12 @@ class AcademicCalendarControllerTest {
         var invalidRequest = request(YEAR + ".3", false);
         String body = objectMapper.writeValueAsString(invalidRequest);
 
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest());
 
-        mockMvc.perform(put("/academic-calendars/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/academic-calendars/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isBadRequest());
@@ -215,7 +226,7 @@ class AcademicCalendarControllerTest {
             String body = "{\"semester\":\"" + FIRST_SEMESTER + "\",\"startDate\":\"" + START
                     + "\",\"endDate\":\"" + END + "\",\"deadlines\":" + deadlines
                     + ",\"academicLimits\":{\"maxCreditos\":24}}";
-            mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(body))
                     .andExpect(status().isBadRequest());
         }
@@ -228,7 +239,7 @@ class AcademicCalendarControllerTest {
             String body = "{\"semester\":\"" + FIRST_SEMESTER + "\",\"startDate\":\"" + START
                     + "\",\"endDate\":\"" + END + "\",\"deadlines\":" + deadlines
                     + ",\"academicLimits\":{\"maxCreditos\":24}}";
-            mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(body))
                     .andExpect(status().isBadRequest());
         }
@@ -242,7 +253,7 @@ class AcademicCalendarControllerTest {
             String body = "{\"semester\":\"" + FIRST_SEMESTER + "\",\"startDate\":\"" + START
                     + "\",\"endDate\":\"" + END + "\",\"deadlines\":{\"matricula\":\""
                     + DEADLINES.get("matricula") + "\"},\"academicLimits\":" + limits + "}";
-            mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+            mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(body))
                     .andExpect(status().isBadRequest());
         }
@@ -256,7 +267,7 @@ class AcademicCalendarControllerTest {
         when(academicCalendarService.create(any(AcademicCalendarRequest.class)))
                 .thenReturn(response(1L, FIRST_SEMESTER, false));
 
-        mockMvc.perform(post("/academic-calendars").with(oidcLogin()).with(csrf())
+        mockMvc.perform(post("/academic-calendars").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andExpect(status().isCreated());
@@ -269,7 +280,7 @@ class AcademicCalendarControllerTest {
         var updated = response(1L, SECOND_SEMESTER, false);
         when(academicCalendarService.update(1L, updateRequest)).thenReturn(updated);
 
-        mockMvc.perform(put("/academic-calendars/1").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/academic-calendars/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk())
@@ -285,7 +296,7 @@ class AcademicCalendarControllerTest {
                 new org.springframework.web.server.ResponseStatusException(
                         org.springframework.http.HttpStatus.NOT_FOUND, "Calendário acadêmico não encontrado: 99"));
 
-        mockMvc.perform(put("/academic-calendars/99").with(oidcLogin()).with(csrf())
+        mockMvc.perform(put("/academic-calendars/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isNotFound());
@@ -295,7 +306,7 @@ class AcademicCalendarControllerTest {
     @DisplayName("@spec:AC-029 DELETE remove calendário existente")
     void delete() throws Exception {
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                        .delete("/academic-calendars/1").with(oidcLogin()).with(csrf()))
+                        .delete("/academic-calendars/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
@@ -309,7 +320,7 @@ class AcademicCalendarControllerTest {
                 .when(academicCalendarService).delete(99L);
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                        .delete("/academic-calendars/99").with(oidcLogin()).with(csrf()))
+                        .delete("/academic-calendars/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf()))
                 .andExpect(status().isNotFound());
     }
 }
