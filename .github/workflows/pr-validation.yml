@@ -79,7 +79,7 @@ jobs:
           -Dsonar.qualitygate.wait=true
 
       - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@d0a4676d0e0b938bc201470d88276b7c74c712b3
+        uses: EnricoMi/publish-unit-test-result-action@da5b7be67623cd59bbbd1a0ce4f022050a55605f
         if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
