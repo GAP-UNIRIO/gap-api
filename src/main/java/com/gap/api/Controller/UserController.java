@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("/me/complemento")
-    public ResponseEntity<BaseResponse<UserResponse>> complementUser(@RequestBody UserComplementRequest userComplementRequest, @AuthenticationPrincipal OidcUser oidcUser) {
+    public ResponseEntity<BaseResponse<UserResponse>> complementUser(@Valid @RequestBody UserComplementRequest userComplementRequest, @AuthenticationPrincipal OidcUser oidcUser) {
         return ResponseEntity.ok(BaseResponse.success("User cadaster completed successfully" , userService.completeUserCadaster(userComplementRequest, oidcUser)));
     }
 }

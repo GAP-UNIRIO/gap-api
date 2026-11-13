@@ -1,6 +1,7 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.WorkflowTemplateRequest;
 import com.gap.api.Model.DTO.WorkflowStepRequest;
 import com.gap.api.Model.DTO.WorkflowTemplateResponse;
@@ -10,6 +11,7 @@ import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Model.Entity.WorkflowTemplate;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IWorkflowTemplateService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,6 +30,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,6 +46,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(WorkflowTemplateController.class)
 @Import(SecurityConfig.class)
 class WorkflowTemplateControllerTest {
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUserForControllerTests() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -78,7 +89,7 @@ class WorkflowTemplateControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/workflow-template")
-                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -99,7 +110,7 @@ class WorkflowTemplateControllerTest {
                         "Coordenação", "Análise pela coordenação")));
         when(workflowTemplateService.createTemplate(any(WorkflowTemplateRequest.class)))
                 .thenReturn(response(2L, request.orderType()));
-        mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+        mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.course").doesNotExist());
     }
@@ -115,7 +126,7 @@ class WorkflowTemplateControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/workflow-template")
-                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -134,7 +145,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null,\"steps\":[]}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.status").value("error"));
@@ -149,7 +160,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }
@@ -166,7 +177,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"" + "x".repeat(256) + "\"}]}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }
@@ -269,7 +280,7 @@ class WorkflowTemplateControllerTest {
     }
 
     private org.springframework.test.web.servlet.request.RequestPostProcessor admin() {
-        return oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     private WorkflowTemplateRequest validRequest() {
