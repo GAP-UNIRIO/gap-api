@@ -2,6 +2,7 @@ package com.gap.api.Config;
 
 import com.gap.api.Model.DTO.BaseResponse;
 import com.gap.api.Model.Entity.Role;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.CustomOidcUserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -47,13 +49,10 @@ public class SecurityConfig {
 
     private final CustomOidcUserService customOidcUserService;
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
 
-    public SecurityConfig(CustomOidcUserService customOidcUserService, UserRepository userRepository,
-                          ObjectMapper objectMapper) {
+    public SecurityConfig(CustomOidcUserService customOidcUserService, UserRepository userRepository) {
         this.customOidcUserService = customOidcUserService;
         this.userRepository = userRepository;
-        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -71,10 +70,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll() // Rotas abertas, se houver
                         .requestMatchers("/doc", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Documentação (Swagger)
-                        .requestMatchers(HttpMethod.GET, REGISTRY_PATHS).authenticated()
-                        .requestMatchers(REGISTRY_PATHS).hasAuthority(Role.ADMIN)
-                        .requestMatchers(ADMIN_ONLY_PATHS).hasAuthority(Role.ADMIN)
-                        .anyRequest().authenticated() // Restante exige login
+                        .requestMatchers("/users/me", "/users/me/complemento").authenticated()
+                        .requestMatchers(HttpMethod.GET, REGISTRY_PATHS).access((authentication, context) ->
+                                new AuthorizationDecision(isRegistrationComplete(authentication.get())))
+                        .requestMatchers(REGISTRY_PATHS).access((authentication, context) ->
+                                new AuthorizationDecision(isRegistrationComplete(authentication.get())
+                                        && hasAuthority(authentication.get(), Role.ADMIN)))
+                        .requestMatchers(ADMIN_ONLY_PATHS).access((authentication, context) ->
+                                new AuthorizationDecision(isRegistrationComplete(authentication.get())
+                                        && hasAuthority(authentication.get(), Role.ADMIN)))
+                        .anyRequest().access((authentication, context) ->
+                                new AuthorizationDecision(isRegistrationComplete(authentication.get())))
                 )
 
                 .exceptionHandling(exceptions -> exceptions
@@ -83,6 +89,9 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, failure) -> writeError(response,
                                 HttpStatus.FORBIDDEN, failure instanceof CsrfException
                                         ? "Token CSRF ausente ou inválido. Recarregue a página e tente novamente."
+                                        : isAuthenticatedOidcUser() && !isRegistrationComplete(
+                                                SecurityContextHolder.getContext().getAuthentication())
+                                                ? "Complete seu cadastro de usuário para acessar este recurso."
                                         : "Você não tem permissão para acessar este recurso."))
                 )
 
@@ -102,6 +111,26 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    private boolean isRegistrationComplete(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof OidcUser oidcUser)) {
+            return false;
+        }
+        String email = oidcUser.getEmail();
+        return email != null && userRepository.isCadasterCompleted(email);
+    }
+
+    private boolean hasAuthority(Authentication authentication, String authority) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> authority.equals(grantedAuthority.getAuthority()));
+    }
+
+    private boolean isAuthenticatedOidcUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof OidcUser;
     }
 
     private static void writeError(HttpServletResponse response, HttpStatus status, String message) throws IOException {

@@ -30,6 +30,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -88,7 +89,7 @@ class WorkflowTemplateControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/workflow-template")
-                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -109,7 +110,7 @@ class WorkflowTemplateControllerTest {
                         "Coordenação", "Análise pela coordenação")));
         when(workflowTemplateService.createTemplate(any(WorkflowTemplateRequest.class)))
                 .thenReturn(response(2L, request.orderType()));
-        mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+        mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.course").doesNotExist());
     }
@@ -125,7 +126,7 @@ class WorkflowTemplateControllerTest {
 
         // Act & Assert
         mockMvc.perform(post("/workflow-template")
-                        .with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -144,7 +145,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null,\"steps\":[]}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.status").value("error"));
@@ -159,7 +160,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }
@@ -176,7 +177,7 @@ class WorkflowTemplateControllerTest {
                 "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"" + "x".repeat(256) + "\"}]}"
         };
         for (String request : requests) {
-            mockMvc.perform(post("/workflow-template").with(oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
+            mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
         }
@@ -279,7 +280,7 @@ class WorkflowTemplateControllerTest {
     }
 
     private org.springframework.test.web.servlet.request.RequestPostProcessor admin() {
-        return oidcLogin().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     private WorkflowTemplateRequest validRequest() {

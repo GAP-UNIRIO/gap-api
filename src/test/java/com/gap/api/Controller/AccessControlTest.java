@@ -3,6 +3,7 @@ package com.gap.api.Controller;
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.DTO.UserRolesRequest;
+import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IInstitutionService;
@@ -10,6 +11,7 @@ import com.gap.api.Service.Interface.IOrderService;
 import com.gap.api.Service.Interface.IRoleService;
 import com.gap.api.Service.Interface.IUserService;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -29,6 +31,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -55,6 +58,12 @@ class AccessControlTest {
     @MockitoBean private IUserService userService;
     @MockitoBean private IOrderService orderService;
     @MockitoBean private CustomOidcUserService customOidcUserService;
+    @MockitoBean private UserRepository userRepository;
+
+    @BeforeEach
+    void allowCompletedUsersByDefault() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
+    }
 
     @Test
     @DisplayName("@spec:AC-149 usuário BASIC não altera cadastros")
