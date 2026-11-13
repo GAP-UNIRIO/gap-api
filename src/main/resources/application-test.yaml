@@ -1,6 +1,6 @@
 spring:
   flyway:
-    enabled: false
+    enabled: true
   application:
     name: gap-api
   datasource:

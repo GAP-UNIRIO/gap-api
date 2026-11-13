@@ -14,21 +14,6 @@ jobs:
       pull-requests: write
       contents: read
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: core_api_test
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpassword
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -53,6 +38,9 @@ jobs:
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x gradlew
 
+      - name: Verify Docker for Testcontainers
+        run: docker info
+
       - name: Scan for exposed secrets (Gitleaks)
         run: |
           docker run --rm \
@@ -63,9 +51,6 @@ jobs:
       - name: Format, test, coverage, dependency, and SonarQube checks
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/core_api_test
-          SPRING_DATASOURCE_USERNAME: testuser
-          SPRING_DATASOURCE_PASSWORD: testpassword
           SPRING_PROFILES_ACTIVE: test
           DEV_GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           DEV_GOOGLE_CLIENT_SECRET: ${{secrets.DEV_GOOGLE_CLIENT_SECRET}}
