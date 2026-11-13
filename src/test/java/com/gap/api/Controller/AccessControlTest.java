@@ -109,6 +109,19 @@ class AccessControlTest {
     }
 
     @Test
+    @DisplayName("CSRF ausente responde com mensagem específica no BaseResponse")
+    void csrfMissing_returnsCsrfError() throws Exception {
+        mockMvc.perform(delete("/institutions/1").with(admin()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message").value(
+                        "Token CSRF ausente ou inválido. Recarregue a página e tente novamente."))
+                .andExpect(jsonPath("$.data").doesNotExist());
+
+        verify(institutionService, never()).delete(anyLong());
+    }
+
+    @Test
     @DisplayName("@spec:AC-153 chamada sem login responde 401 no padrão BaseResponse")
     void unauthenticated_returns401() throws Exception {
         mockMvc.perform(get("/users/me"))
