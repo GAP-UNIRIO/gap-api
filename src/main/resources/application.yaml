@@ -7,3 +7,8 @@ springdoc:
     path: /doc
     csrf:
       enabled: true
+
+app:
+  security:
+    # E-mails que recebem ROLE_ADMIN no login, separados por vírgula
+    admin-emails: ${APP_SECURITY_ADMIN_EMAILS:}

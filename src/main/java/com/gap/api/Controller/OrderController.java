@@ -18,6 +18,13 @@ public class OrderController {
     public ResponseEntity<BaseResponse<AnnexUploadResponse>> generateUpload(@Valid @RequestBody AnnexUploadRequest request) {
         return ResponseEntity.ok(BaseResponse.success("Upload authorization created.", orderService.generateAnnexUploadUrl(request)));
     }
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<BaseResponse<OrderResponse>> cancel(
+            @AuthenticationPrincipal OidcUser authenticatedUser,
+            @PathVariable("id") Long id) {
+        return ResponseEntity.ok(BaseResponse.success("Order cancelled.",
+                orderService.cancel(id, authenticatedUser.getEmail())));
+    }
     @PostMapping
     public ResponseEntity<BaseResponse<OrderResponse>> create(
             @AuthenticationPrincipal OidcUser authenticatedUser,

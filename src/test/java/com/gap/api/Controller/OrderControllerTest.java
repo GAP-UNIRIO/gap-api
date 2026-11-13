@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,7 +130,7 @@ class OrderControllerTest {
     void create_returns201WithPersistedOrder() throws Exception {
         OrderRequest request = request(List.of(new AnnexRequest("record.pdf", "application/pdf", "temporary/key")));
         OrderResponse response = new OrderResponse(23L, 7L, Order.OrderType.INCLUSAO_DISCIPLINA,
-                ZonedDateTime.parse("2026-01-02T03:04:05Z"),
+                Order.OrderStatus.ABERTA, ZonedDateTime.parse("2026-01-02T03:04:05Z"),
                 List.of(new AnnexResponse(31L, "record.pdf", "application/pdf", "orders/23/31/record.pdf")));
         when(orderService.create(any(OrderRequest.class), eq("order-create@example.test"))).thenReturn(response);
 
@@ -139,6 +141,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.id").value(23))
                 .andExpect(jsonPath("$.data.userId").value(7))
+                .andExpect(jsonPath("$.data.status").value("ABERTA"))
                 .andExpect(jsonPath("$.data.annexes[0].storageKey").value("orders/23/31/record.pdf"));
 
         verify(orderService).create(any(OrderRequest.class), eq("order-create@example.test"));
@@ -190,6 +193,54 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request(List.of()))))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-137 cancela a própria solicitação aberta")
+    void cancel_returns200WithCancelledOrder() throws Exception {
+        OrderResponse response = new OrderResponse(23L, 7L, Order.OrderType.INCLUSAO_DISCIPLINA,
+                Order.OrderStatus.CANCELADA, ZonedDateTime.parse("2026-01-02T03:04:05Z"), List.of());
+        when(orderService.cancel(23L, "order-create@example.test")).thenReturn(response);
+
+        mockMvc.perform(patch("/orders/23/cancel").with(authenticatedOidc()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.status").value("CANCELADA"));
+
+        verify(orderService).cancel(23L, "order-create@example.test");
+    }
+
+    @Test
+    @DisplayName("@spec:AC-138 retorna 422 ao cancelar solicitação fora do status ABERTA")
+    void cancel_returns422WhenOrderIsNotOpen() throws Exception {
+        when(orderService.cancel(23L, "order-create@example.test")).thenThrow(new ResponseStatusException(
+                HttpStatusCode.valueOf(422), "Only orders with status ABERTA can be cancelled"));
+
+        mockMvc.perform(patch("/orders/23/cancel").with(authenticatedOidc()).with(csrf()))
+                .andExpect(status().is(422))
+                .andExpect(jsonPath("$.status").value("error"))
+                .andExpect(jsonPath("$.message").value("Only orders with status ABERTA can be cancelled"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-139 retorna 403 ao cancelar solicitação de outro usuário")
+    void cancel_returns403ForOrderOfAnotherUser() throws Exception {
+        when(orderService.cancel(23L, "order-create@example.test")).thenThrow(new ResponseStatusException(
+                HttpStatus.FORBIDDEN, "Cannot cancel an order of another user"));
+
+        mockMvc.perform(patch("/orders/23/cancel").with(authenticatedOidc()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-140 retorna 404 ao cancelar solicitação inexistente")
+    void cancel_returns404ForUnknownOrder() throws Exception {
+        when(orderService.cancel(99L, "order-create@example.test")).thenThrow(new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Order not found"));
+
+        mockMvc.perform(patch("/orders/99/cancel").with(authenticatedOidc()).with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Order not found"));
     }
 
     private RequestPostProcessor authenticatedOidc() {

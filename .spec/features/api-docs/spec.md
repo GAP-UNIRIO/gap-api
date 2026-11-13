@@ -9,28 +9,28 @@ Quem consome a API (front-end e quem testa manualmente) precisa de um contrato n
 
 ## Histórias
 
-### US-035 — Consultar a documentação da API
+### US-038 — Consultar a documentação da API
 
 Como desenvolvedor que consome a API, quero abrir a documentação interativa em `/api/doc` para conhecer e testar os endpoints sem ler o código.
 
-#### AC-126 — Publicar o contrato OpenAPI sem login
+#### AC-141 — Publicar o contrato OpenAPI sem login
 
 - **Dado** a aplicação em execução em um perfil com documentação habilitada
 - **Quando** um cliente sem sessão envia `GET /v3/api-docs`
 - **Então** recebe HTTP 200 com o contrato OpenAPI, título `GAP API` e os caminhos dos endpoints existentes, incluindo `/orders`
 
-#### AC-127 — Abrir a interface do Swagger em /doc
+#### AC-142 — Abrir a interface do Swagger em /doc
 
 - **Dado** a aplicação em execução em um perfil com documentação habilitada
 - **Quando** um cliente sem sessão acessa `GET /doc`
 - **Então** é redirecionado para a interface do Swagger UI
 - **E** `GET /swagger-ui/index.html` responde HTTP 200 sem exigir login
 
-#### AC-128 — Manter os endpoints de negócio protegidos
+#### AC-143 — Manter os endpoints de negócio protegidos
 
 - **Dado** a liberação das rotas de documentação
 - **Quando** um cliente sem sessão chama um endpoint de negócio, como `GET /users/me`
-- **Então** continua sendo redirecionado para o login OAuth2, sem receber dados
+- **Então** recebe HTTP 401, sem receber dados (comportamento definido pela feature access-control, Q-033)
 
 ## Fora de escopo
 

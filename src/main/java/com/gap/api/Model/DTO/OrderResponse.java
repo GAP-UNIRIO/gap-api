@@ -5,5 +5,5 @@ import com.gap.api.Model.Entity.Order;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public record OrderResponse(Long id, Long userId, Order.OrderType orderType,
+public record OrderResponse(Long id, Long userId, Order.OrderType orderType, Order.OrderStatus status,
                             ZonedDateTime createdAt, List<AnnexResponse> annexes) { }

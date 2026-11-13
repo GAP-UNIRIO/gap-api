@@ -1,0 +1,57 @@
+{
+  "feature": "order-status",
+  "timestamp": "2026-11-05T18:58:22.381Z",
+  "gitRev": "332532e",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 246,
+  "results": {
+    "AC-132": {
+      "status": "pass",
+      "testName": "@spec:AC-132 cria a solicitação com status ABERTA",
+      "method": "tap"
+    },
+    "AC-133": {
+      "status": "pass",
+      "testName": "@spec:AC-133 aplica transição permitida e registra no histórico",
+      "method": "tap"
+    },
+    "AC-134": {
+      "status": "pass",
+      "testName": "@spec:AC-134 recusa transição não permitida com HTTP 422",
+      "method": "tap"
+    },
+    "AC-135": {
+      "status": "pass",
+      "testName": "@spec:AC-135 bloqueia qualquer transição a partir de status final",
+      "method": "tap"
+    },
+    "AC-136": {
+      "status": "pass",
+      "testName": "@spec:AC-136 migration preenche o status das solicitações existentes e torna a coluna obrigatória",
+      "method": "tap"
+    },
+    "AC-137": {
+      "status": "pass",
+      "testName": "@spec:AC-137 cancela a própria solicitação aberta",
+      "method": "tap"
+    },
+    "AC-138": {
+      "status": "pass",
+      "testName": "@spec:AC-138 retorna 422 ao cancelar solicitação fora do status ABERTA",
+      "method": "tap"
+    },
+    "AC-139": {
+      "status": "pass",
+      "testName": "@spec:AC-139 retorna 403 ao cancelar solicitação de outro usuário",
+      "method": "tap"
+    },
+    "AC-140": {
+      "status": "pass",
+      "testName": "@spec:AC-140 retorna 404 ao cancelar solicitação inexistente",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

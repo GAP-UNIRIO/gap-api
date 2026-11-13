@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -69,7 +71,7 @@ class UserControllerTest {
     }
 
     private UserResponse userResponseMock(Long id, String email, String name, boolean active) {
-        return new UserResponse(id, email, name, null, null, active);
+        return new UserResponse(id, email, name, null, null, active, List.of("ROLE_BASIC"));
     }
 
     private UserComplementRequest complementRequest(String registrationNumber, Long courseId) {

@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const nodeTests = spawnSync(process.execPath,
-  ['--test', '--test-reporter=tap', 'test/flyway-migration.test.js', 'test/codebase-inventory.test.js'],
+  ['--test', '--test-reporter=tap', 'test/flyway-migration.test.js', 'test/codebase-inventory.test.js', 'test/order-status-migration.test.js', 'test/access-control-migration.test.js'],
   { cwd: process.cwd(), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
 
 const gradleArgs = [
@@ -32,6 +32,9 @@ const gradleArgs = [
   '--tests', 'com.gap.api.Integration.RoleServiceIntegrationTest',
   '--tests', 'com.gap.api.Integration.OrderServiceIntegrationTest',
   '--tests', 'com.gap.api.Integration.ApiDocsIntegrationTest',
+  '--tests', 'com.gap.api.Service.OrderStatusServiceTest',
+  '--tests', 'com.gap.api.Controller.AccessControlTest',
+  '--tests', 'com.gap.api.Service.CustomOidcUserServiceTest',
 ];
 const gradle = process.platform === 'win32'
   ? spawnSync('cmd.exe', ['/d', '/s', '/c', '.\\gradlew.bat', ...gradleArgs], {

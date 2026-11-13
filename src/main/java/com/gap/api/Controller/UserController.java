@@ -3,6 +3,7 @@ package com.gap.api.Controller;
 import com.gap.api.Model.DTO.BaseResponse;
 import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserResponse;
+import com.gap.api.Model.DTO.UserRolesRequest;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IUserService;
 import jakarta.validation.Valid;
@@ -25,6 +26,12 @@ public class UserController {
             throw new RuntimeException("Usuário não autenticado.");
         }
         return ResponseEntity.ok(BaseResponse.success("Consulta realizada com sucesso.", userService.findByEmail(oidcUser.getEmail())));
+    }
+
+    @PutMapping("/{id}/roles")
+    public ResponseEntity<BaseResponse<UserResponse>> updateRoles(@PathVariable("id") Long id,
+                                                                  @Valid @RequestBody UserRolesRequest request) {
+        return ResponseEntity.ok(BaseResponse.success("Papéis atualizados com sucesso.", userService.updateRoles(id, request)));
     }
 
     @PutMapping("/me/complemento")

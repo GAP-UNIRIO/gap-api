@@ -53,7 +53,12 @@ public class RoleService implements IRoleService {
 
     @Transactional
     public void delete(Long id) {
-        repository.delete(getOrThrow(id));
+        Role role = getOrThrow(id);
+        if (Role.CORE.contains(role.getAuthority())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Os papéis do núcleo (" + Role.BASIC + ", " + Role.ADMIN + ") não podem ser excluídos.");
+        }
+        repository.delete(role);
         repository.flush(); // força a checagem de FK aqui, para o handler devolver 409
     }
 
