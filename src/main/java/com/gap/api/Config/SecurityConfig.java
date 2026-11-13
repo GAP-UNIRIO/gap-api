@@ -113,7 +113,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    private boolean isRegistrationComplete(Authentication authentication) {
+    boolean isRegistrationComplete(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()
                 || !(authentication.getPrincipal() instanceof OidcUser oidcUser)) {
             return false;
