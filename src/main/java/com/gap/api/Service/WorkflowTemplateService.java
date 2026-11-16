@@ -12,6 +12,7 @@ import com.gap.api.Repository.WorkflowTemplateRepository;
 import com.gap.api.Service.Interface.IWorkflowTemplateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class WorkflowTemplateService implements IWorkflowTemplateService {
+
+    private static final String COURSE_SCOPE_UNIQUE_INDEX = "uq_workflow_templates_order_type_course";
+    private static final String DEFAULT_SCOPE_UNIQUE_INDEX = "uq_workflow_templates_order_type_default";
 
     private final WorkflowTemplateRepository templateRepository;
     private final CourseRepository courseRepository;
@@ -51,7 +55,15 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
 
         template.getSteps().addAll(buildSteps(dto, template));
 
-        return WorkflowTemplateResponse.from(templateRepository.save(template));
+        try {
+            return WorkflowTemplateResponse.from(templateRepository.saveAndFlush(template));
+        } catch (DataIntegrityViolationException exception) {
+            if (isTemplateScopeUniqueViolation(exception)) {
+                throw new IllegalArgumentException(
+                        "Workflow template already exists for this order type and course", exception);
+            }
+            throw exception;
+        }
     }
 
     @Transactional
@@ -81,7 +93,15 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
         template.setCourse(course);
         template.getSteps().clear();
         template.getSteps().addAll(buildSteps(dto, template));
-        return WorkflowTemplateResponse.from(templateRepository.save(template));
+        try {
+            return WorkflowTemplateResponse.from(templateRepository.saveAndFlush(template));
+        } catch (DataIntegrityViolationException exception) {
+            if (isTemplateScopeUniqueViolation(exception)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Já existe um template para esse tipo de solicitação e curso.", exception);
+            }
+            throw exception;
+        }
     }
 
     @Transactional
@@ -106,6 +126,10 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
         }
         Set<Integer> orders = new HashSet<>();
         for (WorkflowStepRequest step : dto.steps()) {
+            if (step.stepOrder() < 1) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "O stepOrder de cada etapa deve ser maior ou igual a 1.");
+            }
             if (!orders.add(step.stepOrder())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "As etapas não podem repetir o stepOrder (" + step.stepOrder() + " aparece mais de uma vez).");
@@ -124,5 +148,27 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
             step.setTemplate(template);
             return step;
         }).toList();
+    }
+
+    private boolean isTemplateScopeUniqueViolation(DataIntegrityViolationException exception) {
+        Throwable cause = exception;
+        while (cause != null) {
+            if (cause instanceof org.hibernate.exception.ConstraintViolationException constraintViolation
+                    && isTemplateScopeIndex(constraintViolation.getConstraintName())) {
+                return true;
+            }
+            String message = cause.getMessage();
+            if (message != null && (message.contains(COURSE_SCOPE_UNIQUE_INDEX)
+                    || message.contains(DEFAULT_SCOPE_UNIQUE_INDEX))) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
+
+    private boolean isTemplateScopeIndex(String constraintName) {
+        return COURSE_SCOPE_UNIQUE_INDEX.equals(constraintName)
+                || DEFAULT_SCOPE_UNIQUE_INDEX.equals(constraintName);
     }
 }
