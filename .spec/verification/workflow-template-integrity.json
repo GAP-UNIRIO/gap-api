@@ -1,0 +1,37 @@
+{
+  "feature": "workflow-template-integrity",
+  "timestamp": "2026-11-16T18:50:46.256Z",
+  "gitRev": "29210f1",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 287,
+  "results": {
+    "AC-166": {
+      "status": "pass",
+      "testName": "@spec:AC-166 @spec:AC-167 POST e PUT rejeitam campos obrigatórios ausentes e stepOrder não positivo",
+      "method": "tap"
+    },
+    "AC-167": {
+      "status": "pass",
+      "testName": "@spec:AC-166 @spec:AC-167 POST e PUT rejeitam campos obrigatórios ausentes e stepOrder não positivo",
+      "method": "tap"
+    },
+    "AC-168": {
+      "status": "pass",
+      "testName": "@spec:AC-164 @spec:AC-168 criar ou editar com stepOrder repetido lança 400",
+      "method": "tap"
+    },
+    "AC-169": {
+      "status": "pass",
+      "testName": "@spec:AC-097 @spec:AC-098 @spec:AC-169 duplicidade de template retorna 400",
+      "method": "tap"
+    },
+    "AC-170": {
+      "status": "pass",
+      "testName": "@spec:AC-170 V6 mantém menor id e apaga etapas antes dos templates duplicados",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}
