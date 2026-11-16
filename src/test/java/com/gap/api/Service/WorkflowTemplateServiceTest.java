@@ -107,8 +107,9 @@ class WorkflowTemplateServiceTest {
         when(templateRepository.findByOrderTypeAndCourse_Id(request.orderType(), request.courseId())).thenReturn(Optional.of(new WorkflowTemplate()));
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> workflowTemplateService.createTemplate(request));
-        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> workflowTemplateService.createTemplate(request));
+        assertStatus(exception, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", exception.getReason());
     }
 
     @Test
@@ -125,8 +126,9 @@ class WorkflowTemplateServiceTest {
                 .thenReturn(Optional.of(existingTemplate));
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> workflowTemplateService.createTemplate(request));
-        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> workflowTemplateService.createTemplate(request));
+        assertStatus(exception, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", exception.getReason());
     }
 
     @Test
@@ -155,9 +157,10 @@ class WorkflowTemplateServiceTest {
 
         when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType()))
                 .thenReturn(Optional.of(saved));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> workflowTemplateService.createTemplate(request));
-        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+        assertStatus(exception, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", exception.getReason());
     }
 
     @Test
@@ -168,10 +171,11 @@ class WorkflowTemplateServiceTest {
         when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(new DataIntegrityViolationException(
                 "duplicate key violates uq_workflow_templates_order_type_default"));
 
-        IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
                 () -> workflowTemplateService.createTemplate(request));
 
-        assertEquals("Workflow template already exists for this order type and course", error.getMessage());
+        assertStatus(error, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", error.getReason());
     }
 
     @Test
