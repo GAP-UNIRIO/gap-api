@@ -156,6 +156,29 @@ class WorkflowTemplateControllerTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-166 @spec:AC-167 POST e PUT rejeitam campos obrigatórios ausentes e stepOrder não positivo")
+    void createOrUpdateTemplate_rejectsMissingEnumsAndNonPositiveStepOrder() throws Exception {
+        String[] requests = {
+                "{\"courseId\":null,\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":null,\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":0,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":-1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}"
+        };
+        for (String request : requests) {
+            mockMvc.perform(post("/workflow-template").with(admin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(request))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value("error"));
+            mockMvc.perform(put("/workflow-template/5").with(admin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(request))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value("error"));
+        }
+    }
+
+    @Test
     @DisplayName("@spec:AC-105 createTemplate rejeita nome ou descrição de etapa inválidos")
     void createTemplate_requiresStepNameAndDescription() throws Exception {
         String[] requests = {

@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const migration = await readFile('src/main/resources/db/migration/V1__initial_schema.sql', 'utf8');
 const departmentMigration = await readFile('src/main/resources/db/migration/V2__add_course_department.sql', 'utf8');
+const workflowTemplateMigration = await readFile('src/main/resources/db/migration/V6__workflow_template_integrity.sql', 'utf8');
 const production = await readFile('src/main/resources/application-prod.yaml', 'utf8');
 
 test('@spec:AC-001 migration inicial cobre tabelas e tipos PostgreSQL das entidades', () => {
@@ -52,4 +53,14 @@ test('@spec:AC-111 V2 adiciona departamento opcional a cursos existentes com cha
   assert.match(departmentMigration, /foreign\s+key\s*\(\s*department_id\s*\)\s+references\s+org_units\s*\(\s*id\s*\)/i);
   assert.doesNotMatch(departmentMigration, /department_id\s+bigint\s+not\s+null/i);
   assert.doesNotMatch(migration, /department_id/i, 'V1 stays immutable for databases already baselined at version 1');
+});
+
+test('@spec:AC-170 V6 mantém menor id e apaga etapas antes dos templates duplicados', () => {
+  assert.match(workflowTemplateMigration, /row_number\s*\(\s*\)\s*over\s*\(\s*partition\s+by\s+order_type\s*,\s*course_id\s+order\s+by\s+id\s*\)/i);
+  const deleteSteps = workflowTemplateMigration.search(/delete\s+from\s+workflow_steps/i);
+  const deleteTemplates = workflowTemplateMigration.search(/delete\s+from\s+workflow_templates/i);
+  assert.ok(deleteSteps >= 0, 'Migration deletes dependent steps');
+  assert.ok(deleteTemplates > deleteSteps, 'Migration deletes steps before templates');
+  assert.match(workflowTemplateMigration, /create\s+unique\s+index\s+uq_workflow_templates_order_type_course[\s\S]*?where\s+course_id\s+is\s+not\s+null/i);
+  assert.match(workflowTemplateMigration, /create\s+unique\s+index\s+uq_workflow_templates_order_type_default[\s\S]*?where\s+course_id\s+is\s+null/i);
 });
