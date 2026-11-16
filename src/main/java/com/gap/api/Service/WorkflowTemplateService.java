@@ -38,10 +38,12 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
         validateStepOrders(dto);
         if (dto.courseId() != null) {
             if (templateRepository.findByOrderTypeAndCourse_Id(dto.orderType(), dto.courseId()).isPresent()){
-                throw new IllegalArgumentException("Workflow template already exists for this order type and course");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Já existe um template para esse tipo de solicitação e curso.");
             }
         } else if (templateRepository.findByOrderTypeAndCourseIsNull(dto.orderType()).isPresent()) {
-            throw  new IllegalArgumentException("Workflow template already exists for this order type and course");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Já existe um template para esse tipo de solicitação e curso.");
         }
 
         WorkflowTemplate template = new WorkflowTemplate();
@@ -59,8 +61,8 @@ public class WorkflowTemplateService implements IWorkflowTemplateService {
             return WorkflowTemplateResponse.from(templateRepository.saveAndFlush(template));
         } catch (DataIntegrityViolationException exception) {
             if (isTemplateScopeUniqueViolation(exception)) {
-                throw new IllegalArgumentException(
-                        "Workflow template already exists for this order type and course", exception);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Já existe um template para esse tipo de solicitação e curso.", exception);
             }
             throw exception;
         }
