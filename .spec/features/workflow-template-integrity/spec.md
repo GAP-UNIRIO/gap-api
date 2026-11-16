@@ -1,7 +1,7 @@
 # Especificação: integridade de templates de workflow
 
 > feature: workflow-template-integrity
-> status: rascunho
+> status: em-implementacao
 
 ## Contexto
 
