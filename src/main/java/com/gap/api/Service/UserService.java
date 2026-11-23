@@ -39,7 +39,7 @@ public class UserService implements IUserService {
 
         user.setCourse(courseRepository.findById(userComplementRequest.courseId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: " + userComplementRequest.courseId())));
-        user.setRegistrationNumber(userComplementRequest.registrarionNumber());
+        user.setRegistrationNumber(userComplementRequest.registrationNumber());
         return UserResponse.from(repository.save(user));
     }
 

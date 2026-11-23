@@ -1,11 +1,11 @@
 {
   "feature": "user-profile",
-  "timestamp": "2026-10-22T21:14:20.502Z",
-  "gitRev": "ea26494",
+  "timestamp": "2026-11-05T03:57:01.754Z",
+  "gitRev": "ccae287",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 0,
-  "testsParsed": 218,
+  "exitCode": 1,
+  "testsParsed": 238,
   "results": {
     "AC-061": {
       "status": "pass",
@@ -40,6 +40,31 @@
     "AC-067": {
       "status": "pass",
       "testName": "@spec:AC-064 @spec:AC-067 PUT /users/me/complemento completa o cadastro da identidade autenticada",
+      "method": "tap"
+    },
+    "AC-132": {
+      "status": "pass",
+      "testName": "@spec:AC-132 mantém compatibilidade com o nome legado da matrícula",
+      "method": "tap"
+    },
+    "AC-133": {
+      "status": "pass",
+      "testName": "@spec:AC-133 rejeita matrícula ausente, vazia ou em branco com BaseResponse",
+      "method": "tap"
+    },
+    "AC-134": {
+      "status": "pass",
+      "testName": "@spec:AC-134 rejeita matrícula não numérica com BaseResponse",
+      "method": "tap"
+    },
+    "AC-135": {
+      "status": "pass",
+      "testName": "@spec:AC-135 bloqueia ações quando o cadastro do usuário está incompleto",
+      "method": "tap"
+    },
+    "AC-136": {
+      "status": "pass",
+      "testName": "@spec:AC-010 @spec:AC-136 permite recurso protegido para usuário com cadastro completo",
       "method": "tap"
     }
   },
