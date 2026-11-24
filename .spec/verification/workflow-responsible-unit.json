@@ -1,0 +1,22 @@
+{
+  "feature": "workflow-responsible-unit",
+  "timestamp": "2026-11-24T16:39:10.610Z",
+  "gitRev": "619634f",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 301,
+  "results": {
+    "AC-173": {
+      "status": "pass",
+      "testName": "@spec:AC-173 retorna conflito quando falta uma associação organizacional opcional",
+      "method": "tap"
+    },
+    "AC-174": {
+      "status": "pass",
+      "testName": "@spec:AC-174 resolve todas as unidades responsáveis configuradas no curso",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

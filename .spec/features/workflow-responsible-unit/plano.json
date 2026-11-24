@@ -1,0 +1,40 @@
+{
+  "runId": "gap-api-workflow-responsible-unit-mwux8d5u",
+  "feature": "workflow-responsible-unit",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-11-24 16:40",
+  "branchTrabalho": "fix/workflow-responsible-unit",
+  "branchBase": "main",
+  "baseDir": ".spec/features/workflow-responsible-unit",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-workflow-responsible-unit-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-054",
+      "titulo": "Verificar e auditar a mudança",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Service/WorkflowEngineServiceTest.java"
+      ],
+      "refs": [
+        "US-048",
+        "AC-173",
+        "AC-174"
+      ]
+    }
+  ],
+  "concluidas": [
+    "T-053"
+  ],
+  "avisos": [
+    "T-054 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}
