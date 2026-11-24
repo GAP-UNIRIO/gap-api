@@ -133,7 +133,7 @@ Como usuário autenticado, quero que os dados opcionais e os arquivos anexados r
 | ASM-007 | A ausência de template de workflow resulta em HTTP 503 e reverte banco e objetos finais. | confirmada | Confirmado pelo usuário; o teste de integração já verifica rollback/limpeza. |
 | ASM-019 | O limite de 5 MB significa 5 MiB, isto é, 5 × 1024 × 1024 bytes. | confirmada | Definido na conversa; alinhado ao limite solicitado e à condição `content-length-range` do POST ao S3. |
 | ASM-020 | Tipos permitidos são identificados pelo MIME type exato `application/pdf`, `image/jpeg`, `image/png` e `application/vnd.openxmlformats-officedocument.wordprocessingml.document`. | confirmada | Lista confirmada pelo usuário: PDF, JPEG, PNG e DOCX. |
-| ASM-021 | Chaves temporárias legadas, emitidas antes do vínculo por usuário, poderão ser rejeitadas após a implantação. | aberta | Não carregam identidade do solicitante; confirmar impacto sobre uploads ainda em uso. |
+| ASM-021 | Chaves temporárias legadas, emitidas antes do vínculo por usuário, serão rejeitadas após a implantação. | confirmada | O usuário decidiu rejeitá-las e solicitar novo upload. |
 
 ## Perguntas em aberto
 
@@ -144,3 +144,4 @@ Como usuário autenticado, quero que os dados opcionais e os arquivos anexados r
 | Q-003 | Quando não há template de workflow, a solicitação deve sofrer rollback ou ser criada sem etapas? | respondida | Deve sofrer rollback. |
 | Q-004 | Qual resposta HTTP deve ser enviada quando não há template de workflow? | respondida | HTTP 503. |
 | Q-005 | Quando o usuário autenticado envia um `userId` de outra pessoa, HTTP 403 é o status esperado? | respondida | Confirmado: HTTP 403. |
+| Q-040 | Como tratar uploads temporários feitos antes da implantação do vínculo por usuário? | respondida | Rejeitar as chaves legadas e pedir novo upload. |
