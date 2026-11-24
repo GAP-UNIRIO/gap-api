@@ -136,19 +136,21 @@ class WorkflowTemplateControllerTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-097 @spec:AC-098 duplicidade de template retorna 400")
+    @DisplayName("@spec:AC-097 @spec:AC-098 @spec:AC-169 duplicidade de template retorna 400")
     void createTemplate_duplicateSpecificAndDefault_returnsBadRequest() throws Exception {
         when(workflowTemplateService.createTemplate(any(WorkflowTemplateRequest.class)))
-                .thenThrow(new IllegalArgumentException("Workflow template already exists"));
+                .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Já existe um template para esse tipo de solicitação e curso."));
         String[] requests = {
-                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":1,\"steps\":[]}",
-                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null,\"steps\":[]}"
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":1,\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"courseId\":null,\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}"
         };
         for (String request : requests) {
             mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.status").value("error"));
+                    .andExpect(jsonPath("$.status").value("error"))
+                    .andExpect(jsonPath("$.message").value("Já existe um template para esse tipo de solicitação e curso."));
         }
     }
 
@@ -163,6 +165,29 @@ class WorkflowTemplateControllerTest {
             mockMvc.perform(post("/workflow-template").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
                             .contentType(MediaType.APPLICATION_JSON).content(request))
                     .andExpect(status().isBadRequest());
+        }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-166 @spec:AC-167 POST e PUT rejeitam campos obrigatórios ausentes e stepOrder não positivo")
+    void createOrUpdateTemplate_rejectsMissingEnumsAndNonPositiveStepOrder() throws Exception {
+        String[] requests = {
+                "{\"courseId\":null,\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":null,\"steps\":[{\"stepOrder\":1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":0,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}",
+                "{\"orderType\":\"APROVEITAMENTO_DE_DISCIPLINA\",\"steps\":[{\"stepOrder\":-1,\"stageType\":\"COORDINATOR\",\"responsibleUnitType\":\"COORDENACAO\",\"stepName\":\"Coordenação\",\"stepDescription\":\"Análise\"}]}"
+        };
+        for (String request : requests) {
+            mockMvc.perform(post("/workflow-template").with(admin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(request))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value("error"));
+            mockMvc.perform(put("/workflow-template/5").with(admin()).with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON).content(request))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value("error"));
         }
     }
 

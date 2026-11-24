@@ -14,11 +14,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Sort;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -59,7 +61,7 @@ class WorkflowTemplateServiceTest {
 
         template.setOrderType(request.orderType());
         template.setCourse(course);
-        when(templateRepository.save(any(WorkflowTemplate.class))).thenAnswer(invocation -> {
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenAnswer(invocation -> {
             WorkflowTemplate savedTemplate = invocation.getArgument(0);
             savedTemplate.setId(10L);
             return savedTemplate;
@@ -72,7 +74,7 @@ class WorkflowTemplateServiceTest {
         assertNotNull(response);
         assertEquals(request.orderType(), response.orderType());
         ArgumentCaptor<WorkflowTemplate> captor = ArgumentCaptor.forClass(WorkflowTemplate.class);
-        verify(templateRepository, times(1)).save(captor.capture());
+        verify(templateRepository, times(1)).saveAndFlush(captor.capture());
         WorkflowTemplate saved = captor.getValue();
         assertEquals(course, saved.getCourse());
         assertEquals(2, saved.getSteps().size());
@@ -106,8 +108,9 @@ class WorkflowTemplateServiceTest {
         when(templateRepository.findByOrderTypeAndCourse_Id(request.orderType(), request.courseId())).thenReturn(Optional.of(new WorkflowTemplate()));
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> workflowTemplateService.createTemplate(request));
-        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> workflowTemplateService.createTemplate(request));
+        assertStatus(exception, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", exception.getReason());
     }
 
     @Test
@@ -124,8 +127,9 @@ class WorkflowTemplateServiceTest {
                 .thenReturn(Optional.of(existingTemplate));
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> workflowTemplateService.createTemplate(request));
-        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> workflowTemplateService.createTemplate(request));
+        assertStatus(exception, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", exception.getReason());
     }
 
     @Test
@@ -138,7 +142,7 @@ class WorkflowTemplateServiceTest {
         WorkflowTemplate saved = new WorkflowTemplate();
         saved.setOrderType(request.orderType());
         when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
-        when(templateRepository.save(any(WorkflowTemplate.class))).thenAnswer(invocation -> {
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenAnswer(invocation -> {
             WorkflowTemplate entity = invocation.getArgument(0);
             entity.setId(22L);
             return entity;
@@ -149,14 +153,130 @@ class WorkflowTemplateServiceTest {
         assertEquals(22L, response.id());
         assertNull(response.course());
         ArgumentCaptor<WorkflowTemplate> captor = ArgumentCaptor.forClass(WorkflowTemplate.class);
-        verify(templateRepository).save(captor.capture());
+        verify(templateRepository).saveAndFlush(captor.capture());
         assertEquals(1, captor.getValue().getSteps().size());
 
         when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType()))
                 .thenReturn(Optional.of(saved));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> workflowTemplateService.createTemplate(request));
-        assertEquals("Workflow template already exists for this order type and course", exception.getMessage());
+        assertStatus(exception, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", exception.getReason());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-169 POST converte colisão de unicidade em erro de duplicidade 400")
+    void createTemplate_concurrentDuplicate_throwsBadRequest() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(new DataIntegrityViolationException(
+                "duplicate key violates uq_workflow_templates_order_type_default"));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertStatus(error, HttpStatus.BAD_REQUEST);
+        assertEquals("Já existe um template para esse tipo de solicitação e curso.", error.getReason());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-169 PUT converte colisão de unicidade em conflito 409")
+    void update_concurrentDuplicate_throwsConflict() {
+        WorkflowTemplate existing = template(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, step(1, "Antiga"));
+        when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(Order.OrderType.REVISAO_DE_PROVA)).thenReturn(Optional.empty());
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(new DataIntegrityViolationException(
+                "duplicate key violates uq_workflow_templates_order_type_default"));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.update(5L, request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1))));
+
+        assertStatus(error, HttpStatus.CONFLICT);
+    }
+
+    @Test
+    @DisplayName("createTemplate_courseScopeConstraintException_returnsBadRequest")
+    void createTemplate_courseScopeConstraintException_returnsBadRequest() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, 1L, stepRequest(1));
+        Course course = course(1L);
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(templateRepository.findByOrderTypeAndCourse_Id(request.orderType(), 1L)).thenReturn(Optional.empty());
+        var constraintViolation = new org.hibernate.exception.ConstraintViolationException(
+                "duplicate", new SQLException("duplicate key"), "uq_workflow_templates_order_type_course");
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class)))
+                .thenThrow(new DataIntegrityViolationException("integrity violation", constraintViolation));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertStatus(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("update_defaultScopeConstraintException_returnsConflict")
+    void update_defaultScopeConstraintException_returnsConflict() {
+        WorkflowTemplate existing = template(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, step(1, "Antiga"));
+        when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(Order.OrderType.REVISAO_DE_PROVA)).thenReturn(Optional.empty());
+        var constraintViolation = new org.hibernate.exception.ConstraintViolationException(
+                "duplicate", new SQLException("duplicate key"), "uq_workflow_templates_order_type_default");
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class)))
+                .thenThrow(new DataIntegrityViolationException("integrity violation", constraintViolation));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.update(5L,
+                        request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1))));
+
+        assertStatus(error, HttpStatus.CONFLICT);
+    }
+
+    @Test
+    @DisplayName("createTemplate_nestedConstraintMessage_mapsToBadRequest")
+    void createTemplate_nestedConstraintMessage_mapsToBadRequest() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(new DataIntegrityViolationException(
+                "integrity violation", new IllegalStateException("uq_workflow_templates_order_type_course violation")));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertStatus(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("createTemplate_unrelatedConstraintViolation_rethrowsOriginalException")
+    void createTemplate_unrelatedConstraintViolation_rethrowsOriginalException() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        var unrelatedConstraint = new org.hibernate.exception.ConstraintViolationException(
+                "unrelated constraint", new SQLException("unrelated integrity issue"), "uq_other_table_value");
+        var failure = new DataIntegrityViolationException("integrity violation", unrelatedConstraint);
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(failure);
+
+        DataIntegrityViolationException error = assertThrows(DataIntegrityViolationException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertSame(failure, error);
+    }
+
+    @Test
+    @DisplayName("createTemplate_exceptionWithoutMessage_rethrowsOriginalException")
+    void createTemplate_exceptionWithoutMessage_rethrowsOriginalException() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        var failure = new DataIntegrityViolationException("unavailable details") {
+            @Override
+            public String getMessage() {
+                return null;
+            }
+        };
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(failure);
+
+        DataIntegrityViolationException error = assertThrows(DataIntegrityViolationException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertSame(failure, error);
     }
 
     // ---------- consulta, edição e exclusão (workflow-template-crud) ----------
@@ -200,7 +320,7 @@ class WorkflowTemplateServiceTest {
         assertStatus(assertThrows(ResponseStatusException.class,
                 () -> workflowTemplateService.update(99L, request(Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, stepRequest(1)))), HttpStatus.NOT_FOUND);
         assertStatus(assertThrows(ResponseStatusException.class, () -> workflowTemplateService.delete(99L)), HttpStatus.NOT_FOUND);
-        verify(templateRepository, never()).save(any());
+        verify(templateRepository, never()).saveAndFlush(any());
         verify(templateRepository, never()).delete(any());
     }
 
@@ -212,7 +332,7 @@ class WorkflowTemplateServiceTest {
         when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(templateRepository.findByOrderTypeAndCourse_Id(Order.OrderType.REVISAO_DE_PROVA, 1L)).thenReturn(Optional.empty());
-        when(templateRepository.save(existing)).thenReturn(existing);
+        when(templateRepository.saveAndFlush(existing)).thenReturn(existing);
 
         WorkflowTemplateResponse response = workflowTemplateService.update(5L,
                 request(Order.OrderType.REVISAO_DE_PROVA, 1L, stepRequest(1), stepRequest(2)));
@@ -231,11 +351,11 @@ class WorkflowTemplateServiceTest {
         WorkflowTemplate existing = template(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, step(1, "Antiga"));
         when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
         when(templateRepository.findByOrderTypeAndCourseIsNull(Order.OrderType.TRANCAMENTO_DE_MATRICULA)).thenReturn(Optional.of(existing));
-        when(templateRepository.save(existing)).thenReturn(existing);
+        when(templateRepository.saveAndFlush(existing)).thenReturn(existing);
 
         workflowTemplateService.update(5L, request(Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, stepRequest(1)));
 
-        verify(templateRepository).save(existing);
+        verify(templateRepository).saveAndFlush(existing);
     }
 
     @Test
@@ -251,7 +371,7 @@ class WorkflowTemplateServiceTest {
 
         assertStatus(error, HttpStatus.CONFLICT);
         assertEquals(Order.OrderType.TRANCAMENTO_DE_MATRICULA, existing.getOrderType());
-        verify(templateRepository, never()).save(any());
+        verify(templateRepository, never()).saveAndFlush(any());
     }
 
     @Test
@@ -267,11 +387,11 @@ class WorkflowTemplateServiceTest {
 
         assertStatus(error, HttpStatus.NOT_FOUND);
         assertNull(existing.getCourse());
-        verify(templateRepository, never()).save(any());
+        verify(templateRepository, never()).saveAndFlush(any());
     }
 
     @Test
-    @DisplayName("@spec:AC-164 criar ou editar com stepOrder repetido lança 400")
+    @DisplayName("@spec:AC-164 @spec:AC-168 criar ou editar com stepOrder repetido lança 400")
     void duplicateStepOrder_throwsBadRequest() {
         WorkflowTemplate existing = template(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, step(1, "Antiga"));
         when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
@@ -280,7 +400,26 @@ class WorkflowTemplateServiceTest {
         assertStatus(assertThrows(ResponseStatusException.class, () -> workflowTemplateService.update(5L, duplicated)), HttpStatus.BAD_REQUEST);
         assertStatus(assertThrows(ResponseStatusException.class, () -> workflowTemplateService.createTemplate(duplicated)), HttpStatus.BAD_REQUEST);
         assertEquals(1, existing.getSteps().size());
-        verify(templateRepository, never()).save(any());
+        verify(templateRepository, never()).saveAndFlush(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-167 criar e editar rejeitam stepOrder zero ou negativo sem alterar dados")
+    void createOrUpdateTemplate_nonPositiveStepOrder_throwsBadRequest() {
+        WorkflowTemplate existing = template(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, step(1, "Antiga"));
+        when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
+
+        for (int invalidOrder : List.of(0, -1)) {
+            WorkflowTemplateRequest invalid = request(Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, stepRequest(invalidOrder));
+            assertStatus(assertThrows(ResponseStatusException.class,
+                    () -> workflowTemplateService.createTemplate(invalid)), HttpStatus.BAD_REQUEST);
+            assertStatus(assertThrows(ResponseStatusException.class,
+                    () -> workflowTemplateService.update(5L, invalid)), HttpStatus.BAD_REQUEST);
+            assertEquals(1, existing.getSteps().size());
+            assertEquals(1, existing.getSteps().get(0).getStepOrder());
+        }
+
+        verify(templateRepository, never()).saveAndFlush(any());
     }
 
     @Test
