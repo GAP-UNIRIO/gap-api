@@ -1,7 +1,7 @@
 # Spec: Workflow responsible unit
 
 > feature: workflow-responsible-unit
-> status: rascunho
+> status: em-implementacao
 
 ## Contexto
 
