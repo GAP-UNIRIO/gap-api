@@ -99,6 +99,7 @@ BaseResponse {
 - Não rode testes de integração pesados sem necessidade; use o escopo unitário por padrão.
 - Antes de considerar uma tarefa concluída, rode os testes e confirme que passam.
 - Sempre crie os testes de falha antes de implementar a solução, para garantir que o código falha nos casos esperados.
+- Busque sempre manter cobertura de testes alta, mas não sacrifique qualidade por quantidade. Foque em testar regras de negócio e casos críticos. * Temos um gate de pelo menos 85% de cobertura de testes para codigo novo, mantenha uma porcentagem acima disso.
 
 ## 9. Git e fluxo de trabalho
 
@@ -108,6 +109,7 @@ BaseResponse {
 - Nunca faça push direto na `main`.
 - Não commite arquivos de configuração com segredos (senhas, tokens, chaves). Use variáveis de ambiente.
 - Commite baseado nas subtarefas definidas, portanto, sempre que finalizar uma subtarefa, realize o commit.
+- Separe commits por escopo, evitando misturar alterações de código, testes e documentação.
 
 ## 10. Limites e cuidados
 
