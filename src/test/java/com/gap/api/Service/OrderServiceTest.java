@@ -94,6 +94,22 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-178 rejeita arquivo maior que 5 MiB antes de persistir ou mover")
+    void create_rejectsOversizedTemporaryFileBeforePersistence() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(storageService.isTemporaryKeyIssued("temporary/proof")).thenReturn(true);
+        when(storageService.getTemporaryObjectSize("temporary/proof"))
+                .thenReturn(IStorageService.MAX_ANNEX_SIZE_BYTES + 1);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> create(request(List.of(annex("proof.pdf", "temporary/proof")))));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(storageService, never()).moveToOrder(anyString(), anyLong(), anyString());
+    }
+
+    @Test
     @DisplayName("@spec:AC-007 move e persiste um anexo na chave final")
     void create_movesAndPersistsSingleAnnexAtFinalKey() {
         givenUserAndOrderSave();

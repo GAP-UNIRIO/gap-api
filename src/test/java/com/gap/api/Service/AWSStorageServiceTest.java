@@ -49,6 +49,58 @@ class AWSStorageServiceTest {
     }
 
     @Test
+    @org.junit.jupiter.api.DisplayName("@spec:AC-178 restringe o POST assinado a arquivos de até 5 MiB")
+    void generateUploadUrl_policyLimitsUploadToFiveMiB() throws Exception {
+        AWSStorageService service = configuredService(mock(S3Client.class),
+                () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
+
+        var response = service.generateUploadUrl("record.pdf", "application/pdf");
+        String policy = new String(Base64.getDecoder().decode(response.fields().get("policy")),
+                java.nio.charset.StandardCharsets.UTF_8);
+
+        assertTrue(policy.contains("content-length-range"));
+        assertTrue(policy.contains("5242880"));
+    }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("@spec:AC-178 rejeita MIME type não permitido")
+    void generateUploadUrl_rejectsUnsupportedContentType() {
+        AWSStorageService service = configuredService(mock(S3Client.class),
+                () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> service.generateUploadUrl("script.exe", "application/x-msdownload"));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+    }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("@spec:AC-178 aceita PDF, JPEG, PNG e DOCX")
+    void generateUploadUrl_acceptsAllowedContentTypes() {
+        AWSStorageService service = configuredService(mock(S3Client.class),
+                () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
+
+        assertDoesNotThrow(() -> service.generateUploadUrl("record.pdf", "application/pdf"));
+        assertDoesNotThrow(() -> service.generateUploadUrl("record.jpg", "image/jpeg"));
+        assertDoesNotThrow(() -> service.generateUploadUrl("record.png", "image/png"));
+        assertDoesNotThrow(() -> service.generateUploadUrl("record.docx",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+    }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("@spec:AC-178 consulta o tamanho do objeto temporário no S3")
+    void getTemporaryObjectSize_returnsS3ContentLength() {
+        S3Client s3Client = mock(S3Client.class);
+        AWSStorageService service = configuredService(s3Client,
+                () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
+        String key = service.generateUploadUrl("record.pdf", "application/pdf").fileKey();
+        when(s3Client.headObject(any(software.amazon.awssdk.services.s3.model.HeadObjectRequest.class)))
+                .thenReturn(software.amazon.awssdk.services.s3.model.HeadObjectResponse.builder().contentLength(123L).build());
+
+        assertEquals(123L, service.getTemporaryObjectSize(key));
+    }
+
+    @Test
     void generateUploadUrl_includesSessionToken() {
         String token = "session-token-for-test";
         AWSStorageService service = configuredService(mock(S3Client.class),

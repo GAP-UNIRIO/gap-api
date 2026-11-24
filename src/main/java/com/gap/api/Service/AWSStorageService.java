@@ -12,6 +12,8 @@ import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import tools.jackson.databind.ObjectMapper;
 
@@ -22,12 +24,18 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.HexFormat;
 
 @Service
 @RequiredArgsConstructor
 public class AWSStorageService implements IStorageService {
+    private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     private final S3Client s3Client;
     private final AwsCredentialsProvider credentialsProvider;
     private final ObjectMapper objectMapper;
@@ -44,6 +52,9 @@ public class AWSStorageService implements IStorageService {
 
     @Override
     public UploadUrlResponse generateUploadUrl(String name, String contentType) {
+        if (!ALLOWED_CONTENT_TYPES.contains(contentType)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported attachment content type");
+        }
         validateConfiguration();
         String id = UUID.randomUUID().toString();
         String key = temporaryPrefix + "/" + id + "." + sign(temporaryPrefix + "/", id);
@@ -62,7 +73,7 @@ public class AWSStorageService implements IStorageService {
         java.util.List<Object> conditions = new java.util.ArrayList<>(java.util.List.of(
                 Map.of("bucket", bucket), Map.of("key", key), Map.of("Content-Type", contentType),
                 Map.of("x-amz-algorithm", "AWS4-HMAC-SHA256"), Map.of("x-amz-credential", credential),
-                Map.of("x-amz-date", date)));
+                Map.of("x-amz-date", date), java.util.List.of("content-length-range", 0, MAX_ANNEX_SIZE_BYTES)));
         if (credentials instanceof AwsSessionCredentials session) conditions.add(Map.of("x-amz-security-token", session.sessionToken()));
         policy.put("expiration", expiry.toString());
         policy.put("conditions", conditions);
@@ -97,6 +108,23 @@ public class AWSStorageService implements IStorageService {
         byte[] expected = sign(prefix, parts[0]).getBytes(StandardCharsets.UTF_8);
         byte[] actual = parts[1].getBytes(StandardCharsets.UTF_8);
         return java.security.MessageDigest.isEqual(expected, actual);
+    }
+
+    @Override
+    public long getTemporaryObjectSize(String key) {
+        if (!isTemporaryKeyIssued(key)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid temporary file key");
+        }
+        validateConfiguration();
+        try {
+            return s3Client.headObject(HeadObjectRequest.builder().bucket(bucket).key(key).build()).contentLength();
+        } catch (S3Exception exception) {
+            if (exception.statusCode() == 404) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Temporary file was not found", exception);
+            }
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Unable to verify temporary file size", exception);
+        }
     }
 
     @Override

@@ -47,6 +47,8 @@ public class OrderService implements IOrderService {
         for (AnnexRequest annex : requestedAnnexes) {
             if (!storageService.isTemporaryKeyIssued(annex.temporaryKey()))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid temporary file key");
+            if (storageService.getTemporaryObjectSize(annex.temporaryKey()) > IStorageService.MAX_ANNEX_SIZE_BYTES)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attachment exceeds the 5 MiB size limit");
         }
 
         Order order = new Order();
