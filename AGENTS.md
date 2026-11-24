@@ -113,6 +113,7 @@ BaseResponse {
 
 ## 10. Limites e cuidados
 
+- Em todas as etapas e seções do trabalho (planejamento, especificação, tarefas, execução, testes e entrega), confira e siga as instruções aplicáveis deste `AGENTS.md`; valide especialmente a branch e a nomenclatura definidas no plano de execução.
 - Não altere migrations, schema do banco ou configurações de produção sem pedido explícito.
 - Não remova testes existentes para fazer o build passar.
 - Se a tarefa for ambígua, pergunte antes de implementar uma grande mudança.
