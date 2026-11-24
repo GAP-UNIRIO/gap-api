@@ -93,7 +93,7 @@ node <dir-desta-skill>/scripts/onp-spec.mjs <comando>
 ```
 
 Comandos: `init [--preset base|lgpd-educacao]` · `new <feature>` ·
-`plano <feature> [--agents codex] [--paralelizar T-xxx,T-yyy] [--sequencial]` ·
+`plano <feature> [--agents codex] [--paralelizar T-xxx,T-yyy] [--sequencial] [--branch <nome>] [--base-branch <nome>]` ·
 `resumo [feature] [--tabela] [--gravar --origem ia --texto "..."]` ·
 `tarefa <feature> <T-xxx> <status>` ·
 `scaffold <feature> [--force]` · `verify <feature>` ·

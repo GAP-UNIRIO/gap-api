@@ -181,6 +181,8 @@ export function montarPlano(project, featureName, opts = {}) {
       sequenciais: pendentes,
       modeloForcado,
       esforcoForcado,
+      branchTrabalho: opts.branch,
+      branchBase: opts.branchBase,
     });
   }
 
@@ -239,7 +241,7 @@ export function montarPlano(project, featureName, opts = {}) {
   const repoName = path.basename(project.config.rootDir);
   faixas.forEach((fx, i) => {
     fx.id = `faixa-${i + 1}`;
-    fx.branch = `spec/${featureName}-faixa-${i + 1}`;
+    fx.branch = `${opts.branch || `spec/${featureName}`}-faixa-${i + 1}`;
     fx.worktree = `../onp-worktrees/${repoName}-${featureName}-faixa-${i + 1}`;
   });
 
@@ -262,11 +264,13 @@ export function montarPlano(project, featureName, opts = {}) {
     paralelizar: selecao,
     modeloForcado,
     esforcoForcado,
+    branchTrabalho: opts.branch,
+    branchBase: opts.branchBase,
   });
 }
 
 // campos comuns aos dois modos (paralelo e sequencial)
-function fecharPlano(project, featureName, { agent, opts, cfg, avisos, acTitulo, concluidas, modo, faixas, ondas, sequenciais, paralelizar = null, modeloForcado = null, esforcoForcado = null }) {
+function fecharPlano(project, featureName, { agent, opts, cfg, avisos, acTitulo, concluidas, modo, faixas, ondas, sequenciais, paralelizar = null, modeloForcado = null, esforcoForcado = null, branchTrabalho = null, branchBase = null }) {
   const repoName = path.basename(project.config.rootDir);
   // como invocar o motor a partir da raiz do projeto
   let engine = opts.enginePath || 'onp-spec';
@@ -283,7 +287,10 @@ function fecharPlano(project, featureName, { agent, opts, cfg, avisos, acTitulo,
     runId: opts.runId || `${repoName}-${featureName}-${Date.now().toString(36)}`,
     specDir: project.config.specDir,
     baseDir: `${project.config.specDir}/features/${featureName}`,
-    branchTrabalho: `spec/${featureName}`,
+    branchTrabalho: branchTrabalho || `spec/${featureName}`,
+    branchCustomizado: Boolean(branchTrabalho),
+    branchBase: branchBase || 'main',
+    branchBaseCustomizado: Boolean(branchBase && branchBase !== 'main'),
     repoName,
     testCommand: project.config.testCommand || null,
     cfg,
@@ -382,6 +389,7 @@ export function renderPlanoJson(plan) {
       esforcoForcado: plan.esforcoForcado || null,
       geradoEm: plan.geradoEm,
       branchTrabalho: plan.branchTrabalho,
+      branchBase: plan.branchBase,
       baseDir: plan.baseDir,
       specDir: plan.specDir,
       repoName: plan.repoName,
@@ -420,6 +428,8 @@ function flagsRegenerar(plan) {
   let flags = '';
   if (plan.modo === 'sequencial') flags += ' --sequencial';
   else if (plan.paralelizar) flags += ` --paralelizar ${plan.paralelizar.join(',')}`;
+  if (plan.branchCustomizado) flags += ` --branch ${plan.branchTrabalho}`;
+  if (plan.branchBaseCustomizado) flags += ` --base-branch ${plan.branchBase}`;
   if (plan.modeloForcado) flags += ` --modelo ${plan.modeloForcado}`;
   if (plan.esforcoForcado) flags += ` --esforco ${plan.esforcoForcado}`;
   return flags;
@@ -487,7 +497,7 @@ export function renderPlanoMd(plan) {
   }
   L.push('## Gestão de branches e commits');
   L.push('');
-  L.push(`1. branch de trabalho \`${plan.branchTrabalho}\` criada do ponto atual (se ainda não existir)`);
+  L.push(`1. branch de trabalho \`${plan.branchTrabalho}\` criada a partir de \`${plan.branchBase}\` (se ainda não existir)`);
   if (sequencial) {
     L.push('2. as tarefas rodam nela mesma, na ordem — **1 tarefa = 1 commit** (`T-xxx feature: título`), marcada `[concluida]` só com trabalho feito');
     L.push(`3. gate final na branch de trabalho: \`onp-spec verify ${plan.feature}\` + \`onp-spec audit --ci\` — **exit 0 ou não está pronto**`);
@@ -737,6 +747,7 @@ export function renderPlanoSh(plan) {
   P(`RUN_ID=${shq(plan.runId)}`);
   P(`FEATURE=${shq(plan.feature)}`);
   P(`BASE_BRANCH=${shq(plan.branchTrabalho)}`);
+  P(`BRANCH_BASE=${shq(plan.branchBase)}`);
   P(`ENGINE=${shq(plan.engine)}`);
   if (codex) {
     P(`CODEX_FLAGS=(--sandbox ${shq(plan.cfg.sandbox || 'workspace-write')})`);
@@ -797,9 +808,10 @@ export function renderPlanoSh(plan) {
   P('    if git show-ref --verify --quiet "refs/heads/$BASE_BRANCH"; then');
   P('      git checkout -q "$BASE_BRANCH" || falhar "não consegui trocar para $BASE_BRANCH"');
   P('    else');
-  P('      git checkout -q -b "$BASE_BRANCH" || falhar "não consegui criar $BASE_BRANCH"');
+  P('      git checkout -q "$BRANCH_BASE" || falhar "branch-base $BRANCH_BASE não encontrada"');
+  P('      git checkout -q -b "$BASE_BRANCH" || falhar "não consegui criar $BASE_BRANCH a partir de $BRANCH_BASE"');
   P('    fi');
-  P('    info "branch de trabalho: $BASE_BRANCH (a partir de $ATUAL)"');
+  P('    info "branch de trabalho: $BASE_BRANCH (a partir de $BRANCH_BASE)"');
   P('  fi');
   P('  git worktree prune');
   P(`  LOG_DIR="$(dirname "$TOPLEVEL")/onp-worktrees/${plan.repoName}-${plan.feature}-logs"`);
