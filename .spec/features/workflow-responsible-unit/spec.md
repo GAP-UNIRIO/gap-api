@@ -19,11 +19,11 @@ Como solicitante, quero que cada etapa do meu pedido tenha uma unidade responsá
 - **Quando** o motor instancia o workflow do pedido
 - **Então** responde HTTP 409 com mensagem que identifica a ausência e não persiste nenhuma etapa
 
-#### AC-174 — Manter unidades configuradas e departamento obrigatório
+#### AC-174 — Resolver unidades responsáveis configuradas
 
-- **Dado** que todas as unidades exigidas pelas etapas estão associadas ao curso
+- **Dado** que coordenação, direção, secretaria, reitoria e escola exigidas pelas etapas estão associadas ao curso
 - **Quando** o motor instancia o workflow
-- **Então** salva as etapas pendentes com suas unidades; se faltar departamento, mantém HTTP 409
+- **Então** salva as etapas pendentes com as unidades associadas correspondentes
 
 ## Fora de escopo
 
