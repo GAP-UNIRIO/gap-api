@@ -91,5 +91,6 @@
 - Arquivos: src\main\resources\application.yaml
 - Arquivos: src\main\resources\db\migration\V1__initial_schema.sql
 - Arquivos: src/test/resources/application.properties
+- Arquivos: src\main\java\com\gap\api\Validation\CnpjValidator.java, src\main\java\com\gap\api\Validation\SettingsValidator.java, src\main\java\com\gap\api\Validation\ValidCnpj.java, src\main\java\com\gap\api\Validation\ValidSettings.java
 
 
