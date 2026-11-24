@@ -33,8 +33,9 @@ class AWSStorageServiceTest {
         AWSStorageService service = configuredService(mock(S3Client.class),
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
 
-        IStorageService.UploadUrlResponse response = service.generateUploadUrl("record.pdf", "application/pdf");
+        IStorageService.UploadUrlResponse response = service.generateUploadUrl(7L, "record.pdf", "application/pdf");
 
+        assertTrue(response.fileKey().startsWith("temporary/7/"));
         assertTrue(response.uploadUrl().startsWith("https://uploads-test.s3.us-east-1.amazonaws.com/"));
         assertEquals(response.fileKey(), response.fields().get("key"));
         assertEquals("application/pdf", response.fields().get("Content-Type"));
@@ -54,7 +55,7 @@ class AWSStorageServiceTest {
         AWSStorageService service = configuredService(mock(S3Client.class),
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
 
-        var response = service.generateUploadUrl("record.pdf", "application/pdf");
+        var response = service.generateUploadUrl(7L, "record.pdf", "application/pdf");
         String policy = new String(Base64.getDecoder().decode(response.fields().get("policy")),
                 java.nio.charset.StandardCharsets.UTF_8);
 
@@ -69,7 +70,7 @@ class AWSStorageServiceTest {
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> service.generateUploadUrl("script.exe", "application/x-msdownload"));
+                () -> service.generateUploadUrl(7L, "script.exe", "application/x-msdownload"));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
     }
@@ -80,10 +81,10 @@ class AWSStorageServiceTest {
         AWSStorageService service = configuredService(mock(S3Client.class),
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
 
-        assertDoesNotThrow(() -> service.generateUploadUrl("record.pdf", "application/pdf"));
-        assertDoesNotThrow(() -> service.generateUploadUrl("record.jpg", "image/jpeg"));
-        assertDoesNotThrow(() -> service.generateUploadUrl("record.png", "image/png"));
-        assertDoesNotThrow(() -> service.generateUploadUrl("record.docx",
+        assertDoesNotThrow(() -> service.generateUploadUrl(7L, "record.pdf", "application/pdf"));
+        assertDoesNotThrow(() -> service.generateUploadUrl(7L, "record.jpg", "image/jpeg"));
+        assertDoesNotThrow(() -> service.generateUploadUrl(7L, "record.png", "image/png"));
+        assertDoesNotThrow(() -> service.generateUploadUrl(7L, "record.docx",
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
     }
 
@@ -93,7 +94,7 @@ class AWSStorageServiceTest {
         S3Client s3Client = mock(S3Client.class);
         AWSStorageService service = configuredService(s3Client,
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
-        String key = service.generateUploadUrl("record.pdf", "application/pdf").fileKey();
+        String key = service.generateUploadUrl(7L, "record.pdf", "application/pdf").fileKey();
         when(s3Client.headObject(any(software.amazon.awssdk.services.s3.model.HeadObjectRequest.class)))
                 .thenReturn(software.amazon.awssdk.services.s3.model.HeadObjectResponse.builder().contentLength(123L).build());
 
@@ -106,7 +107,7 @@ class AWSStorageServiceTest {
         AWSStorageService service = configuredService(mock(S3Client.class),
                 () -> AwsSessionCredentials.create("access-key", "secret-key-for-test-only", token));
 
-        var response = service.generateUploadUrl("record.pdf", "application/pdf");
+        var response = service.generateUploadUrl(7L, "record.pdf", "application/pdf");
 
         assertEquals(token, response.fields().get("x-amz-security-token"));
     }
@@ -118,7 +119,7 @@ class AWSStorageServiceTest {
         ReflectionTestUtils.setField(service, "bucket", "");
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> service.generateUploadUrl("record.pdf", "application/pdf"));
+                () -> service.generateUploadUrl(7L, "record.pdf", "application/pdf"));
 
         assertEquals(HttpStatus.SERVICE_UNAVAILABLE, exception.getStatusCode());
     }
@@ -127,11 +128,14 @@ class AWSStorageServiceTest {
     void isTemporaryKeyIssued_rejectsMalformedAndTamperedKeys() {
         AWSStorageService service = configuredService(mock(S3Client.class),
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
-        String validKey = service.generateUploadUrl("record.pdf", "application/pdf").fileKey();
+        String validKey = service.generateUploadUrl(7L, "record.pdf", "application/pdf").fileKey();
 
         assertTrue(service.isTemporaryKeyIssued(validKey));
+        assertTrue(service.isTemporaryKeyIssuedForUser(validKey, 7L));
+        assertFalse(service.isTemporaryKeyIssuedForUser(validKey, 8L));
         assertFalse(service.isTemporaryKeyIssued(validKey + "tampered"));
         assertFalse(service.isTemporaryKeyIssued("temporary/not-a-uuid.signature"));
+        assertFalse(service.isTemporaryKeyIssued("temporary/550e8400-e29b-41d4-a716-446655440000.legacy-signature"));
         assertFalse(service.isTemporaryKeyIssued("orders/23/proof.pdf"));
         assertFalse(service.isTemporaryKeyIssued(null));
     }
@@ -141,7 +145,7 @@ class AWSStorageServiceTest {
         S3Client s3Client = mock(S3Client.class);
         AWSStorageService service = configuredService(s3Client,
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
-        String temporaryKey = service.generateUploadUrl("record.pdf", "application/pdf").fileKey();
+        String temporaryKey = service.generateUploadUrl(7L, "record.pdf", "application/pdf").fileKey();
 
         String destinationKey = service.moveToOrder(temporaryKey, 23L, "record.pdf");
 
@@ -173,7 +177,7 @@ class AWSStorageServiceTest {
         S3Client s3Client = mock(S3Client.class);
         AWSStorageService service = configuredService(s3Client,
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
-        String temporaryKey = service.generateUploadUrl("record.pdf", "application/pdf").fileKey();
+        String temporaryKey = service.generateUploadUrl(7L, "record.pdf", "application/pdf").fileKey();
         RuntimeException copyFailure = new RuntimeException("copy failed");
         when(s3Client.copyObject(any(CopyObjectRequest.class))).thenThrow(copyFailure);
 
@@ -189,7 +193,7 @@ class AWSStorageServiceTest {
         S3Client s3Client = mock(S3Client.class);
         AWSStorageService service = configuredService(s3Client,
                 () -> AwsBasicCredentials.create("access-key", "secret-key-for-test-only"));
-        String temporaryKey = service.generateUploadUrl("record.pdf", "application/pdf").fileKey();
+        String temporaryKey = service.generateUploadUrl(7L, "record.pdf", "application/pdf").fileKey();
         RuntimeException cleanupFailure = new RuntimeException("temporary delete failed");
         List<DeleteObjectRequest> deleteRequests = new ArrayList<>();
         doAnswer(invocation -> {

@@ -72,7 +72,7 @@ class OrderControllerTest {
     void upload_returnsSignedPostFields() throws Exception {
         var response = new AnnexUploadResponse("https://uploads-test.s3.us-east-1.amazonaws.com/",
                 "temporary/opaque-key", Map.of("key", "temporary/opaque-key", "policy", "signed-policy"));
-        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class))).thenReturn(response);
+        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class), eq("complete@example.test"))).thenReturn(response);
 
         mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.fileKey").value(response.fileKey()))
                 .andExpect(jsonPath("$.data.fields.policy").value("signed-policy"));
 
-        verify(orderService).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+        verify(orderService).generateAnnexUploadUrl(any(AnnexUploadRequest.class), eq("complete@example.test"));
     }
 
     @Test
@@ -99,7 +99,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Complete seu cadastro de usuário para acessar este recurso."));
 
-        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class), anyString());
     }
 
     @Test
@@ -110,13 +110,13 @@ class OrderControllerTest {
                         .content(objectMapper.writeValueAsString(new AnnexUploadRequest(" ", ""))))
                 .andExpect(status().isBadRequest());
 
-        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class), anyString());
     }
 
     @Test
     @DisplayName("@spec:AC-012 retorna 503 quando o armazenamento está indisponível")
     void upload_returns503WhenStorageUnavailable() throws Exception {
-        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class)))
+        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class), eq("complete@example.test")))
                 .thenThrow(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Storage unavailable"));
 
         mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())

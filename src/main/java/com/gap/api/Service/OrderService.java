@@ -47,6 +47,8 @@ public class OrderService implements IOrderService {
         for (AnnexRequest annex : requestedAnnexes) {
             if (!storageService.isTemporaryKeyIssued(annex.temporaryKey()))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid temporary file key");
+            if (!storageService.isTemporaryKeyIssuedForUser(annex.temporaryKey(), user.getId()))
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot use another user's temporary file key");
             if (storageService.getTemporaryObjectSize(annex.temporaryKey()) > IStorageService.MAX_ANNEX_SIZE_BYTES)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attachment exceeds the 5 MiB size limit");
         }
@@ -82,8 +84,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public AnnexUploadResponse generateAnnexUploadUrl(AnnexUploadRequest request) {
-        IStorageService.UploadUrlResponse response = storageService.generateUploadUrl(request.name(), request.contentType());
+    public AnnexUploadResponse generateAnnexUploadUrl(AnnexUploadRequest request, String authenticatedEmail) {
+        User user = userRepository.findByEmail(authenticatedEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        IStorageService.UploadUrlResponse response = storageService.generateUploadUrl(
+                user.getId(), request.name(), request.contentType());
         return new AnnexUploadResponse(response.uploadUrl(), response.fileKey(), response.fields());
     }
 

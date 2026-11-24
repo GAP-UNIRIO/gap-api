@@ -49,6 +49,7 @@ class OrderServiceTest {
         user.setId(7L);
         user.setName("Test User");
         user.setEmail("order-create@example.test");
+        lenient().when(storageService.isTemporaryKeyIssuedForUser(anyString(), anyLong())).thenReturn(true);
 
     }
 
@@ -57,13 +58,15 @@ class OrderServiceTest {
     void generateAnnexUploadUrl_returnsStorageAuthorization() {
         var authorization = new IStorageService.UploadUrlResponse("https://s3.test", "temporary/key",
                 Map.of("key", "temporary/key", "policy", "signed"));
-        when(storageService.generateUploadUrl("proof.pdf", "application/pdf")).thenReturn(authorization);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(storageService.generateUploadUrl(7L, "proof.pdf", "application/pdf")).thenReturn(authorization);
 
-        var response = orderService.generateAnnexUploadUrl(new AnnexUploadRequest("proof.pdf", "application/pdf"));
+        var response = orderService.generateAnnexUploadUrl(new AnnexUploadRequest("proof.pdf", "application/pdf"), user.getEmail());
 
         assertEquals("https://s3.test", response.uploadUrl());
         assertEquals("temporary/key", response.fileKey());
         assertEquals("signed", response.fields().get("policy"));
+        verify(storageService).generateUploadUrl(7L, "proof.pdf", "application/pdf");
     }
 
     @Test
@@ -91,6 +94,23 @@ class OrderServiceTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         verifyNoInteractions(userRepository, orderRepository, storageService, workflowEngineService);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-177 aceita exatamente 10 anexos")
+    void create_acceptsTenAnnexes() {
+        givenUserAndOrderSave();
+        when(storageService.isTemporaryKeyIssued(anyString())).thenReturn(true);
+        when(storageService.moveToOrder(anyString(), eq(23L), anyString()))
+                .thenAnswer(invocation -> "orders/23/" + invocation.getArgument(2));
+        List<AnnexRequest> annexes = java.util.stream.IntStream.range(0, 10)
+                .mapToObj(index -> annex("file" + index + ".pdf", "temporary/key" + index))
+                .toList();
+
+        var response = create(request(annexes));
+
+        assertEquals(10, response.annexes().size());
+        verify(storageService, times(10)).moveToOrder(anyString(), eq(23L), anyString());
     }
 
     @Test
@@ -199,6 +219,21 @@ class OrderServiceTest {
                 () -> create(request(List.of(annex("proof.pdf", "temporary/tampered")))));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(storageService, never()).moveToOrder(anyString(), anyLong(), anyString());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-179 rejeita chave válida pertencente a outro usuário")
+    void create_rejectsTemporaryKeyOwnedByAnotherUser() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(storageService.isTemporaryKeyIssued("temporary/8/id.signature")).thenReturn(true);
+        when(storageService.isTemporaryKeyIssuedForUser("temporary/8/id.signature", 7L)).thenReturn(false);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> create(request(List.of(annex("proof.pdf", "temporary/8/id.signature")))));
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
         verify(orderRepository, never()).save(any(Order.class));
         verify(storageService, never()).moveToOrder(anyString(), anyLong(), anyString());
     }

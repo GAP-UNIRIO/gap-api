@@ -66,6 +66,7 @@ class OrderServiceIntegrationTest {
         String temporaryKey = "temporary/" + suffix;
         String finalKey = "orders/1/" + suffix + "/proof.pdf";
         when(storageService.isTemporaryKeyIssued(temporaryKey)).thenReturn(true);
+        when(storageService.isTemporaryKeyIssuedForUser(temporaryKey, user.getId())).thenReturn(true);
         when(storageService.moveToOrder(eq(temporaryKey), anyLong(), eq("proof.pdf"))).thenReturn(finalKey);
 
         OrderRequest request = new OrderRequest(user.getId(), Order.OrderType.INCLUSAO_DISCIPLINA,
