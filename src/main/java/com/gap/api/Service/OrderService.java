@@ -23,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
     private static final HttpStatusCode UNPROCESSABLE_ENTITY = HttpStatusCode.valueOf(422);
+    private static final int MAX_ANNEX_COUNT = 10;
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
@@ -33,6 +34,9 @@ public class OrderService implements IOrderService {
     @Override
     @Transactional
     public OrderResponse create(OrderRequest request, String authenticatedEmail) {
+        if (request.annexes() != null && request.annexes().size() > MAX_ANNEX_COUNT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A request can contain at most 10 annexes");
+        }
         User user = userRepository.findByEmail(authenticatedEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         if (!user.getId().equals(request.userId())) {

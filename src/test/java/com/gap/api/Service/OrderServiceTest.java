@@ -80,6 +80,20 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-177 rejeita mais de 10 anexos sem persistir ou mover arquivos")
+    void create_rejectsMoreThanTenAnnexesBeforePersistence() {
+        List<AnnexRequest> annexes = java.util.stream.IntStream.range(0, 11)
+                .mapToObj(index -> annex("file" + index + ".pdf", "temporary/key" + index))
+                .toList();
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> create(request(annexes)));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verifyNoInteractions(userRepository, orderRepository, storageService, workflowEngineService);
+    }
+
+    @Test
     @DisplayName("@spec:AC-007 move e persiste um anexo na chave final")
     void create_movesAndPersistsSingleAnnexAtFinalKey() {
         givenUserAndOrderSave();
