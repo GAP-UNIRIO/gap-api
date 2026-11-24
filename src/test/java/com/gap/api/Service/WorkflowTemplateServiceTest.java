@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -191,6 +192,91 @@ class WorkflowTemplateServiceTest {
                 () -> workflowTemplateService.update(5L, request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1))));
 
         assertStatus(error, HttpStatus.CONFLICT);
+    }
+
+    @Test
+    @DisplayName("createTemplate_courseScopeConstraintException_returnsBadRequest")
+    void createTemplate_courseScopeConstraintException_returnsBadRequest() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, 1L, stepRequest(1));
+        Course course = course(1L);
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(templateRepository.findByOrderTypeAndCourse_Id(request.orderType(), 1L)).thenReturn(Optional.empty());
+        var constraintViolation = new org.hibernate.exception.ConstraintViolationException(
+                "duplicate", new SQLException("duplicate key"), "uq_workflow_templates_order_type_course");
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class)))
+                .thenThrow(new DataIntegrityViolationException("integrity violation", constraintViolation));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertStatus(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("update_defaultScopeConstraintException_returnsConflict")
+    void update_defaultScopeConstraintException_returnsConflict() {
+        WorkflowTemplate existing = template(5L, Order.OrderType.TRANCAMENTO_DE_MATRICULA, null, step(1, "Antiga"));
+        when(templateRepository.findById(5L)).thenReturn(Optional.of(existing));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(Order.OrderType.REVISAO_DE_PROVA)).thenReturn(Optional.empty());
+        var constraintViolation = new org.hibernate.exception.ConstraintViolationException(
+                "duplicate", new SQLException("duplicate key"), "uq_workflow_templates_order_type_default");
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class)))
+                .thenThrow(new DataIntegrityViolationException("integrity violation", constraintViolation));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.update(5L,
+                        request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1))));
+
+        assertStatus(error, HttpStatus.CONFLICT);
+    }
+
+    @Test
+    @DisplayName("createTemplate_nestedConstraintMessage_mapsToBadRequest")
+    void createTemplate_nestedConstraintMessage_mapsToBadRequest() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(new DataIntegrityViolationException(
+                "integrity violation", new IllegalStateException("uq_workflow_templates_order_type_course violation")));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertStatus(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("createTemplate_unrelatedConstraintViolation_rethrowsOriginalException")
+    void createTemplate_unrelatedConstraintViolation_rethrowsOriginalException() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        var unrelatedConstraint = new org.hibernate.exception.ConstraintViolationException(
+                "unrelated constraint", new SQLException("unrelated integrity issue"), "uq_other_table_value");
+        var failure = new DataIntegrityViolationException("integrity violation", unrelatedConstraint);
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(failure);
+
+        DataIntegrityViolationException error = assertThrows(DataIntegrityViolationException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertSame(failure, error);
+    }
+
+    @Test
+    @DisplayName("createTemplate_exceptionWithoutMessage_rethrowsOriginalException")
+    void createTemplate_exceptionWithoutMessage_rethrowsOriginalException() {
+        WorkflowTemplateRequest request = request(Order.OrderType.REVISAO_DE_PROVA, null, stepRequest(1));
+        when(templateRepository.findByOrderTypeAndCourseIsNull(request.orderType())).thenReturn(Optional.empty());
+        var failure = new DataIntegrityViolationException("unavailable details") {
+            @Override
+            public String getMessage() {
+                return null;
+            }
+        };
+        when(templateRepository.saveAndFlush(any(WorkflowTemplate.class))).thenThrow(failure);
+
+        DataIntegrityViolationException error = assertThrows(DataIntegrityViolationException.class,
+                () -> workflowTemplateService.createTemplate(request));
+
+        assertSame(failure, error);
     }
 
     // ---------- consulta, edição e exclusão (workflow-template-crud) ----------
