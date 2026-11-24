@@ -2610,6 +2610,15 @@
       "primeiraVez": "2026-11-24T16:08:52.270Z",
       "ultimaVez": "2026-11-24T16:42:00.166Z",
       "gitRev": "d76f772"
+    },
+    "VERIFY_FALHOU::order-create::AC-009": {
+      "codigo": "VERIFY_FALHOU",
+      "feature": "order-create",
+      "ref": "AC-009",
+      "ocorrencias": 1,
+      "primeiraVez": "2026-11-24T17:54:44.314Z",
+      "ultimaVez": "2026-11-24T17:54:44.314Z",
+      "gitRev": "0476a54"
     }
   }
 }

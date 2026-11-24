@@ -17,17 +17,17 @@
 - Arquivos: src/test/java/com/gap/api/Controller/OrderControllerTest.java, src/test/java/com/gap/api/Service/OrderServiceTest.java, src/test/java/com/gap/api/Service/WorkflowEngineServiceTest.java, src/test/java/com/gap/api/Service/WorkflowTemplateServiceTest.java, src/test/java/com/gap/api/Integration/OrderServiceIntegrationTest.java, test/run-onp-tests.mjs, onpspec.config.json
 - Notas: Adicionar anotações `@spec:AC-xxx`, atualizar as chamadas de `WorkflowStepRequest` e rodar testes Java/Javascript usados pelo verificador.
 
-## T-055 — Validar o contrato JSON e a quantidade de anexos [pendente]
+## T-055 — Validar o contrato JSON e a quantidade de anexos [concluida]
 - Refs: US-049, AC-175, AC-176, AC-177
 - Arquivos: src/main/java/com/gap/api/Model/DTO/OrderRequest.java, src/test/java/com/gap/api/Controller/OrderControllerTest.java, src/test/java/com/gap/api/Service/OrderServiceTest.java
 - Notas: Preservar `extraData` opcional como JSON e rejeitar corpo malformado; aceitar no máximo 10 anexos, sem mover arquivos nem persistir pedido em caso de excesso.
 
-## T-056 — Restringir tamanho e tipos na autorização de upload [pendente]
+## T-056 — Restringir tamanho e tipos na autorização de upload [concluida]
 - Refs: US-049, AC-178
 - Arquivos: src/main/java/com/gap/api/Model/DTO/AnnexUploadRequest.java, src/main/java/com/gap/api/Service/AWSStorageService.java, src/main/java/com/gap/api/Service/Interface/IStorageService.java, src/main/java/com/gap/api/Service/OrderService.java, src/main/java/com/gap/api/Controller/OrderController.java, src/test/java/com/gap/api/Service/AWSStorageServiceTest.java, src/test/java/com/gap/api/Controller/OrderControllerTest.java
 - Notas: Permitir apenas `application/pdf`, `image/jpeg`, `image/png` e `application/vnd.openxmlformats-officedocument.wordprocessingml.document`; assinar política S3 com tamanho máximo de 5 MiB e verificar o tamanho do objeto antes de movê-lo.
 
-## T-057 — Vincular chaves temporárias ao usuário autenticado [pendente]
+## T-057 — Vincular chaves temporárias ao usuário autenticado [concluida]
 - Refs: US-049, AC-179
 - Arquivos: src/main/java/com/gap/api/Controller/OrderController.java, src/main/java/com/gap/api/Service/Interface/IOrderService.java, src/main/java/com/gap/api/Service/OrderService.java, src/main/java/com/gap/api/Service/Interface/IStorageService.java, src/main/java/com/gap/api/Service/AWSStorageService.java, src/test/java/com/gap/api/Controller/OrderControllerTest.java, src/test/java/com/gap/api/Service/OrderServiceTest.java, src/test/java/com/gap/api/Service/AWSStorageServiceTest.java
 - Notas: Incluir identificador do usuário na assinatura da chave e verificar titularidade antes de qualquer movimentação ou persistência; fechar a decisão de compatibilidade Q-040 antes de implementar.

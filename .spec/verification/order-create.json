@@ -1,11 +1,11 @@
 {
   "feature": "order-create",
-  "timestamp": "2026-10-22T21:13:33.092Z",
-  "gitRev": "ea26494",
+  "timestamp": "2026-11-24T18:00:41.372Z",
+  "gitRev": "e558daa",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 218,
+  "testsParsed": 308,
   "results": {
     "AC-004": {
       "status": "pass",
@@ -44,7 +44,7 @@
     },
     "AC-010": {
       "status": "pass",
-      "testName": "@spec:AC-010 retorna autorização para upload assinado",
+      "testName": "@spec:AC-010 @spec:AC-136 permite recurso protegido para usuário com cadastro completo",
       "method": "tap"
     },
     "AC-011": {
@@ -55,6 +55,31 @@
     "AC-012": {
       "status": "pass",
       "testName": "@spec:AC-012 retorna 503 quando o armazenamento está indisponível",
+      "method": "tap"
+    },
+    "AC-175": {
+      "status": "pass",
+      "testName": "@spec:AC-175 aceita extraData nulo",
+      "method": "tap"
+    },
+    "AC-176": {
+      "status": "pass",
+      "testName": "@spec:AC-176 rejeita JSON malformado em extraData antes de chamar o serviço",
+      "method": "tap"
+    },
+    "AC-177": {
+      "status": "pass",
+      "testName": "@spec:AC-177 rejeita mais de 10 anexos antes de chamar o serviço",
+      "method": "tap"
+    },
+    "AC-178": {
+      "status": "pass",
+      "testName": "@spec:AC-178 rejeita arquivo maior que 5 MiB antes de persistir ou mover",
+      "method": "tap"
+    },
+    "AC-179": {
+      "status": "pass",
+      "testName": "@spec:AC-179 rejeita chave válida pertencente a outro usuário",
       "method": "tap"
     }
   },
