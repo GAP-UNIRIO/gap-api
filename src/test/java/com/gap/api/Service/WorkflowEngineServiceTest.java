@@ -178,7 +178,7 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-112 @spec:AC-174 rejeita etapa de departamento quando o curso legado não tem vínculo")
+    @DisplayName("@spec:AC-112 rejeita etapa de departamento quando o curso legado não tem vínculo")
     void instantiateWorkflow_rejectsMissingDepartment() {
         Order order = orderWithCourse(36L);
         WorkflowTemplate template = template(step(1, ApprovalStage.ApprovalStageType.COORDINATOR,
