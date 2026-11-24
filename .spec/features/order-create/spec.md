@@ -1,7 +1,7 @@
 ﻿# Spec: Order create
 
 > feature: order-create
-> status: rascunho
+> status: implementada
 
 ## Contexto
 
