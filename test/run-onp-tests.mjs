@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const nodeTests = spawnSync(process.execPath,
-  ['--test', '--test-reporter=tap', 'test/flyway-migration.test.js', 'test/codebase-inventory.test.js', 'test/order-status-migration.test.js', 'test/access-control-migration.test.js'],
+  ['--test', '--test-reporter=tap', 'test/flyway-migration.test.js', 'test/codebase-inventory.test.js', 'test/order-status-migration.test.js', 'test/access-control-migration.test.js', 'test/onp-plan-branch.test.js'],
   { cwd: process.cwd(), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
 
 const gradleArgs = [

@@ -50,22 +50,24 @@ public class WorkflowEngineService {
 
     private OrgUnit resolveUnitForOrder(OrgUnit.OrgUnitType targetType, Order order) {
         Course course = order.getUser().getCourse();
-        return switch (targetType){
+        OrgUnit responsibleUnit = switch (targetType) {
             case COORDENACAO -> course.getCoordenacao();
             case SECRETARIA ->  course.getSecretaria();
             case DIRECAO ->   course.getDirecao();
             case REITORIA -> course.getReitoria();
             case ESCOLA -> course.getEscola();
-            case DEPARTAMENTO -> {
-                if (course.getDepartment() == null) {
-                    throw new ResponseStatusException(HttpStatus.CONFLICT,
-                            "Course has no department associated: " + course.getId());
-                }
-                yield course.getDepartment();
-            }
+            case DEPARTAMENTO -> course.getDepartment();
 
             default ->  throw new IllegalArgumentException("Invalid target type");
         };
+
+        if (responsibleUnit == null) {
+            String message = targetType == OrgUnit.OrgUnitType.DEPARTAMENTO
+                    ? "Course has no department associated: " + course.getId()
+                    : "Course has no responsible unit of type " + targetType + " associated: " + course.getId();
+            throw new ResponseStatusException(HttpStatus.CONFLICT, message);
+        }
+        return responsibleUnit;
     }
 
 

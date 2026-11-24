@@ -114,6 +114,70 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-174 resolve todas as unidades responsáveis configuradas no curso")
+    void instantiateWorkflow_resolvesEveryConfiguredResponsibleUnit() {
+        Order order = orderWithCourse(37L);
+        Course course = order.getUser().getCourse();
+        OrgUnit coordination = course.getCoordenacao();
+        OrgUnit direction = course.getDirecao();
+        OrgUnit secretary = unit(3L, OrgUnit.OrgUnitType.SECRETARIA);
+        OrgUnit rectorate = unit(4L, OrgUnit.OrgUnitType.REITORIA);
+        OrgUnit school = unit(5L, OrgUnit.OrgUnitType.ESCOLA);
+        course.setSecretaria(secretary);
+        course.setReitoria(rectorate);
+        course.setEscola(school);
+        WorkflowTemplate template = template(
+                step(1, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.COORDENACAO),
+                step(2, ApprovalStage.ApprovalStageType.DIRECTOR, OrgUnit.OrgUnitType.DIRECAO),
+                step(3, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.SECRETARIA),
+                step(4, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.REITORIA),
+                step(5, ApprovalStage.ApprovalStageType.COORDINATOR, OrgUnit.OrgUnitType.ESCOLA));
+        when(workflowTemplateRepository.findByOrderTypeAndCourse_Id(order.getOrderType(), 37L))
+                .thenReturn(Optional.of(template));
+
+        workflowEngineService.instantiateWorkflowForOrder(order);
+
+        List<ApprovalStage> saved = capturedStages();
+        assertEquals(List.of(coordination, direction, secretary, rectorate, school),
+                saved.stream().map(ApprovalStage::getResponsibleUnit).toList());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-173 retorna conflito quando falta uma associação organizacional opcional")
+    void instantiateWorkflow_rejectsMissingOptionalResponsibleUnit() {
+        List<OrgUnit.OrgUnitType> optionalTypes = List.of(
+                OrgUnit.OrgUnitType.COORDENACAO,
+                OrgUnit.OrgUnitType.DIRECAO,
+                OrgUnit.OrgUnitType.SECRETARIA,
+                OrgUnit.OrgUnitType.REITORIA,
+                OrgUnit.OrgUnitType.ESCOLA);
+
+        for (int index = 0; index < optionalTypes.size(); index++) {
+            OrgUnit.OrgUnitType missingType = optionalTypes.get(index);
+            Long courseId = 60L + index;
+            Order order = orderWithCourse(courseId);
+            Course course = order.getUser().getCourse();
+            course.setCoordenacao(null);
+            course.setDirecao(null);
+            course.setSecretaria(null);
+            course.setReitoria(null);
+            course.setEscola(null);
+            WorkflowTemplate template = template(step(1, ApprovalStage.ApprovalStageType.COORDINATOR, missingType));
+            when(workflowTemplateRepository.findByOrderTypeAndCourse_Id(order.getOrderType(), courseId))
+                    .thenReturn(Optional.of(template));
+
+            ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                    () -> workflowEngineService.instantiateWorkflowForOrder(order));
+
+            assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+            assertTrue(exception.getReason().contains(missingType.name()));
+            assertTrue(exception.getReason().contains(courseId.toString()));
+        }
+
+        verifyNoInteractions(approvalStageRepository);
+    }
+
+    @Test
     @DisplayName("@spec:AC-112 rejeita etapa de departamento quando o curso legado não tem vínculo")
     void instantiateWorkflow_rejectsMissingDepartment() {
         Order order = orderWithCourse(36L);

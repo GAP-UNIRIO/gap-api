@@ -104,7 +104,8 @@ comandos:
                       (--agents também instala a skill do agente escolhido)
   new <feature>       cria .spec/features/<feature>/ com spec.md e tasks.md
   plano <feature> [--agents claude|antigravity|codex|cursor] [--paralelizar T-xxx,T-yyy]
-                  [--sequencial] [--modelo <modelo>] [--esforco <nível>]
+                  [--sequencial] [--branch <nome>] [--base-branch <nome>]
+                  [--modelo <modelo>] [--esforco <nível>]
                       plano de execução. Default: agrupa tarefas em faixas
                       PARALELAS (arquivos disjuntos → 1 worktree + 1 branch +
                       1 janela limpa por faixa). Com --paralelizar: só as
@@ -112,7 +113,10 @@ comandos:
                       após a outra, ao final). Com --sequencial: tudo uma
                       tarefa após a outra, na árvore principal. QUAIS tarefas
                       paralelizar é escolha do USUÁRIO (o agente pergunta
-                      antes de executar).
+                      antes de executar). --branch define a branch de trabalho
+                      e serve de prefixo para branches de faixa; sem a opção,
+                      usa spec/<feature>. --base-branch define a origem da
+                      branch de trabalho (padrão: main).
                       · sempre: plano-execucao.md (faixas/ordem, branches,
                         commits) + plano.json
                       · claude: executar-tarefas.sh (claude -p headless com
@@ -384,13 +388,15 @@ function detectarAgente(rootDir, flag) {
   return { agent: 'claude' };
 }
 
-function gerarArtefatosPlano(project, featureName, agent, { sequencial = false, paralelizar, modelo, esforco } = {}) {
+function gerarArtefatosPlano(project, featureName, agent, { sequencial = false, paralelizar, modelo, esforco, branch, branchBase } = {}) {
   const plan = montarPlano(project, featureName, {
     agent,
     sequencial,
     paralelizar,
     modelo,
     esforco,
+    branch,
+    branchBase,
     enginePath: process.argv[1],
   });
   if (plan.erro) return plan;
@@ -478,7 +484,7 @@ function cmdStreamResumo(positional) {
 function cmdPlano(project, positional, flags) {
   const featureName = positional[0];
   if (!featureName) {
-    console.error('uso: onp-spec plano <feature> [--agents claude|antigravity|codex|cursor] [--paralelizar T-xxx,T-yyy] [--sequencial]');
+    console.error('uso: onp-spec plano <feature> [--agents claude|antigravity|codex|cursor] [--paralelizar T-xxx,T-yyy] [--sequencial] [--branch <nome>] [--base-branch <nome>]');
     return 2;
   }
   const det = detectarAgente(project.config.rootDir, flags.agents);
@@ -488,6 +494,22 @@ function cmdPlano(project, positional, flags) {
   }
   if (flags.sequencial && flags.paralelizar) {
     console.error('erro: use --paralelizar OU --sequencial — os dois juntos não fazem sentido');
+    return 2;
+  }
+  if (flags.branch === true) {
+    console.error('erro: --branch precisa de um nome (ex.: --branch fix/ajuste-workflow)');
+    return 2;
+  }
+  if (typeof flags.branch === 'string' && !isValidBranchName(flags.branch)) {
+    console.error(`erro: nome de branch inválido: "${flags.branch}"`);
+    return 2;
+  }
+  if (flags['base-branch'] === true) {
+    console.error('erro: --base-branch precisa de um nome (ex.: --base-branch main)');
+    return 2;
+  }
+  if (typeof flags['base-branch'] === 'string' && !isValidBranchName(flags['base-branch'])) {
+    console.error(`erro: nome de branch-base inválido: "${flags['base-branch']}"`);
     return 2;
   }
   if (det.agent === 'cursor' && typeof flags.esforco === 'string') {
@@ -517,6 +539,8 @@ function cmdPlano(project, positional, flags) {
     paralelizar,
     modelo: typeof flags.modelo === 'string' ? flags.modelo : undefined,
     esforco: typeof flags.esforco === 'string' ? flags.esforco : undefined,
+    branch: typeof flags.branch === 'string' ? flags.branch : undefined,
+    branchBase: typeof flags['base-branch'] === 'string' ? flags['base-branch'] : undefined,
   });
   if (plan.erro) {
     console.error(`erro: ${plan.erro}`);
@@ -582,6 +606,14 @@ function cmdPlano(project, positional, flags) {
     console.log(`    do plano-execucao.md — depois merge + verify + audit, como descrito lá`);
   }
   return 0;
+}
+
+function isValidBranchName(branch) {
+  if (!/^[A-Za-z0-9._/-]+$/.test(branch) || branch.startsWith('-') || branch.startsWith('/') || branch.endsWith('/') || branch.endsWith('.')) {
+    return false;
+  }
+  if (branch.includes('..') || branch.includes('//') || branch.includes('@{')) return false;
+  return branch.split('/').every((part) => part !== '.' && part !== '..' && !part.endsWith('.lock'));
 }
 
 // `onp-spec resumo` — o RESUMO GERAL DE ANDAMENTO. É o texto que o agente
