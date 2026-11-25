@@ -3,12 +3,15 @@ package com.gap.api.Service;
 import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserRolesRequest;
 import com.gap.api.Model.DTO.UserResponse;
+import com.gap.api.Model.DTO.UserOrgUnitsRequest;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.Role;
 import com.gap.api.Model.Entity.User;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.RoleRepository;
 import com.gap.api.Repository.UserRepository;
+import com.gap.api.Repository.OrgUnitRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +48,9 @@ class UserServiceTest {
 
     @Mock
     private RoleRepository roleRepository;
+
+    @Mock
+    private OrgUnitRepository orgUnitRepository;
 
     @Mock
     private OidcUser oidcUser;
@@ -99,6 +105,50 @@ class UserServiceTest {
         assertThat(existing.getRoles()).extracting(Role::getAuthority).containsExactly("ROLE_ADMIN");
     }
 
+    @Test
+    @DisplayName("@spec:AC-207 administrador vincula unidades ao usuário")
+    void updateOrgUnits_replacesUserUnits() {
+        User existing = user(EMAIL);
+        OrgUnit unit = new OrgUnit();
+        unit.setId(9L);
+        unit.setName("Secretaria");
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(orgUnitRepository.findAllById(List.of(9L))).thenReturn(List.of(unit));
+        when(repository.save(existing)).thenReturn(existing);
+
+        var response = service.updateOrgUnits(1L, new UserOrgUnitsRequest(List.of(9L)));
+
+        assertThat(existing.getOrgUnits()).containsExactly(unit);
+        assertThat(response.orgUnitIds()).containsExactly(9L);
+        verify(repository).save(existing);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-207 vínculo rejeita unidade inexistente sem alterar o usuário")
+    void updateOrgUnits_missingUnit_returnsNotFound() {
+        User existing = user(EMAIL);
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(orgUnitRepository.findAllById(List.of(99L))).thenReturn(List.of());
+
+        assertThatThrownBy(() -> service.updateOrgUnits(1L, new UserOrgUnitsRequest(List.of(99L))))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
+
+        assertThat(existing.getOrgUnits()).isEmpty();
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-207 não atualiza unidades para usuário inexistente")
+    void updateOrgUnits_unknownUser_returnsNotFound() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.updateOrgUnits(99L, new UserOrgUnitsRequest(List.of(9L))))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
+
+        verifyNoInteractions(orgUnitRepository);
+        verify(repository, never()).save(any());
+    }
+    
     @Test
     @DisplayName("@spec:AC-183 administrador pode atribuir exatamente os papéis centrais")
     void updateRoles_acceptsOnlyCoreRoles() {

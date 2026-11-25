@@ -35,6 +35,12 @@ public class User {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "users_org_units",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "org_unit_id"))
+    private Set<OrgUnit> orgUnits = new HashSet<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 

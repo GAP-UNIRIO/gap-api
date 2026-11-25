@@ -1,8 +1,10 @@
 package com.gap.api.Service;
 
 import com.gap.api.Model.DTO.*;
+import com.gap.api.Model.Entity.ApprovalStage;
 import com.gap.api.Model.Entity.Annex;
 import com.gap.api.Model.Entity.Order;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.OrderRepository;
 import com.gap.api.Repository.UserRepository;
@@ -29,6 +31,7 @@ public class OrderService implements IOrderService {
     private final UserRepository userRepository;
     private final IStorageService storageService;
     private final WorkflowEngineService workflowEngineService;
+    private final ApprovalDecisionService approvalDecisionService;
     private final IOrderStatusService orderStatusService;
 
     @Override
@@ -109,11 +112,52 @@ public class OrderService implements IOrderService {
         return toResponse(orderStatusService.transition(order, Order.OrderStatus.CANCELADA, user));
     }
 
+    @Override
+    @Transactional
+    public OrderResponse decideStage(Long orderId, Long stageId, ApprovalDecisionRequest request,
+                                     String authenticatedEmail) {
+        ApprovalStage decidedStage = approvalDecisionService.decide(orderId, stageId, authenticatedEmail, request);
+        return toResponse(decidedStage.getOrder());
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse complete(Long orderId, String authenticatedEmail) {
+        User actor = userRepository.findByEmail(authenticatedEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        if (order.getStatus() != Order.OrderStatus.EM_ANALISE) {
+            throw new ResponseStatusException(UNPROCESSABLE_ENTITY,
+                    "Only orders under analysis can be completed after delivery.");
+        }
+        if (order.getApprovalStages().isEmpty() || order.getApprovalStages().stream()
+                .anyMatch(stage -> stage.getStatus() != ApprovalStage.ApprovalStageStatus.APPROVED)) {
+            throw new ResponseStatusException(UNPROCESSABLE_ENTITY,
+                    "All approval stages must be approved before completing the order.");
+        }
+
+        OrgUnit secretaryUnit = order.getUser().getCourse() == null
+                ? null : order.getUser().getCourse().getSecretaria();
+        if (secretaryUnit == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "The order owner's course has no secretary unit assigned.");
+        }
+        if (actor.getOrgUnits().stream().noneMatch(unit -> unit.getId().equals(secretaryUnit.getId()))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Only a member of the secretary unit can complete the order.");
+        }
+
+        return toResponse(orderStatusService.transition(order, Order.OrderStatus.CONCLUIDA, actor));
+    }
+
     private OrderResponse toResponse(Order order) {
         List<AnnexResponse> annexes = order.getAnnexes().stream()
                 .map(annex -> new AnnexResponse(annex.getId(), annex.getName(), annex.getContentType(), annex.getUrl()))
                 .toList();
         return new OrderResponse(order.getId(), order.getUser().getId(), order.getOrderType(), order.getStatus(),
-                order.getCreatedAt(), annexes);
+                order.getCreatedAt(), annexes, order.getApprovalStages().stream()
+                .map(ApprovalStageResponse::from).toList());
     }
 }

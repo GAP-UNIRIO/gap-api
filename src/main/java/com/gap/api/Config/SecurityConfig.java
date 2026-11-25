@@ -42,7 +42,8 @@ public class SecurityConfig {
             "/institutions/**", "/org-units/**", "/courses/**", "/academic-calendars/**"};
     /** Endpoints exclusivos do administrador, inclusive para leitura. */
     private static final String[] ADMIN_ONLY_PATHS = {
-            "/workflow-template/**", "/users/*/roles"};
+            "/workflow-template/**", "/users/*/roles", "/users/*/org-units"};
+
     private static final ObjectMapper JSON = new ObjectMapper();
 
     @Value("${app.security.frontend-url}")

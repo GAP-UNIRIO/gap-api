@@ -3,8 +3,12 @@ package com.gap.api.Service;
 import com.gap.api.Model.DTO.AnnexRequest;
 import com.gap.api.Model.DTO.AnnexUploadRequest;
 import com.gap.api.Model.DTO.OrderRequest;
+import com.gap.api.Model.DTO.ApprovalDecisionRequest;
 import com.gap.api.Model.Entity.Annex;
+import com.gap.api.Model.Entity.ApprovalStage;
+import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.Order;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.OrderRepository;
 import com.gap.api.Repository.UserRepository;
@@ -38,6 +42,7 @@ class OrderServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private IStorageService storageService;
     @Mock private WorkflowEngineService workflowEngineService;
+    @Mock private ApprovalDecisionService approvalDecisionService;
     @Mock private IOrderStatusService orderStatusService;
     @InjectMocks private OrderService orderService;
 
@@ -419,6 +424,196 @@ class OrderServiceTest {
 
         assertEquals(HttpStatus.NOT_FOUND, error.getStatusCode());
         verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 secretaria conclui pedido depois de todas as etapas aprovadas")
+    void complete_allStagesApprovedBySecretary_marksOrderComplete() {
+        OrgUnit secretaryUnit = new OrgUnit();
+        secretaryUnit.setId(44L);
+        secretaryUnit.setType(OrgUnit.OrgUnitType.SECRETARIA);
+        user.setOrgUnits(java.util.Set.of(secretaryUnit));
+
+        User owner = new User();
+        Course course = new Course();
+        course.setSecretaria(secretaryUnit);
+        owner.setCourse(course);
+        Order order = existingOrder(owner, Order.OrderStatus.EM_ANALISE);
+        ApprovalStage approved = new ApprovalStage();
+        approved.setStatus(ApprovalStage.ApprovalStageStatus.APPROVED);
+        order.setApprovalStages(List.of(approved));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+        when(orderStatusService.transition(order, Order.OrderStatus.CONCLUIDA, user)).thenAnswer(invocation -> {
+            order.setStatus(Order.OrderStatus.CONCLUIDA);
+            return order;
+        });
+
+        var response = orderService.complete(23L, user.getEmail());
+
+        assertEquals(Order.OrderStatus.CONCLUIDA, response.status());
+        verify(orderStatusService).transition(order, Order.OrderStatus.CONCLUIDA, user);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 secretaria não conclui solicitação com etapa pendente")
+    void complete_pendingStage_returnsUnprocessable() {
+        OrgUnit secretaryUnit = new OrgUnit();
+        secretaryUnit.setId(44L);
+        user.setOrgUnits(java.util.Set.of(secretaryUnit));
+        User owner = new User();
+        Course course = new Course();
+        course.setSecretaria(secretaryUnit);
+        owner.setCourse(course);
+        Order order = existingOrder(owner, Order.OrderStatus.EM_ANALISE);
+        ApprovalStage pending = new ApprovalStage();
+        pending.setStatus(ApprovalStage.ApprovalStageStatus.PENDING);
+        order.setApprovalStages(List.of(pending));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(422, error.getStatusCode().value());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 usuário que não pertence à secretaria não conclui a solicitação")
+    void complete_nonSecretaryMember_returnsForbidden() {
+        OrgUnit secretaryUnit = new OrgUnit();
+        secretaryUnit.setId(44L);
+        User owner = new User();
+        Course course = new Course();
+        course.setSecretaria(secretaryUnit);
+        owner.setCourse(course);
+        Order order = existingOrder(owner, Order.OrderStatus.EM_ANALISE);
+        ApprovalStage approved = new ApprovalStage();
+        approved.setStatus(ApprovalStage.ApprovalStageStatus.APPROVED);
+        order.setApprovalStages(List.of(approved));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(HttpStatus.FORBIDDEN, error.getStatusCode());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 solicitação sem etapas não pode ser concluída")
+    void complete_orderWithoutStages_returnsUnprocessable() {
+        Order order = existingOrder(user, Order.OrderStatus.EM_ANALISE);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(422, error.getStatusCode().value());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 solicitação sem unidade de secretaria retorna conflito")
+    void complete_courseWithoutSecretary_returnsConflict() {
+        User owner = new User();
+        owner.setCourse(new Course());
+        Order order = existingOrder(owner, Order.OrderStatus.EM_ANALISE);
+        ApprovalStage approved = new ApprovalStage();
+        approved.setStatus(ApprovalStage.ApprovalStageStatus.APPROVED);
+        order.setApprovalStages(List.of(approved));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(HttpStatus.CONFLICT, error.getStatusCode());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-200 decisão da etapa retorna o pedido com o estado atualizado")
+    void decideStage_approved_returnsUpdatedOrderResponse() {
+        Order order = existingOrder(user, Order.OrderStatus.EM_ANALISE);
+        ApprovalStage stage = new ApprovalStage();
+        stage.setId(31L);
+        stage.setStepOrder(1);
+        stage.setType(ApprovalStage.ApprovalStageType.COORDINATOR);
+        stage.setStatus(ApprovalStage.ApprovalStageStatus.APPROVED);
+        stage.setResponsibleUnit(new OrgUnit(8L, OrgUnit.OrgUnitType.COORDENACAO, "Coordenação", List.of()));
+        stage.setOrder(order);
+        order.setApprovalStages(List.of(stage));
+        when(approvalDecisionService.decide(eq(23L), eq(31L), eq(user.getEmail()), any()))
+                .thenReturn(stage);
+
+        var response = orderService.decideStage(23L, 31L,
+                new ApprovalDecisionRequest(ApprovalDecisionRequest.Decision.APPROVED, null), user.getEmail());
+
+        assertEquals(Order.OrderStatus.EM_ANALISE, response.status());
+        assertEquals(31L, response.approvalStages().get(0).id());
+        assertEquals(8L, response.approvalStages().get(0).responsibleUnitId());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 pedido sem curso associado não pode ser concluído")
+    void complete_orderWithoutCourse_returnsConflict() {
+        User owner = new User();
+        Order order = existingOrder(owner, Order.OrderStatus.EM_ANALISE);
+        ApprovalStage approved = new ApprovalStage();
+        approved.setStatus(ApprovalStage.ApprovalStageStatus.APPROVED);
+        order.setApprovalStages(List.of(approved));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(HttpStatus.CONFLICT, error.getStatusCode());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 solicitação fora de análise não pode ser concluída")
+    void complete_orderNotUnderAnalysis_returnsUnprocessable() {
+        Order order = existingOrder(user, Order.OrderStatus.ABERTA);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(23L)).thenReturn(Optional.of(order));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(422, error.getStatusCode().value());
+        verify(orderStatusService, never()).transition(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 conclusão retorna 404 quando o usuário não existe")
+    void complete_unknownUser_returnsNotFound() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(23L, user.getEmail()));
+
+        assertEquals(HttpStatus.NOT_FOUND, error.getStatusCode());
+        verifyNoInteractions(orderRepository, orderStatusService);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 conclusão retorna 404 quando a solicitação não existe")
+    void complete_unknownOrder_returnsNotFound() {
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(orderRepository.findById(99L)).thenReturn(Optional.empty());
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> orderService.complete(99L, user.getEmail()));
+
+        assertEquals(HttpStatus.NOT_FOUND, error.getStatusCode());
+        verifyNoInteractions(orderStatusService);
     }
 
     private Order existingOrder(User owner, Order.OrderStatus status) {

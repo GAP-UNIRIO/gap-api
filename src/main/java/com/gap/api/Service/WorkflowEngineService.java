@@ -46,6 +46,7 @@ public class WorkflowEngineService {
         }
 
         approvalStageRepository.saveAll(activeStages);
+        order.getApprovalStages().addAll(activeStages);
     }
 
     private OrgUnit resolveUnitForOrder(OrgUnit.OrgUnitType targetType, Order order) {

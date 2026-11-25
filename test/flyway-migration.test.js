@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 
 const migration = await readFile('src/main/resources/db/migration/V1__initial_schema.sql', 'utf8');
@@ -8,6 +8,8 @@ const workflowTemplateMigration = await readFile('src/main/resources/db/migratio
 const coreRolesMigration = await readFile('src/main/resources/db/migration/V5__seed_core_roles.sql', 'utf8');
 const roleCleanupMigration = await readFile('src/main/resources/db/migration/V8__remove_non_core_roles.sql', 'utf8');
 const requireCourseDepartmentMigration = await readFile('src/main/resources/db/migration/V7__require_course_department.sql', 'utf8').catch(() => '');
+const approvalDecisionsMigration = await readFile('src/main/resources/db/migration/V9__order_approval_decisions.sql', 'utf8').catch(() => '');
+const migrationFiles = await readdir('src/main/resources/db/migration');
 const production = await readFile('src/main/resources/application-prod.yaml', 'utf8');
 
 test('@spec:AC-001 migration inicial cobre tabelas e tipos PostgreSQL das entidades', () => {
@@ -66,6 +68,21 @@ test('@spec:AC-178 V7 não inventa departamentos para cursos existentes', () => 
 test('@spec:AC-179 V7 torna department_id obrigatório sem remover a chave estrangeira definida em V2', () => {
   assert.match(requireCourseDepartmentMigration, /alter\s+table\s+courses\s+alter\s+column\s+department_id\s+set\s+not\s+null/i);
   assert.doesNotMatch(requireCourseDepartmentMigration, /drop\s+constraint\s+fk_courses_department/i);
+});
+
+test('@spec:AC-202 @spec:AC-204 @spec:AC-207 V9 persiste justificativas e vínculos entre usuários e unidades', () => {
+  assert.match(approvalDecisionsMigration, /alter\s+table\s+approval_stages\s+add\s+column\s+rejection_justification\s+text/i);
+  assert.match(approvalDecisionsMigration, /create\s+table\s+users_org_units/i);
+  assert.match(approvalDecisionsMigration, /primary\s+key\s*\(\s*user_id\s*,\s*org_unit_id\s*\)/i);
+  assert.match(approvalDecisionsMigration, /foreign\s+key\s*\(\s*user_id\s*\)\s+references\s+users/i);
+  assert.match(approvalDecisionsMigration, /foreign\s+key\s*\(\s*org_unit_id\s*\)\s+references\s+org_units/i);
+});
+
+test('@spec:AC-202 versões das migrations Flyway são únicas', () => {
+  const versions = migrationFiles
+    .filter((filename) => /^V[^_]+__.*\.sql$/i.test(filename))
+    .map((filename) => filename.match(/^V([^_]+)__/i)?.[1]);
+  assert.equal(new Set(versions).size, versions.length, 'Flyway migration versions must not repeat');
 });
 
 test('@spec:AC-170 V6 mantém menor id e apaga etapas antes dos templates duplicados', () => {

@@ -28,6 +28,24 @@ public class OrderController {
         return ResponseEntity.ok(BaseResponse.success("Order cancelled.",
                 orderService.cancel(id, authenticatedUser.getEmail())));
     }
+
+    @PatchMapping("/{orderId}/approval-stages/{stageId}/decision")
+    public ResponseEntity<BaseResponse<OrderResponse>> decideStage(
+            @AuthenticationPrincipal OidcUser authenticatedUser,
+            @PathVariable Long orderId,
+            @PathVariable Long stageId,
+            @Valid @RequestBody ApprovalDecisionRequest request) {
+        return ResponseEntity.ok(BaseResponse.success("Approval stage decided.",
+                orderService.decideStage(orderId, stageId, request, authenticatedUser.getEmail())));
+    }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<BaseResponse<OrderResponse>> complete(
+            @AuthenticationPrincipal OidcUser authenticatedUser,
+            @PathVariable("id") Long id) {
+        return ResponseEntity.ok(BaseResponse.success("Order completed.",
+                orderService.complete(id, authenticatedUser.getEmail())));
+    }
     @PostMapping
     public ResponseEntity<BaseResponse<OrderResponse>> create(
             @AuthenticationPrincipal OidcUser authenticatedUser,
