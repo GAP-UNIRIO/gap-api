@@ -218,6 +218,21 @@ class ApprovalDecisionServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-204 etapa sem unidade responsável não pode ser decidida")
+    void decide_stageWithoutResponsibleUnit_returnsConflict() {
+        ApprovalStage current = stage(1, ApprovalStage.ApprovalStageStatus.PENDING);
+        current.setResponsibleUnit(null);
+        when(approvalStageRepository.findByIdAndOrder_Id(31L, 12L)).thenReturn(Optional.of(current));
+
+        ResponseStatusException error = assertThrows(ResponseStatusException.class,
+                () -> service.decide(12L, 31L, actor.getEmail(), new ApprovalDecisionRequest(
+                        ApprovalDecisionRequest.Decision.APPROVED, null)));
+
+        assertEquals(HttpStatus.CONFLICT, error.getStatusCode());
+        verify(approvalStageRepository, never()).save(any());
+    }
+
+    @Test
     @DisplayName("@spec:AC-205 etapa posterior não pode ser decidida antes da atual")
     void decide_laterStageBeforeCurrent_returnsUnprocessable() {
         ApprovalStage first = stage(1, ApprovalStage.ApprovalStageStatus.PENDING);

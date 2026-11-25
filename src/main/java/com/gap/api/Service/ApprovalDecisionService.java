@@ -38,6 +38,10 @@ public class ApprovalDecisionService {
         ApprovalStage stage = approvalStageRepository.findByIdAndOrder_Id(stageId, orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Approval stage not found."));
 
+        if (stage.getResponsibleUnit() == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "The approval stage has no responsible organizational unit.");
+        }
         boolean belongsToResponsibleUnit = actor.getOrgUnits().stream()
                 .anyMatch(unit -> unit.getId().equals(stage.getResponsibleUnit().getId()));
         if (!belongsToResponsibleUnit) {
