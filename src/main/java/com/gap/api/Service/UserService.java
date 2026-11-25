@@ -26,16 +26,18 @@ public class UserService implements IUserService {
     private final UserRepository repository;
     private final CourseRepository courseRepository;
     private final RoleRepository roleRepository;
+    private final String USER_NOT_FOUND_MESSAGE = "Usuário não encontrado: ";
+    private final String ROLE_NOT_FOUND_MESSAGE = "Papel não encontrado: ";
 
     public UserResponse findByEmail(String email) {
         return UserResponse.from(repository.findByEmail(email).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + email)));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND_MESSAGE + email)));
     }
 
     @Transactional
     public UserResponse completeUserCadaster(UserComplementRequest userComplementRequest, OidcUser oidcUser) {
         User user = repository.findByEmail(oidcUser.getEmail()).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + oidcUser.getEmail()));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND_MESSAGE + oidcUser.getEmail()));
 
         user.setCourse(courseRepository.findById(userComplementRequest.courseId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado: " + userComplementRequest.courseId())));
@@ -52,11 +54,11 @@ public class UserService implements IUserService {
             }
         }
         User user = repository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + id));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND_MESSAGE + id));
         Set<Role> roles = new HashSet<>();
         for (String authority : request.roles()) {
             roles.add(roleRepository.findByAuthority(authority).orElseThrow(() ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Papel não encontrado: " + authority)));
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, ROLE_NOT_FOUND_MESSAGE + authority)));
         }
         user.setRoles(roles);
         return UserResponse.from(repository.save(user));
@@ -64,7 +66,7 @@ public class UserService implements IUserService {
 
     private User getOrThrow(Long id) {
         return repository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Papel não encontrado: " + id));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, ROLE_NOT_FOUND_MESSAGE + id));
     }
 
 }
