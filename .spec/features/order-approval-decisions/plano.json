@@ -1,0 +1,120 @@
+{
+  "runId": "gap-api-order-approval-decisions-mww8bshq",
+  "feature": "order-approval-decisions",
+  "agent": "codex",
+  "modo": "sequencial",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-11-25 14:39",
+  "branchTrabalho": "feat/order-approval-decisions",
+  "branchBase": "main",
+  "baseDir": ".spec/features/order-approval-decisions",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-order-approval-decisions-logs",
+  "ondas": [],
+  "faixas": [],
+  "sequenciais": [
+    {
+      "id": "T-058",
+      "titulo": "Escrever e executar testes de aceitação",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/test/java/com/gap/api/Service/ApprovalDecisionServiceTest.java",
+        "src/test/java/com/gap/api/Service/OrderServiceTest.java",
+        "src/test/java/com/gap/api/Service/OrderStatusServiceTest.java",
+        "src/test/java/com/gap/api/Service/UserServiceTest.java",
+        "src/test/java/com/gap/api/Service/WorkflowEngineServiceTest.java",
+        "src/test/java/com/gap/api/Controller/OrderControllerTest.java",
+        "src/test/java/com/gap/api/Controller/UserControllerTest.java",
+        "test/flyway-migration.test.js",
+        "test/run-onp-tests.mjs"
+      ],
+      "refs": [
+        "US-052",
+        "AC-200",
+        "AC-201",
+        "AC-202",
+        "AC-203",
+        "AC-204",
+        "AC-205",
+        "AC-206",
+        "AC-207"
+      ]
+    },
+    {
+      "id": "T-059",
+      "titulo": "Vincular usuários às unidades organizacionais",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/main/java/com/gap/api/Model/Entity/User.java",
+        "src/main/java/com/gap/api/Model/DTO/UserOrgUnitsRequest.java",
+        "src/main/java/com/gap/api/Model/DTO/UserOrgUnitsResponse.java",
+        "src/main/java/com/gap/api/Service/UserService.java",
+        "src/main/java/com/gap/api/Service/Interface/IUserService.java",
+        "src/main/java/com/gap/api/Controller/UserController.java",
+        "src/main/java/com/gap/api/Config/SecurityConfig.java",
+        "src/main/resources/db/migration/V8__order_approval_decisions.sql"
+      ],
+      "refs": [
+        "US-052",
+        "AC-204",
+        "AC-207"
+      ]
+    },
+    {
+      "id": "T-060",
+      "titulo": "Implementar decisões sequenciais das etapas",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/main/java/com/gap/api/Model/Entity/ApprovalStage.java",
+        "src/main/java/com/gap/api/Model/DTO/ApprovalDecisionRequest.java",
+        "src/main/java/com/gap/api/Model/DTO/ApprovalStageResponse.java",
+        "src/main/java/com/gap/api/Model/DTO/OrderResponse.java",
+        "src/main/java/com/gap/api/Repository/ApprovalStageRepository.java",
+        "src/main/java/com/gap/api/Service/ApprovalDecisionService.java",
+        "src/main/java/com/gap/api/Service/OrderService.java",
+        "src/main/java/com/gap/api/Service/WorkflowEngineService.java",
+        "src/main/java/com/gap/api/Service/Interface/IOrderService.java",
+        "src/main/java/com/gap/api/Controller/OrderController.java"
+      ],
+      "refs": [
+        "US-052",
+        "AC-200",
+        "AC-201",
+        "AC-202",
+        "AC-204",
+        "AC-205"
+      ]
+    },
+    {
+      "id": "T-061",
+      "titulo": "Permitir conclusão manual pela secretaria",
+      "modelo": "gpt-5.6-terra",
+      "esforco": "medium",
+      "arquivos": [
+        "src/main/java/com/gap/api/Model/Entity/Order.java",
+        "src/main/java/com/gap/api/Service/OrderStatusService.java",
+        "src/main/java/com/gap/api/Service/OrderService.java",
+        "src/main/java/com/gap/api/Controller/OrderController.java",
+        "src/main/java/com/gap/api/Service/Interface/IOrderService.java"
+      ],
+      "refs": [
+        "US-052",
+        "AC-203",
+        "AC-206"
+      ]
+    }
+  ],
+  "concluidas": [],
+  "avisos": [
+    "T-058 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar",
+    "T-059 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar",
+    "T-060 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar",
+    "T-061 está [em-andamento] — entrou no plano; se já houver trabalho local, commite antes de executar"
+  ]
+}
