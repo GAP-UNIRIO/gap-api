@@ -15,8 +15,11 @@ public class OrderController {
     private final IOrderService orderService;
     public OrderController(IOrderService orderService) { this.orderService = orderService; }
     @PostMapping("/annex-upload")
-    public ResponseEntity<BaseResponse<AnnexUploadResponse>> generateUpload(@Valid @RequestBody AnnexUploadRequest request) {
-        return ResponseEntity.ok(BaseResponse.success("Upload authorization created.", orderService.generateAnnexUploadUrl(request)));
+    public ResponseEntity<BaseResponse<AnnexUploadResponse>> generateUpload(
+            @AuthenticationPrincipal OidcUser authenticatedUser,
+            @Valid @RequestBody AnnexUploadRequest request) {
+        return ResponseEntity.ok(BaseResponse.success("Upload authorization created.",
+                orderService.generateAnnexUploadUrl(request, authenticatedUser.getEmail())));
     }
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<BaseResponse<OrderResponse>> cancel(

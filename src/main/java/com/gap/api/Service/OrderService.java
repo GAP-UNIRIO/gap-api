@@ -23,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
     private static final HttpStatusCode UNPROCESSABLE_ENTITY = HttpStatusCode.valueOf(422);
+    private static final int MAX_ANNEX_COUNT = 10;
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
@@ -33,6 +34,9 @@ public class OrderService implements IOrderService {
     @Override
     @Transactional
     public OrderResponse create(OrderRequest request, String authenticatedEmail) {
+        if (request.annexes() != null && request.annexes().size() > MAX_ANNEX_COUNT) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A request can contain at most 10 annexes");
+        }
         User user = userRepository.findByEmail(authenticatedEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         if (!user.getId().equals(request.userId())) {
@@ -43,6 +47,10 @@ public class OrderService implements IOrderService {
         for (AnnexRequest annex : requestedAnnexes) {
             if (!storageService.isTemporaryKeyIssued(annex.temporaryKey()))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid temporary file key");
+            if (!storageService.isTemporaryKeyIssuedForUser(annex.temporaryKey(), user.getId()))
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot use another user's temporary file key");
+            if (storageService.getTemporaryObjectSize(annex.temporaryKey()) > IStorageService.MAX_ANNEX_SIZE_BYTES)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Attachment exceeds the 5 MiB size limit");
         }
 
         Order order = new Order();
@@ -76,8 +84,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public AnnexUploadResponse generateAnnexUploadUrl(AnnexUploadRequest request) {
-        IStorageService.UploadUrlResponse response = storageService.generateUploadUrl(request.name(), request.contentType());
+    public AnnexUploadResponse generateAnnexUploadUrl(AnnexUploadRequest request, String authenticatedEmail) {
+        User user = userRepository.findByEmail(authenticatedEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        IStorageService.UploadUrlResponse response = storageService.generateUploadUrl(
+                user.getId(), request.name(), request.contentType());
         return new AnnexUploadResponse(response.uploadUrl(), response.fileKey(), response.fields());
     }
 
