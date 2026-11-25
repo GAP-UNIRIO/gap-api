@@ -43,11 +43,14 @@ public class ApprovalStage {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User whoApproved;
+    private User decidedBy;
 
     @ManyToOne
     @JoinColumn(name = "org_unit_id")
     private OrgUnit responsibleUnit;
+
+    @Column(name = "rejection_justification", columnDefinition = "TEXT")
+    private String rejectionJustification;
 
 
 
