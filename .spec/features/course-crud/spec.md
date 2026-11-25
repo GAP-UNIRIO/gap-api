@@ -172,7 +172,7 @@ Como gestor, quero garantir que os usuários associados existem e exercem a fun�
 - A listagem usa ordenação crescente por `id`.
 - `name` é obrigatório, não pode ser vazio ou composto somente por espaços e é único; a validação da requisição rejeita nome ausente ou em branco com HTTP 400.
 - `directorId`, `coordinatorId` e `secretaryId` são obrigatórios e devem apontar para usuários existentes com o papel correspondente.
-- Os campos `reitoriaId`, `coordenacaoId`, `direcaoId`, `secretariaId` e `escolaId` são obrigatórios nas novas requisições; devem referenciar unidades com tipo correspondente.
+- Os campos `reitoriaId`, `coordenacaoId`, `direcaoId`, `secretariaId` e `escolaId` são obrigatórios em `POST` e `PUT` para todos os clientes, inclusive clientes antigos; devem referenciar unidades com tipo correspondente. A ausência de qualquer ID em uma atualização resulta em HTTP 400 e não preserva implicitamente a associação atual.
 - `departmentId` é obrigatório nas requisições de criação e atualização e deve apontar para `OrgUnitType.DEPARTAMENTO`; respostas devolvem apenas identificador e nome da unidade.
 - A V2 adicionou `department_id` anulável para preservar dados legados; a V7 torna a coluna obrigatória. Em bancos descartáveis, recriar a base com as migrations atuais garante que todos os cursos iniciem com departamento. A aplicação não infere associações automaticamente.
 - Erros de integridade do banco são convertidos pelo handler global em HTTP 409.
@@ -202,4 +202,4 @@ Como gestor, quero garantir que os usuários associados existem e exercem a fun�
 | Q-016 | O CRUD deve receber e atualizar os vínculos organizacionais? | respondida | Sim, deve administrar reitoria, coordenação, direção, secretaria e escola. |
 | Q-017 | Clientes antigos podem omitir `departmentId` em atualizações? | respondida | Não; a obrigatoriedade de `departmentId` deve ser mantida. |
 | Q-018 | Quais são as authorities oficiais para os papéis de diretor, coordenador e secretário? | respondida | `DIRECTOR`, `COORDINATOR` e `SECRETARY`, respectivamente. |
-| Q-019 | Os vínculos organizacionais são obrigatórios? Como tratar campos omitidos em `PUT`? | respondida | As cinco associações são obrigatórias em `POST` e `PUT`; não há campos omitidos permitidos. |
+| Q-019 | Os vínculos organizacionais são obrigatórios? Como tratar campos omitidos em `PUT`? | respondida | Sim. As cinco associações são obrigatórias em `POST` e `PUT` para todos os clientes, inclusive os antigos; campo ausente é rejeitado com HTTP 400 e não preserva a associação existente. |
