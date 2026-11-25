@@ -10,6 +10,7 @@ const gradleArgs = [
   'cleanTest', 'test',
   '--tests', 'com.gap.api.Controller.OrderControllerTest',
   '--tests', 'com.gap.api.Service.OrderServiceTest',
+  '--tests', 'com.gap.api.Service.AWSStorageServiceTest',
   '--tests', 'com.gap.api.Service.WorkflowEngineServiceTest',
   '--tests', 'com.gap.api.Service.WorkflowTemplateServiceTest',
   '--tests', 'com.gap.api.Controller.WorkflowTemplateControllerTest',

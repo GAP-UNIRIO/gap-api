@@ -72,7 +72,7 @@ class OrderControllerTest {
     void upload_returnsSignedPostFields() throws Exception {
         var response = new AnnexUploadResponse("https://uploads-test.s3.us-east-1.amazonaws.com/",
                 "temporary/opaque-key", Map.of("key", "temporary/opaque-key", "policy", "signed-policy"));
-        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class))).thenReturn(response);
+        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class), eq("complete@example.test"))).thenReturn(response);
 
         mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.fileKey").value(response.fileKey()))
                 .andExpect(jsonPath("$.data.fields.policy").value("signed-policy"));
 
-        verify(orderService).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+        verify(orderService).generateAnnexUploadUrl(any(AnnexUploadRequest.class), eq("complete@example.test"));
     }
 
     @Test
@@ -99,7 +99,7 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Complete seu cadastro de usuário para acessar este recurso."));
 
-        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class), anyString());
     }
 
     @Test
@@ -110,13 +110,13 @@ class OrderControllerTest {
                         .content(objectMapper.writeValueAsString(new AnnexUploadRequest(" ", ""))))
                 .andExpect(status().isBadRequest());
 
-        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class));
+        verify(orderService, never()).generateAnnexUploadUrl(any(AnnexUploadRequest.class), anyString());
     }
 
     @Test
     @DisplayName("@spec:AC-012 retorna 503 quando o armazenamento está indisponível")
     void upload_returns503WhenStorageUnavailable() throws Exception {
-        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class)))
+        when(orderService.generateAnnexUploadUrl(any(AnnexUploadRequest.class), eq("complete@example.test")))
                 .thenThrow(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Storage unavailable"));
 
         mockMvc.perform(post("/orders/annex-upload").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test"))).with(csrf())
@@ -145,6 +145,47 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.annexes[0].storageKey").value("orders/23/31/record.pdf"));
 
         verify(orderService).create(any(OrderRequest.class), eq("order-create@example.test"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-175 aceita extraData nulo")
+    void create_acceptsNullExtraData() throws Exception {
+        OrderResponse response = new OrderResponse(23L, 7L, Order.OrderType.INCLUSAO_DISCIPLINA,
+                Order.OrderStatus.ABERTA, ZonedDateTime.parse("2026-01-02T03:04:05Z"), List.of());
+        when(orderService.create(any(OrderRequest.class), eq("order-create@example.test"))).thenReturn(response);
+
+        mockMvc.perform(post("/orders").with(authenticatedOidc()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":7,\"orderType\":\"INCLUSAO_DISCIPLINA\",\"extraData\":null}"))
+                .andExpect(status().isCreated());
+
+        verify(orderService).create(any(OrderRequest.class), eq("order-create@example.test"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-176 rejeita JSON malformado em extraData antes de chamar o serviço")
+    void create_rejectsMalformedExtraDataJson() throws Exception {
+        mockMvc.perform(post("/orders").with(authenticatedOidc()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":7,\"orderType\":\"INCLUSAO_DISCIPLINA\",\"extraData\":{invalid}}"))
+                .andExpect(status().isBadRequest());
+
+        verify(orderService, never()).create(any(OrderRequest.class), any(String.class));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-177 rejeita mais de 10 anexos antes de chamar o serviço")
+    void create_rejectsMoreThanTenAnnexes() throws Exception {
+        List<AnnexRequest> annexes = java.util.stream.IntStream.range(0, 11)
+                .mapToObj(index -> new AnnexRequest("file" + index + ".pdf", "application/pdf", "temporary/key" + index))
+                .toList();
+
+        mockMvc.perform(post("/orders").with(authenticatedOidc()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request(annexes))))
+                .andExpect(status().isBadRequest());
+
+        verify(orderService, never()).create(any(OrderRequest.class), any(String.class));
     }
 
     @Test
