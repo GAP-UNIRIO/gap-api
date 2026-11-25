@@ -7,10 +7,10 @@
 - Arquivos: src/main/java/com/gap/api/Service/UserService.java, src/main/java/com/gap/api/Model/DTO/UserRolesRequest.java, src/test/java/com/gap/api/Service/UserServiceTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java
 - Notas: Validar lista completa antes de alterar o usuário; resposta clara e sem atualização parcial. Q-040 foi respondida: catálogo limitado aos dois papéis centrais.
 
-## T-161 — Remover controller e serviço do CRUD `/roles` [pendente]
+## T-161 — Remover controller e serviço do CRUD `/roles` [concluida]
 - Refs: US-049, AC-175
-- Arquivos: src/main/java/com/gap/api/Controller/RoleController.java, src/main/java/com/gap/api/Service/RoleService.java, src/main/java/com/gap/api/Service/Interface/IRoleService.java, src/main/java/com/gap/api/Model/DTO/RoleRequest.java, src/main/java/com/gap/api/Model/DTO/RoleResponse.java, src/main/java/com/gap/api/Config/SecurityConfig.java, src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Config/SecurityConfigTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java
-- Notas: Manter entidade Role, RoleRepository, constantes e migration de seed. Confirmar que todo método `/roles` deixa de ser mapeado e retorna 404.
+- Arquivos: src/main/java/com/gap/api/Config/SecurityConfig.java, src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java, test/run-onp-tests.mjs
+- Notas: Remover RoleController, RoleService, IRoleService, RoleRequest, RoleResponse e os testes exclusivos do CRUD. Manter entidade Role, RoleRepository, constantes e migration de seed. As rotas sem mapeamento retornam 404.
 
 ## T-162 — Limpar papéis extras legados por migration [pendente]
 - Refs: US-049, AC-176, AC-179

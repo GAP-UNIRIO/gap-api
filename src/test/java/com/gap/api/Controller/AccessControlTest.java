@@ -8,7 +8,6 @@ import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IInstitutionService;
 import com.gap.api.Service.Interface.IOrderService;
-import com.gap.api.Service.Interface.IRoleService;
 import com.gap.api.Service.Interface.IUserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +43,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {InstitutionController.class, CourseController.class, RoleController.class,
+@WebMvcTest(controllers = {InstitutionController.class, CourseController.class,
         UserController.class, OrderController.class})
 @Import(SecurityConfig.class)
 class AccessControlTest {
@@ -54,7 +53,6 @@ class AccessControlTest {
 
     @MockitoBean private IInstitutionService institutionService;
     @MockitoBean private ICourseService courseService;
-    @MockitoBean private IRoleService roleService;
     @MockitoBean private IUserService userService;
     @MockitoBean private IOrderService orderService;
     @MockitoBean private CustomOidcUserService customOidcUserService;
@@ -90,11 +88,8 @@ class AccessControlTest {
     @DisplayName("@spec:AC-151 aplica a matriz de acesso por papel")
     void accessMatrix_isEnforced() throws Exception {
         when(courseService.findAll()).thenReturn(List.of());
-        when(roleService.findAll()).thenReturn(List.of());
 
         mockMvc.perform(get("/courses").with(basic())).andExpect(status().isOk());
-        mockMvc.perform(get("/roles").with(basic())).andExpect(status().isForbidden());
-        mockMvc.perform(get("/roles").with(admin())).andExpect(status().isOk());
         mockMvc.perform(get("/users/me").with(basic())).andExpect(status().isOk());
     }
 
