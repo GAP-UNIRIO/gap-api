@@ -211,7 +211,7 @@ Leia primeiro: .spec/features/order-approval-decisions/spec.md, .spec/features/o
 Sua tarefa (somente ela):
 T-059 — "Vincular usuários às unidades organizacionais"
   critérios/refs: AC-204 (Somente usuário da unidade responsável decide a etapa), AC-207 (Administrador vincula usuários às unidades)
-  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Model/Entity/User.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsRequest.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsResponse.java, src/main/java/com/gap/api/Service/UserService.java, src/main/java/com/gap/api/Service/Interface/IUserService.java, src/main/java/com/gap/api/Controller/UserController.java, src/main/java/com/gap/api/Config/SecurityConfig.java, src/main/resources/db/migration/V8__order_approval_decisions.sql
+  arquivos permitidos (e seus testes): src/main/java/com/gap/api/Model/Entity/User.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsRequest.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsResponse.java, src/main/java/com/gap/api/Service/UserService.java, src/main/java/com/gap/api/Service/Interface/IUserService.java, src/main/java/com/gap/api/Controller/UserController.java, src/main/java/com/gap/api/Config/SecurityConfig.java, src/main/resources/db/migration/V9__order_approval_decisions.sql
   mensagem de commit: "T-059 order-approval-decisions: Vincular usuários às unidades organizacionais"
 
 Regras inegociáveis:

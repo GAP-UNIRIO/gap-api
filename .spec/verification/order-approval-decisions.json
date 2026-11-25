@@ -1,11 +1,11 @@
 {
   "feature": "order-approval-decisions",
-  "timestamp": "2026-11-25T14:43:57.581Z",
-  "gitRev": "a513b72",
+  "timestamp": "2026-11-25T16:49:55.101Z",
+  "gitRev": "e126278",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 114,
+  "testsParsed": 120,
   "results": {
     "AC-200": {
       "status": "pass",
@@ -19,7 +19,7 @@
     },
     "AC-202": {
       "status": "pass",
-      "testName": "@spec:AC-202 @spec:AC-204 @spec:AC-207 V8 persiste justificativas e vínculos entre usuários e unidades",
+      "testName": "@spec:AC-202 @spec:AC-204 @spec:AC-207 V9 persiste justificativas e vínculos entre usuários e unidades",
       "method": "tap"
     },
     "AC-203": {
@@ -29,7 +29,7 @@
     },
     "AC-204": {
       "status": "pass",
-      "testName": "@spec:AC-202 @spec:AC-204 @spec:AC-207 V8 persiste justificativas e vínculos entre usuários e unidades",
+      "testName": "@spec:AC-202 @spec:AC-204 @spec:AC-207 V9 persiste justificativas e vínculos entre usuários e unidades",
       "method": "tap"
     },
     "AC-205": {
@@ -44,7 +44,7 @@
     },
     "AC-207": {
       "status": "pass",
-      "testName": "@spec:AC-202 @spec:AC-204 @spec:AC-207 V8 persiste justificativas e vínculos entre usuários e unidades",
+      "testName": "@spec:AC-202 @spec:AC-204 @spec:AC-207 V9 persiste justificativas e vínculos entre usuários e unidades",
       "method": "tap"
     }
   },

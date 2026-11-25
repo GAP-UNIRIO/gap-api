@@ -9,7 +9,7 @@
 
 ## T-059 — Vincular usuários às unidades organizacionais [concluida]
 - Refs: US-052, AC-204, AC-207
-- Arquivos: src/main/java/com/gap/api/Model/Entity/User.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsRequest.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsResponse.java, src/main/java/com/gap/api/Service/UserService.java, src/main/java/com/gap/api/Service/Interface/IUserService.java, src/main/java/com/gap/api/Controller/UserController.java, src/main/java/com/gap/api/Config/SecurityConfig.java, src/main/resources/db/migration/V8__order_approval_decisions.sql
+- Arquivos: src/main/java/com/gap/api/Model/Entity/User.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsRequest.java, src/main/java/com/gap/api/Model/DTO/UserOrgUnitsResponse.java, src/main/java/com/gap/api/Service/UserService.java, src/main/java/com/gap/api/Service/Interface/IUserService.java, src/main/java/com/gap/api/Controller/UserController.java, src/main/java/com/gap/api/Config/SecurityConfig.java, src/main/resources/db/migration/V9__order_approval_decisions.sql
 - Notas: usuário pode pertencer a várias unidades; endpoint administrativo atualiza vínculos.
 
 ## T-060 — Implementar decisões sequenciais das etapas [concluida]

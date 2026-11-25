@@ -62,4 +62,3 @@ final, o usuário recebe o resumo completo da execução. A qualquer momento:
 onp-spec resumo order-approval-decisions --tabela   # a tabela de andamento
 onp-spec resumo order-approval-decisions            # o resumo em texto
 ```
-
