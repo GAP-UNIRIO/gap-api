@@ -1,7 +1,7 @@
 # Spec: Order approval decisions
 
 > feature: order-approval-decisions
-> status: em-implementacao
+> status: implementada
 
 ## Contexto
 
@@ -80,5 +80,6 @@ Como responsável pela etapa atual, quero aprovar ou reprovar a solicitação, p
 | Q-042 | Como validar que o usuário autenticado é responsável pela unidade da etapa? Atualmente não há associação usuário-unidade no modelo. | respondida | Autorizar somente usuários vinculados à unidade responsável. |
 | Q-043 | Autoriza adicionar campo e migration Flyway para armazenar a justificativa da reprovação? | respondida | Sim; armazenar a justificativa na entidade ApprovalStage. |
 | Q-044 | A última aprovação deve encerrar a solicitação? | respondida | Não. A solicitação fica em análise até a entrega ao aluno; a secretaria conclui manualmente depois. |
+
 
 
