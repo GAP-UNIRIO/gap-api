@@ -1,11 +1,11 @@
 {
   "feature": "course-crud",
-  "timestamp": "2026-11-25T01:11:48.761Z",
-  "gitRev": "e2ca0fd",
+  "timestamp": "2026-11-25T05:15:48.796Z",
+  "gitRev": "ecbe11a",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 1,
-  "testsParsed": 304,
+  "exitCode": 0,
+  "testsParsed": 337,
   "results": {
     "AC-031": {
       "status": "pass",
@@ -59,7 +59,7 @@
     },
     "AC-038": {
       "status": "pass",
-      "testName": "@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais",
+      "testName": "@spec:AC-038 @spec:AC-120 @spec:AC-183 update retorna 200 e atualiza os vínculos organizacionais",
       "method": "tap"
     },
     "AC-039": {
@@ -104,7 +104,7 @@
     },
     "AC-120": {
       "status": "pass",
-      "testName": "@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais",
+      "testName": "@spec:AC-038 @spec:AC-120 @spec:AC-183 update retorna 200 e atualiza os vínculos organizacionais",
       "method": "tap"
     },
     "AC-121": {

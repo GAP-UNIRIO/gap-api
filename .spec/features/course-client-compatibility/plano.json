@@ -1,0 +1,73 @@
+{
+  "runId": "gap-api-course-client-compatibility-mwvnuf08",
+  "feature": "course-client-compatibility",
+  "agent": "codex",
+  "modo": "paralelo",
+  "paralelizar": null,
+  "modeloForcado": null,
+  "esforcoForcado": null,
+  "geradoEm": "2026-11-25 05:05",
+  "branchTrabalho": "fix/course-client-compatibility",
+  "branchBase": "main",
+  "baseDir": ".spec/features/course-client-compatibility",
+  "specDir": ".spec",
+  "repoName": "gap-api",
+  "logsDir": "../onp-worktrees/gap-api-course-client-compatibility-logs",
+  "ondas": [
+    [
+      "faixa-1",
+      "faixa-2"
+    ]
+  ],
+  "faixas": [
+    {
+      "id": "faixa-1",
+      "branch": "fix/course-client-compatibility-faixa-1",
+      "worktree": "../onp-worktrees/gap-api-course-client-compatibility-faixa-1",
+      "tarefas": [
+        {
+          "id": "T-058",
+          "titulo": "Provar rejeição de payloads sem vínculos organizacionais",
+          "modelo": "gpt-5.6-terra",
+          "esforco": "medium",
+          "arquivos": [
+            "src/test/java/com/gap/api/Controller/CourseControllerTest.java"
+          ],
+          "refs": [
+            "US-051",
+            "AC-181",
+            "AC-182",
+            "AC-183"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "faixa-2",
+      "branch": "fix/course-client-compatibility-faixa-2",
+      "worktree": "../onp-worktrees/gap-api-course-client-compatibility-faixa-2",
+      "tarefas": [
+        {
+          "id": "T-059",
+          "titulo": "Consolidar contrato e auditar a especificação",
+          "modelo": "gpt-5.6-terra",
+          "esforco": "medium",
+          "arquivos": [
+            ".spec/features/course-client-compatibility/spec.md",
+            ".spec/features/course-client-compatibility/tasks.md",
+            ".spec/features/course-crud/spec.md"
+          ],
+          "refs": [
+            "US-051",
+            "AC-181",
+            "AC-182",
+            "AC-183"
+          ]
+        }
+      ]
+    }
+  ],
+  "sequenciais": [],
+  "concluidas": [],
+  "avisos": []
+}

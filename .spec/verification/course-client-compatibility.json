@@ -1,0 +1,27 @@
+{
+  "feature": "course-client-compatibility",
+  "timestamp": "2026-11-25T05:13:59.977Z",
+  "gitRev": "ecbe11a",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 337,
+  "results": {
+    "AC-181": {
+      "status": "pass",
+      "testName": "@spec:AC-181 criação sem qualquer vínculo organizacional retorna 400 sem salvar",
+      "method": "tap"
+    },
+    "AC-182": {
+      "status": "pass",
+      "testName": "@spec:AC-182 atualização sem qualquer vínculo organizacional retorna 400 sem alterar",
+      "method": "tap"
+    },
+    "AC-183": {
+      "status": "pass",
+      "testName": "@spec:AC-038 @spec:AC-120 @spec:AC-183 update retorna 200 e atualiza os vínculos organizacionais",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}
