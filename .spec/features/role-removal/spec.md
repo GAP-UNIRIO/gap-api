@@ -1,7 +1,7 @@
 # Especificação: Remoção do CRUD de papéis
 
 > feature: role-removal
-> status: rascunho
+> status: implementada
 
 ## Contexto
 
@@ -21,9 +21,10 @@ Como responsável pela API, quero que os papéis de acesso sejam definidos pelo 
 
 #### AC-176 — Preservar os papéis centrais
 
-- **Dado** um banco iniciado pelas migrations
-- **Quando** a aplicação cria ou atualiza uma conta pela regra normal de login
-- **Então** `ROLE_BASIC` continua disponível para usuários comuns e `ROLE_ADMIN` continua disponível para administradores, sem CRUD público para esses registros
+- **Dado** um banco com ou sem os papéis centrais antes da migration de remoção
+- **Quando** a migration de remoção é aplicada uma ou mais vezes
+- **Então** existem exatamente um `ROLE_BASIC` e um `ROLE_ADMIN`
+- **E** os papéis ficam disponíveis para o fluxo de login
 
 #### AC-177 — Preservar a atribuição administrativa dos papéis centrais
 

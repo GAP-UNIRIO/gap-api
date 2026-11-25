@@ -15,14 +15,14 @@
 ## T-162 — Limpar papéis extras legados por migration [concluida]
 - Refs: US-049, AC-176, AC-179
 - Arquivos: src/main/resources/db/migration/V8__remove_non_core_roles.sql, src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java, test/flyway-migration.test.js
-- Notas: Q-039 foi respondida autorizando a limpeza. Remover vínculos extras antes dos registros; preservar `ROLE_BASIC`, `ROLE_ADMIN` e suas atribuições. Não reescrever migrations já publicadas.
+- Notas: Q-039 foi respondida autorizando a limpeza. Garantir os papéis centrais sem duplicá-los, remover vínculos extras antes dos registros e preservar as associações centrais. Não reescrever migrations já publicadas.
 
-## T-163 — Atualizar documentação e specs conflitantes [pendente]
+## T-163 — Atualizar documentação e specs conflitantes [concluida]
 - Refs: US-049, AC-175, AC-176, AC-177, AC-178, AC-179
-- Arquivos: README.md, .spec/features/access-control/spec.md, .spec/features/access-control/tasks.md, .spec/features/role-crud/spec.md, .spec/features/role-crud/tasks.md, .spec/features/role-removal/spec.md
-- Notas: Marcar role-crud como substituída por role-removal sem apagar rastreabilidade histórica; atualizar matriz de acesso e explicar que os dois papéis são definidos pelo sistema.
+- Arquivos: README.md, .spec/features/access-control/spec.md, .spec/features/access-control/tasks.md, .spec/features/role-crud/README.md, .spec/features/role-crud/spec-historica.md, .spec/features/role-crud/tasks-historicas.md, .spec/features/role-crud/executar-tarefas-antigo.sh, .spec/features/role-crud/plano-execucao-antigo.html, .spec/features/role-crud/plano-execucao-antigo.md, .spec/features/role-crud/plano-antigo.json, .spec/features/role-removal/spec.md
+- Notas: Arquivar o CRUD e os planos antigos sem apagar rastreabilidade; atualizar matriz de acesso e documentar que os papéis são definidos pelo sistema.
 
 ## T-164 — Registrar testes anotados, verificar e auditar [pendente]
 - Refs: US-049, AC-175, AC-176, AC-177, AC-178, AC-179
 - Arquivos: src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Service/UserServiceTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java, src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java, test/run-onp-tests.mjs, .spec/verification/role-removal.json
-- Notas: Um teste anotado `@spec:AC-xxx` por critério; executar verify e audit --ci. AC-179 depende da aprovação da política de migração de dados.
+- Notas: Um teste anotado `@spec:AC-xxx` por critério; executar verify e audit --ci. As decisões Q-039 e Q-040 foram respondidas.

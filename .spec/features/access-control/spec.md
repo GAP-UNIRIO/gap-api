@@ -7,14 +7,14 @@
 
 Hoje qualquer usuário logado com e-mail da UNIRIO acessa qualquer endpoint: um aluno pode, por exemplo, apagar uma instituição ou cadastrar fluxos de aprovação. A entidade `Role` e a tabela `users_roles` existem, mas os papéis do banco não são carregados no login e nenhum endpoint verifica papel. Esta feature cria os papéis do núcleo, carrega os papéis do usuário na sessão, protege os endpoints e permite ao administrador atribuir papéis. É pré-requisito da fila e decisão (#26). Faz parte da issue #20 (Controle de acesso), itens 1 e 2.
 
-Papéis do núcleo (Q-028): `ROLE_BASIC` (aluno e usuário comum) e `ROLE_ADMIN` (servidores: secretaria, coordenação e administração). Um papel `ROLE_SUPERADMIN` para operações muito específicas pode vir depois, fora desta feature.
+Papéis de acesso oficiais (Q-028): somente `ROLE_BASIC` (aluno e usuário comum) e `ROLE_ADMIN` (servidores: secretaria, coordenação e administração). Os papéis são provisionados pelas migrations; o CRUD `/roles` foi removido pela feature role-removal. Um papel `ROLE_SUPERADMIN` pode ser considerado no futuro, fora desta feature.
 
 Matriz de acesso (Q-031):
 
 | Endpoint | Leitura (GET) | Escrita (POST/PUT/PATCH/DELETE) |
 |---|---|---|
 | `/institutions`, `/org-units`, `/courses`, `/academic-calendars` | qualquer usuário logado | ADMIN |
-| `/roles`, `/workflow-template` | ADMIN | ADMIN |
+| `/workflow-template` | ADMIN | ADMIN |
 | `/users/{id}/roles` | — | ADMIN |
 | `/users/me`, `/users/me/complemento` | qualquer usuário logado | qualquer usuário logado |
 | `/orders`, `/orders/annex-upload`, `/orders/{id}/cancel` | — | qualquer usuário logado (o serviço já garante que é o dono) |
@@ -24,7 +24,7 @@ Matriz de acesso (Q-031):
 
 ### US-039 — Ter os papéis do núcleo cadastrados
 
-Como administrador, quero que os papéis do núcleo existam em todo ambiente e não possam ser apagados, para atribuí-los sem cadastro manual.
+Como administrador, quero que os papéis do núcleo existam em todo ambiente e sejam definidos pelas migrations, para atribuí-los sem cadastro manual.
 
 #### AC-144 — Cadastrar os papéis do núcleo pela migration
 
@@ -33,12 +33,6 @@ Como administrador, quero que os papéis do núcleo existam em todo ambiente e n
 - **Então** a tabela `roles` contém `ROLE_BASIC` e `ROLE_ADMIN`
 - **E** a migration não falha nem duplica papéis se algum deles já existir
 - **E** todo usuário já existente recebe `ROLE_BASIC`, sem duplicar quem já o tem
-
-#### AC-154 — Impedir a exclusão dos papéis do núcleo
-
-- **Dado** um administrador
-- **Quando** ele envia `DELETE /roles/{id}` para `ROLE_BASIC` ou `ROLE_ADMIN`
-- **Então** recebe HTTP 409 com mensagem clara e o papel continua existindo
 
 ### US-040 — Entrar com os papéis do banco
 
@@ -106,9 +100,9 @@ Como responsável pelo sistema, quero que cada endpoint só aceite os papéis pr
 
 Como administrador, quero definir os papéis de um usuário, para promover um servidor a administrador ou rebaixá-lo.
 
-#### AC-155 — Atribuir papéis
+#### AC-155 — Atribuir papéis centrais
 
-- **Dado** um administrador, um usuário existente e uma lista de papéis existentes
+- **Dado** um administrador, um usuário existente e uma lista contendo somente `ROLE_BASIC` e `ROLE_ADMIN`
 - **Quando** ele envia `PUT /users/{id}/roles`
 - **Então** recebe HTTP 200 e o usuário passa a ter exatamente esses papéis
 
@@ -118,11 +112,11 @@ Como administrador, quero definir os papéis de um usuário, para promover um se
 - **Quando** ele envia `PUT /users/{id}/roles`
 - **Então** recebe HTTP 403 e os papéis não mudam
 
-#### AC-157 — Recusar usuário ou papel inexistente
+#### AC-157 — Recusar usuário inexistente
 
-- **Dado** um administrador
-- **Quando** ele envia `PUT /users/{id}/roles` com usuário ou papel que não existe
-- **Então** recebe HTTP 404 com mensagem indicando o que não foi encontrado, e nada muda
+- **Dado** um administrador e uma lista composta apenas por papéis centrais
+- **Quando** ele envia `PUT /users/{id}/roles` para um usuário que não existe
+- **Então** recebe HTTP 404 com mensagem indicando que o usuário não foi encontrado, e nada muda
 
 ## Fora de escopo
 
@@ -136,7 +130,6 @@ Como administrador, quero definir os papéis de um usuário, para promover um se
 | ID | Suposição | Status | Resolução |
 |---|---|---|---|
 | ASM-015 | Papéis alterados no banco só passam a valer no próximo login do usuário. | aberta | |
-| ASM-016 | O CRUD de `/roles` continua permitindo criar papéis novos (RF53), mas os do núcleo não podem ser apagados (HTTP 409). | confirmada | Q-034. |
 
 ## Perguntas em aberto
 
@@ -148,4 +141,8 @@ Como administrador, quero definir os papéis de um usuário, para promover um se
 | Q-031 | A matriz de acesso do Contexto está correta? | respondida | Sim; a consulta de cursos fica aberta a qualquer usuário logado. |
 | Q-032 | Endpoint para o administrador atribuir papéis já nesta feature? | respondida | Sim, `PUT /users/{id}/roles`, só para administrador. |
 | Q-033 | Chamada sem login deve continuar redirecionando para o Google (302) ou responder 401 em JSON? | respondida | 401 em JSON; o front redireciona o usuário para a página de acesso negado, que pede o login de novo. |
-| Q-034 | Impedir a exclusão dos papéis do núcleo? | respondida | Sim, HTTP 409. |
+| Q-034 | Impedir a exclusão dos papéis do núcleo? | respondida | Sim. Os papéis centrais são mantidos pelas migrations; posteriormente, o CRUD `/roles` foi removido pela feature role-removal. |
+
+## Histórico de mudança de escopo
+
+- A feature role-removal substitui o CRUD `/roles`: a tabela e a entidade continuam necessárias à autenticação, mas os endpoints de catálogo não existem e a atribuição administrativa aceita somente os dois papéis oficiais.

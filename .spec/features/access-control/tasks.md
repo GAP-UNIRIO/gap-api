@@ -3,8 +3,8 @@
 > feature: access-control
 
 ## T-043 — Cadastrar e proteger os papéis do núcleo [concluida]
-- Refs: US-039, AC-144, AC-154
-- Arquivos: src/main/resources/db/migration/V5__seed_core_roles.sql, src/main/java/com/gap/api/Service/RoleService.java, src/main/java/com/gap/api/Model/Entity/Role.java
+- Refs: US-039, AC-144
+- Arquivos: src/main/resources/db/migration/V5__seed_core_roles.sql, src/main/java/com/gap/api/Model/Entity/Role.java
 - Notas: V5 porque a V4 é da feature order-status. Papéis `ROLE_BASIC` e `ROLE_ADMIN` (Q-028).
 
 ## T-044 — Carregar os papéis no login e expor em /users/me [concluida]
@@ -23,6 +23,6 @@
 - Notas: `PUT /users/{id}/roles`, só administrador (Q-032).
 
 ## T-047 — Testar os critérios e registrar no gate [concluida]
-- Refs: US-039, AC-144, AC-154, US-040, AC-145, AC-146, AC-147, AC-148, US-041, AC-149, AC-150, AC-151, AC-152, AC-153, US-042, AC-155, AC-156, AC-157
-- Arquivos: src/test/java/com/gap/api/Controller/AccessControlTest.java, src/test/java/com/gap/api/Service/CustomOidcUserServiceTest.java, src/test/java/com/gap/api/Service/RoleServiceTest.java, src/test/java/com/gap/api/Service/UserServiceTest.java, src/test/java/com/gap/api/Controller/UserControllerTest.java, src/test/java/com/gap/api/Controller/InstitutionControllerTest.java, src/test/java/com/gap/api/Controller/OrgUnitControllerTest.java, src/test/java/com/gap/api/Controller/CourseControllerTest.java, src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java, src/test/java/com/gap/api/Controller/WorkflowTemplateControllerTest.java, test/access-control-migration.test.js, test/run-onp-tests.mjs
+- Refs: US-039, AC-144, US-040, AC-145, AC-146, AC-147, AC-148, US-041, AC-149, AC-150, AC-151, AC-152, AC-153, US-042, AC-155, AC-156, AC-157
+- Arquivos: src/test/java/com/gap/api/Controller/AccessControlTest.java, src/test/java/com/gap/api/Service/CustomOidcUserServiceTest.java, src/test/java/com/gap/api/Service/UserServiceTest.java, src/test/java/com/gap/api/Controller/UserControllerTest.java, src/test/java/com/gap/api/Controller/InstitutionControllerTest.java, src/test/java/com/gap/api/Controller/OrgUnitControllerTest.java, src/test/java/com/gap/api/Controller/CourseControllerTest.java, src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Controller/AcademicCalendarControllerTest.java, src/test/java/com/gap/api/Controller/WorkflowTemplateControllerTest.java, test/access-control-migration.test.js, test/run-onp-tests.mjs
 - Notas: Testes que falham escritos antes da implementação, com `@spec:AC-xxx` no nome. Os testes de controller existentes dos cadastros passam a logar como `ROLE_ADMIN`.
