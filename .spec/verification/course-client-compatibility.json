@@ -1,0 +1,11 @@
+{
+  "feature": "course-client-compatibility",
+  "timestamp": "2026-11-25T05:10:55.261Z",
+  "gitRev": "18ec973",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 0,
+  "testsParsed": 335,
+  "results": {},
+  "principles": {}
+}
