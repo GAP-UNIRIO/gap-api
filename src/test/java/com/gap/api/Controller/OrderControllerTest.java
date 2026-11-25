@@ -8,6 +8,7 @@ import com.gap.api.Model.DTO.AnnexUploadRequest;
 import com.gap.api.Model.DTO.AnnexUploadResponse;
 import com.gap.api.Model.DTO.OrderRequest;
 import com.gap.api.Model.DTO.OrderResponse;
+import com.gap.api.Model.DTO.ApprovalDecisionRequest;
 import com.gap.api.Model.Entity.Order;
 import com.gap.api.Service.CustomOidcUserService;
 import com.gap.api.Service.Interface.IOrderService;
@@ -145,6 +146,50 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.data.annexes[0].storageKey").value("orders/23/31/record.pdf"));
 
         verify(orderService).create(any(OrderRequest.class), eq("order-create@example.test"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-200 endpoint de decisão retorna envelope BaseResponse")
+    void decideStage_approved_returnsBaseResponse() throws Exception {
+        OrderResponse response = new OrderResponse(23L, 7L, Order.OrderType.INCLUSAO_DISCIPLINA,
+                Order.OrderStatus.EM_ANALISE, ZonedDateTime.parse("2026-01-02T03:04:05Z"), List.of());
+        ApprovalDecisionRequest request = new ApprovalDecisionRequest(ApprovalDecisionRequest.Decision.APPROVED, null);
+        when(orderService.decideStage(eq(23L), eq(31L), any(ApprovalDecisionRequest.class), eq("order-create@example.test")))
+                .thenReturn(response);
+
+        mockMvc.perform(patch("/orders/23/approval-stages/31/decision").with(authenticatedOidc()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.status").value("EM_ANALISE"));
+
+        verify(orderService).decideStage(eq(23L), eq(31L), any(ApprovalDecisionRequest.class), eq("order-create@example.test"));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-201 endpoint rejeita reprovação sem justificativa")
+    void decideStage_rejectedWithoutJustification_returnsBadRequest() throws Exception {
+        mockMvc.perform(patch("/orders/23/approval-stages/31/decision").with(authenticatedOidc()).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"decision\":\"REJECTED\",\"justification\":\" \"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value("error"));
+
+        verify(orderService, never()).decideStage(any(), any(), any(), anyString());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 secretaria pode concluir manualmente a solicitação")
+    void complete_returnsSuccessfulEnvelope() throws Exception {
+        OrderResponse response = new OrderResponse(23L, 7L, Order.OrderType.INCLUSAO_DISCIPLINA,
+                Order.OrderStatus.CONCLUIDA, ZonedDateTime.parse("2026-01-02T03:04:05Z"), List.of());
+        when(orderService.complete(23L, "order-create@example.test")).thenReturn(response);
+
+        mockMvc.perform(patch("/orders/23/complete").with(authenticatedOidc()).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.status").value("CONCLUIDA"));
     }
 
     @Test

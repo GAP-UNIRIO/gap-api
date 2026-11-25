@@ -6,7 +6,20 @@ const nodeTests = spawnSync(process.execPath,
   ['--test', '--test-reporter=tap', 'test/flyway-migration.test.js', 'test/codebase-inventory.test.js', 'test/order-status-migration.test.js', 'test/access-control-migration.test.js', 'test/onp-plan-branch.test.js'],
   { cwd: process.cwd(), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
 
-const gradleArgs = [
+const approvalDecisionUnitTests = [
+  'cleanTest', 'test',
+  '--tests', 'com.gap.api.Controller.OrderControllerTest',
+  '--tests', 'com.gap.api.Controller.UserControllerTest',
+  '--tests', 'com.gap.api.Service.ApprovalDecisionServiceTest',
+  '--tests', 'com.gap.api.Service.OrderServiceTest',
+  '--tests', 'com.gap.api.Service.OrderStatusServiceTest',
+  '--tests', 'com.gap.api.Service.UserServiceTest',
+  '--tests', 'com.gap.api.Service.WorkflowEngineServiceTest',
+];
+
+const gradleArgs = process.env.ONP_FEATURE === 'order-approval-decisions'
+  ? approvalDecisionUnitTests
+  : [
   'cleanTest', 'test',
   '--tests', 'com.gap.api.Controller.OrderControllerTest',
   '--tests', 'com.gap.api.Service.OrderServiceTest',
@@ -34,6 +47,7 @@ const gradleArgs = [
   '--tests', 'com.gap.api.Integration.OrderServiceIntegrationTest',
   '--tests', 'com.gap.api.Integration.ApiDocsIntegrationTest',
   '--tests', 'com.gap.api.Service.OrderStatusServiceTest',
+  '--tests', 'com.gap.api.Service.ApprovalDecisionServiceTest',
   '--tests', 'com.gap.api.Controller.AccessControlTest',
   '--tests', 'com.gap.api.Service.CustomOidcUserServiceTest',
 ];

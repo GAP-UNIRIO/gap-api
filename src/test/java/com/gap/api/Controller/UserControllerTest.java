@@ -3,6 +3,8 @@ package com.gap.api.Controller;
 import com.gap.api.Config.SecurityConfig;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Model.DTO.UserComplementRequest;
+import com.gap.api.Model.DTO.UserOrgUnitsRequest;
+import com.gap.api.Model.DTO.UserOrgUnitsResponse;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.User;
@@ -17,6 +19,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
@@ -209,5 +212,33 @@ class UserControllerTest {
                         .with(csrf()).contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(complementRequest("20260001", 99L))))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-207 administrador pode vincular unidades organizacionais ao usuário")
+    void updateOrgUnits_adminUpdatesMembership() throws Exception {
+        when(userService.updateOrgUnits(7L, new UserOrgUnitsRequest(List.of(9L))))
+                .thenReturn(new UserOrgUnitsResponse(7L, List.of(9L)));
+
+        mockMvc.perform(put("/users/7/org-units")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "admin@edu.unirio.br"))
+                                .authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"orgUnitIds\":[9]}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.orgUnitIds[0]").value(9));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-207 usuário sem papel administrador não altera vínculos organizacionais")
+    void updateOrgUnits_nonAdminIsForbidden() throws Exception {
+        mockMvc.perform(put("/users/7/org-units")
+                        .with(oidcLogin().idToken(token -> token.claim("email", "aluno@edu.unirio.br")))
+                        .with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"orgUnitIds\":[9]}"))
+                .andExpect(status().isForbidden());
+
+        org.mockito.Mockito.verifyNoInteractions(userService);
     }
 }

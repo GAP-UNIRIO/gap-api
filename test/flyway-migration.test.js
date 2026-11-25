@@ -6,6 +6,7 @@ const migration = await readFile('src/main/resources/db/migration/V1__initial_sc
 const departmentMigration = await readFile('src/main/resources/db/migration/V2__add_course_department.sql', 'utf8');
 const workflowTemplateMigration = await readFile('src/main/resources/db/migration/V6__workflow_template_integrity.sql', 'utf8');
 const requireCourseDepartmentMigration = await readFile('src/main/resources/db/migration/V7__require_course_department.sql', 'utf8').catch(() => '');
+const approvalDecisionsMigration = await readFile('src/main/resources/db/migration/V8__order_approval_decisions.sql', 'utf8').catch(() => '');
 const production = await readFile('src/main/resources/application-prod.yaml', 'utf8');
 
 test('@spec:AC-001 migration inicial cobre tabelas e tipos PostgreSQL das entidades', () => {
@@ -64,6 +65,14 @@ test('@spec:AC-178 V7 não inventa departamentos para cursos existentes', () => 
 test('@spec:AC-179 V7 torna department_id obrigatório sem remover a chave estrangeira definida em V2', () => {
   assert.match(requireCourseDepartmentMigration, /alter\s+table\s+courses\s+alter\s+column\s+department_id\s+set\s+not\s+null/i);
   assert.doesNotMatch(requireCourseDepartmentMigration, /drop\s+constraint\s+fk_courses_department/i);
+});
+
+test('@spec:AC-202 @spec:AC-204 @spec:AC-207 V8 persiste justificativas e vínculos entre usuários e unidades', () => {
+  assert.match(approvalDecisionsMigration, /alter\s+table\s+approval_stages\s+add\s+column\s+rejection_justification\s+text/i);
+  assert.match(approvalDecisionsMigration, /create\s+table\s+users_org_units/i);
+  assert.match(approvalDecisionsMigration, /primary\s+key\s*\(\s*user_id\s*,\s*org_unit_id\s*\)/i);
+  assert.match(approvalDecisionsMigration, /foreign\s+key\s*\(\s*user_id\s*\)\s+references\s+users/i);
+  assert.match(approvalDecisionsMigration, /foreign\s+key\s*\(\s*org_unit_id\s*\)\s+references\s+org_units/i);
 });
 
 test('@spec:AC-170 V6 mantém menor id e apaga etapas antes dos templates duplicados', () => {

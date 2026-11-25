@@ -58,6 +58,28 @@ class OrderStatusServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-202 solicitação pode ser indeferida antes da primeira aprovação")
+    void transition_rejectFromOpenOrder_isAllowed() {
+        Order order = order(Order.OrderStatus.ABERTA);
+        when(orderRepository.save(order)).thenReturn(order);
+
+        Order result = orderStatusService.transition(order, Order.OrderStatus.INDEFERIDA, actor);
+
+        assertEquals(Order.OrderStatus.INDEFERIDA, result.getStatus());
+    }
+
+    @Test
+    @DisplayName("@spec:AC-206 solicitação em análise pode ser concluída manualmente")
+    void transition_completeAfterDelivery_isAllowed() {
+        Order order = order(Order.OrderStatus.EM_ANALISE);
+        when(orderRepository.save(order)).thenReturn(order);
+
+        Order result = orderStatusService.transition(order, Order.OrderStatus.CONCLUIDA, actor);
+
+        assertEquals(Order.OrderStatus.CONCLUIDA, result.getStatus());
+    }
+
+    @Test
     @DisplayName("@spec:AC-134 recusa transição não permitida com HTTP 422")
     void transition_forbiddenTransition_throwsUnprocessableAndKeepsStatus() {
         Order order = order(Order.OrderStatus.DEFERIDA);

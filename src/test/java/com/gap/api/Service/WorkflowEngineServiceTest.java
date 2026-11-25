@@ -55,7 +55,7 @@ class WorkflowEngineServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-009 @spec:AC-102 usa template padrão quando não existe template de curso")
+    @DisplayName("@spec:AC-009 @spec:AC-102 @spec:AC-200 usa template padrão e inclui etapas no pedido criado")
     void instantiateWorkflow_fallsBackToDefaultTemplate() {
         Order order = orderWithCourse(32L);
         WorkflowTemplate fallback = template(step(1, ApprovalStage.ApprovalStageType.COORDINATOR,
@@ -70,6 +70,7 @@ class WorkflowEngineServiceTest {
         verify(workflowTemplateRepository).findByOrderTypeAndCourseIsNull(order.getOrderType());
         List<ApprovalStage> saved = capturedStages();
         assertEquals(1, saved.size());
+        assertEquals(1, order.getApprovalStages().size());
         assertSame(order, saved.get(0).getOrder());
         assertSame(order.getUser().getCourse().getCoordenacao(), saved.get(0).getResponsibleUnit());
     }
