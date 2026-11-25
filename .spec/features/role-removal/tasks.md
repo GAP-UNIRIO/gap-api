@@ -12,7 +12,7 @@
 - Arquivos: src/main/java/com/gap/api/Config/SecurityConfig.java, src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java, test/run-onp-tests.mjs
 - Notas: Remover RoleController, RoleService, IRoleService, RoleRequest, RoleResponse e os testes exclusivos do CRUD. Manter entidade Role, RoleRepository, constantes e migration de seed. As rotas sem mapeamento retornam 404.
 
-## T-162 — Limpar papéis extras legados por migration [pendente]
+## T-162 — Limpar papéis extras legados por migration [concluida]
 - Refs: US-049, AC-176, AC-179
 - Arquivos: src/main/resources/db/migration/V8__remove_non_core_roles.sql, src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java, test/flyway-migration.test.js
 - Notas: Q-039 foi respondida autorizando a limpeza. Remover vínculos extras antes dos registros; preservar `ROLE_BASIC`, `ROLE_ADMIN` e suas atribuições. Não reescrever migrations já publicadas.
