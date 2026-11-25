@@ -91,8 +91,8 @@ public class Order {
         private static final Map<OrderStatus, Set<OrderStatus>> TRANSITIONS = new EnumMap<>(OrderStatus.class);
 
         static {
-            TRANSITIONS.put(ABERTA, EnumSet.of(EM_ANALISE, CANCELADA));
-            TRANSITIONS.put(EM_ANALISE, EnumSet.of(EM_DILIGENCIA, DEFERIDA, INDEFERIDA));
+            TRANSITIONS.put(ABERTA, EnumSet.of(EM_ANALISE, INDEFERIDA, CANCELADA));
+            TRANSITIONS.put(EM_ANALISE, EnumSet.of(EM_DILIGENCIA, DEFERIDA, INDEFERIDA, CONCLUIDA));
             TRANSITIONS.put(EM_DILIGENCIA, EnumSet.of(EM_ANALISE, CANCELADA));
             TRANSITIONS.put(DEFERIDA, EnumSet.of(CONCLUIDA));
             TRANSITIONS.put(INDEFERIDA, EnumSet.noneOf(OrderStatus.class));
