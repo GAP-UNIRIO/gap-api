@@ -22,5 +22,11 @@
 - Arquivos: .spec/features/course-crud/spec.md, .spec/features/course-department-compatibility/spec.md, .spec/features/course-department-compatibility/tasks.md, .spec/verification/course-department-compatibility.json
 - Notas: Atualizar contrato do CRUD e registrar prova de cada critério. Auditoria global ainda apresenta falhas preexistentes fora desta feature.
 
+## T-057 — Completar cursos nos fixtures de integração [concluida]
+
+- Refs: US-049, AC-176
+- Arquivos: src/test/java/com/gap/api/Integration/OrderServiceIntegrationTest.java, src/test/java/com/gap/api/Integration/OrgUnitServiceIntegrationTest.java, src/test/java/com/gap/api/Integration/WorkflowTemplateServiceIntegrationTest.java
+- Notas: Criar uma unidade do tipo DEPARTAMENTO e associá-la aos cursos persistidos pelos fixtures; remover a unidade ao limpar o teste quando necessário.
+
 
 

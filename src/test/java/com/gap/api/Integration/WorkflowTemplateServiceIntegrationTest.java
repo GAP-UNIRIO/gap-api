@@ -7,6 +7,7 @@ import com.gap.api.Model.Entity.Course;
 import com.gap.api.Model.Entity.Order;
 import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Repository.CourseRepository;
+import com.gap.api.Repository.OrgUnitRepository;
 import com.gap.api.Repository.WorkflowTemplateRepository;
 import com.gap.api.Service.Interface.IStorageService;
 import com.gap.api.Service.Interface.IWorkflowTemplateService;
@@ -39,14 +40,23 @@ class WorkflowTemplateServiceIntegrationTest {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private OrgUnitRepository orgUnitRepository;
+
     @MockitoBean
     private IStorageService storageService;
 
     @Test
     @DisplayName("@spec:AC-099 persiste nome e descrição da etapa no template")
     void createTemplate_persistsStepNameAndDescription() {
+        OrgUnit department = new OrgUnit();
+        department.setType(OrgUnit.OrgUnitType.DEPARTAMENTO);
+        department.setName("Template department " + UUID.randomUUID());
+        department = orgUnitRepository.saveAndFlush(department);
+
         Course course = new Course();
         course.setName("Template workflow test " + UUID.randomUUID());
+        course.setDepartment(department);
         course = courseRepository.saveAndFlush(course);
 
         var request = new WorkflowTemplateRequest(Order.OrderType.REVISAO_DE_PROVA, course.getId(), List.of(
