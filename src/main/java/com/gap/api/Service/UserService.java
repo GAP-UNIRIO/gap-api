@@ -45,6 +45,12 @@ public class UserService implements IUserService {
 
     @Transactional
     public UserResponse updateRoles(Long id, UserRolesRequest request) {
+        for (String authority : request.roles()) {
+            if (!Role.CORE.contains(authority)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Papel não permitido: " + authority + ". Permitidos: " + Role.BASIC + " e " + Role.ADMIN + ".");
+            }
+        }
         User user = repository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + id));
         Set<Role> roles = new HashSet<>();

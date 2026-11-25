@@ -2,7 +2,7 @@
 
 > feature: role-removal
 
-## T-160 — Definir o catálogo permitido na atribuição de papéis [pendente]
+## T-160 — Definir o catálogo permitido na atribuição de papéis [concluida]
 - Refs: US-049, AC-177, AC-178
 - Arquivos: src/main/java/com/gap/api/Service/UserService.java, src/main/java/com/gap/api/Model/DTO/UserRolesRequest.java, src/test/java/com/gap/api/Service/UserServiceTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java
 - Notas: Validar lista completa antes de alterar o usuário; resposta clara e sem atualização parcial. Q-040 foi respondida: catálogo limitado aos dois papéis centrais.
@@ -14,7 +14,7 @@
 
 ## T-162 — Limpar papéis extras legados por migration [pendente]
 - Refs: US-049, AC-176, AC-179
-- Arquivos: src/main/resources/db/migration/V7__remove_non_core_roles.sql, src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java, test/flyway-migration.test.js
+- Arquivos: src/main/resources/db/migration/V8__remove_non_core_roles.sql, src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java, test/flyway-migration.test.js
 - Notas: Q-039 foi respondida autorizando a limpeza. Remover vínculos extras antes dos registros; preservar `ROLE_BASIC`, `ROLE_ADMIN` e suas atribuições. Não reescrever migrations já publicadas.
 
 ## T-163 — Atualizar documentação e specs conflitantes [pendente]
