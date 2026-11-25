@@ -14,7 +14,6 @@
 - Arquivos: src\main\java\com\gap\api\Controller\InstitutionController.java
 - Arquivos: src\main\java\com\gap\api\Controller\OrderController.java
 - Arquivos: src\main\java\com\gap\api\Controller\OrgUnitController.java
-- Arquivos: src\main\java\com\gap\api\Controller\RoleController.java
 - Arquivos: src\main\java\com\gap\api\Controller\UserController.java
 - Arquivos: src\main\java\com\gap\api\Controller\WorkflowTemplateController.java
 - Arquivos: src\main\java\com\gap\api\Exception\GlobalExceptionHandler.java
@@ -35,8 +34,6 @@
 - Arquivos: src\main\java\com\gap\api\Model\DTO\OrderResponse.java
 - Arquivos: src\main\java\com\gap\api\Model\DTO\OrgUnitRequest.java
 - Arquivos: src\main\java\com\gap\api\Model\DTO\OrgUnitResponse.java
-- Arquivos: src\main\java\com\gap\api\Model\DTO\RoleRequest.java
-- Arquivos: src\main\java\com\gap\api\Model\DTO\RoleResponse.java
 - Arquivos: src\main\java\com\gap\api\Model\DTO\UserComplementRequest.java
 - Arquivos: src\main\java\com\gap\api\Model\DTO\UserResponse.java
 - Arquivos: src\main\java\com\gap\api\Model\DTO\WorkflowStepRequest.java
@@ -72,7 +69,6 @@
 - Arquivos: src\main\java\com\gap\api\Service\InstitutionService.java
 - Arquivos: src\main\java\com\gap\api\Service\OrderService.java
 - Arquivos: src\main\java\com\gap\api\Service\OrgUnitService.java
-- Arquivos: src\main\java\com\gap\api\Service\RoleService.java
 - Arquivos: src\main\java\com\gap\api\Service\UserService.java
 - Arquivos: src\main\java\com\gap\api\Service\WorkflowEngineService.java
 - Arquivos: src\main\java\com\gap\api\Service\WorkflowTemplateService.java
@@ -81,7 +77,6 @@
 - Arquivos: src\main\java\com\gap\api\Service\Interface\IInstitutionService.java
 - Arquivos: src\main\java\com\gap\api\Service\Interface\IOrderService.java
 - Arquivos: src\main\java\com\gap\api\Service\Interface\IOrgUnitService.java
-- Arquivos: src\main\java\com\gap\api\Service\Interface\IRoleService.java
 - Arquivos: src\main\java\com\gap\api\Service\Interface\IStorageService.java
 - Arquivos: src\main\java\com\gap\api\Service\Interface\IUserService.java
 - Arquivos: src\main\java\com\gap\api\Service\Interface\IWorkflowTemplateService.java
