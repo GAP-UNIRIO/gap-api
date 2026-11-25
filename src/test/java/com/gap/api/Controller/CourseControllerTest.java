@@ -161,7 +161,7 @@ class CourseControllerTest {
     // ---------- create ----------
 
     @Test
-    @DisplayName("@spec:AC-035 @spec:AC-108 @spec:AC-120 create retorna 201 com resumos de unidades")
+    @DisplayName("@spec:AC-035 @spec:AC-108 @spec:AC-120 @spec:AC-180 create retorna 201 com resumos de unidades")
     void create_success() throws Exception {
         when(service.create(any(CourseRequest.class))).thenReturn(response(1L, "Sistemas de Informação"));
 
@@ -271,7 +271,7 @@ class CourseControllerTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-107 create rejeita curso sem departmentId")
+    @DisplayName("@spec:AC-107 @spec:AC-175 create e update rejeitam curso sem departmentId")
     void create_missingDepartment_returnsBadRequest() throws Exception {
         String request = "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
         mockMvc.perform(post("/courses").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())

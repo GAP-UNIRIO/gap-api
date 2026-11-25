@@ -7,6 +7,6 @@ import com.gap.api.Model.DTO.OrderResponse;
 
 public interface IOrderService {
     OrderResponse create(OrderRequest request, String authenticatedEmail);
-    AnnexUploadResponse generateAnnexUploadUrl(AnnexUploadRequest request);
+    AnnexUploadResponse generateAnnexUploadUrl(AnnexUploadRequest request, String authenticatedEmail);
     OrderResponse cancel(Long orderId, String authenticatedEmail);
 }

@@ -1,7 +1,7 @@
 ﻿# Spec: Order create
 
 > feature: order-create
-> status: rascunho
+> status: implementada
 
 ## Contexto
 
@@ -81,10 +81,47 @@ Como usuário autenticado, quero receber os campos de envio assinado para carreg
 - **Quando** o cliente solicita autorização de upload
 - **Então** recebe HTTP 503
 
+### US-049 — Validar dados flexíveis e anexos do pedido
+
+Como usuário autenticado, quero que os dados opcionais e os arquivos anexados respeitem limites claros para enviar pedidos válidos e seguros.
+
+#### AC-175 — Aceitar `extraData` opcional como JSON
+
+- **Dado** um pedido com `extraData` ausente ou nulo, ou contendo um objeto JSON válido
+- **Quando** o cliente envia `POST /orders`
+- **Então** o pedido é aceito e o valor informado é preservado, sem validação de campos por tipo de solicitação
+
+#### AC-176 — Rejeitar JSON inválido em `extraData`
+
+- **Dado** um corpo de pedido cujo `extraData` não pode ser interpretado como JSON
+- **Quando** o cliente envia `POST /orders`
+- **Então** recebe HTTP 400 e nenhum pedido ou anexo é processado
+
+#### AC-177 — Limitar a quantidade de anexos
+
+- **Dado** um pedido com até 10 anexos
+- **Quando** o cliente envia `POST /orders`
+- **Então** a quantidade é aceita; se houver mais de 10, recebe HTTP 400 e nenhum arquivo é movido nem pedido persistido
+
+#### AC-178 — Limitar tamanho e tipos dos arquivos
+
+- **Dado** um pedido de autorização para arquivo PDF, JPEG, PNG ou DOCX
+- **Quando** o cliente envia `POST /orders/annex-upload`
+- **Então** recebe uma política assinada que permite arquivo de até 5 MiB; uploads acima do limite são rejeitados pelo S3
+- **E** pedidos de autorização para outros tipos de conteúdo recebem HTTP 400
+- **E** antes de mover um arquivo para o pedido, a API confirma no armazenamento que seu tamanho não excede 5 MiB
+
+#### AC-179 — Vincular chave temporária ao usuário autenticado
+
+- **Dado** uma chave temporária emitida para um usuário autenticado
+- **Quando** outro usuário tenta usar essa chave para criar um pedido
+- **Então** recebe HTTP 403 e nenhum arquivo é movido nem pedido persistido
+- **E** o próprio usuário pode usar sua chave dentro das demais regras de validade
+
 ## Fora de escopo
 
-- Mudanças no mecanismo de armazenamento ou no contrato de autenticação.
-- Mudanças no mecanismo de armazenamento ou no contrato geral de autenticação.
+- Validar campos internos de `extraData` de acordo com cada tipo de solicitação.
+- Alterar o schema do banco: os limites e a associação de upload serão aplicados no fluxo e nas chaves assinadas, sem persistir novos metadados de upload.
 
 ## Suposições
 
@@ -94,6 +131,9 @@ Como usuário autenticado, quero receber os campos de envio assinado para carreg
 | ASM-005 | O envio da solicitação e do upload exige autenticação e proteção CSRF. | confirmada | Testes de controller usam sessão OIDC e CSRF; segurança da API exige usuário autenticado. |
 | ASM-006 | `userId` diferente do usuário autenticado resulta em HTTP 403. | confirmada | Confirmado pelo usuário. |
 | ASM-007 | A ausência de template de workflow resulta em HTTP 503 e reverte banco e objetos finais. | confirmada | Confirmado pelo usuário; o teste de integração já verifica rollback/limpeza. |
+| ASM-019 | O limite de 5 MB significa 5 MiB, isto é, 5 × 1024 × 1024 bytes. | confirmada | Definido na conversa; alinhado ao limite solicitado e à condição `content-length-range` do POST ao S3. |
+| ASM-020 | Tipos permitidos são identificados pelo MIME type exato `application/pdf`, `image/jpeg`, `image/png` e `application/vnd.openxmlformats-officedocument.wordprocessingml.document`. | confirmada | Lista confirmada pelo usuário: PDF, JPEG, PNG e DOCX. |
+| ASM-021 | Chaves temporárias legadas, emitidas antes do vínculo por usuário, serão rejeitadas após a implantação. | confirmada | O usuário decidiu rejeitá-las e solicitar novo upload. |
 
 ## Perguntas em aberto
 
@@ -104,5 +144,4 @@ Como usuário autenticado, quero receber os campos de envio assinado para carreg
 | Q-003 | Quando não há template de workflow, a solicitação deve sofrer rollback ou ser criada sem etapas? | respondida | Deve sofrer rollback. |
 | Q-004 | Qual resposta HTTP deve ser enviada quando não há template de workflow? | respondida | HTTP 503. |
 | Q-005 | Quando o usuário autenticado envia um `userId` de outra pessoa, HTTP 403 é o status esperado? | respondida | Confirmado: HTTP 403. |
-
-
+| Q-040 | Como tratar uploads temporários feitos antes da implantação do vínculo por usuário? | respondida | Rejeitar as chaves legadas e pedir novo upload. |

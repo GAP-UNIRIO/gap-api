@@ -3,9 +3,11 @@ package com.gap.api.Integration;
 import com.gap.api.Model.DTO.AnnexRequest;
 import com.gap.api.Model.DTO.OrderRequest;
 import com.gap.api.Model.Entity.Course;
+import com.gap.api.Model.Entity.OrgUnit;
 import com.gap.api.Model.Entity.Order;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
+import com.gap.api.Repository.OrgUnitRepository;
 import com.gap.api.Repository.OrderRepository;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.Interface.IOrderService;
@@ -44,6 +46,9 @@ class OrderServiceIntegrationTest {
     private CourseRepository courseRepository;
 
     @Autowired
+    private OrgUnitRepository orgUnitRepository;
+
+    @Autowired
     private OrderRepository orderRepository;
 
     @MockitoBean
@@ -53,8 +58,14 @@ class OrderServiceIntegrationTest {
     @DisplayName("@spec:AC-009 template ausente retorna 503, reverte banco e limpa anexos finais")
     void create_workflowFailureRollsBackOrderAndAnnexesAndCleansFinalObjects() {
         String suffix = UUID.randomUUID().toString();
+        OrgUnit department = new OrgUnit();
+        department.setName("Order test department " + suffix);
+        department.setType(OrgUnit.OrgUnitType.DEPARTAMENTO);
+        department = orgUnitRepository.saveAndFlush(department);
+
         Course course = new Course();
         course.setName("Order create rollback " + suffix);
+        course.setDepartment(department);
         course = courseRepository.saveAndFlush(course);
 
         User user = new User();
@@ -66,6 +77,7 @@ class OrderServiceIntegrationTest {
         String temporaryKey = "temporary/" + suffix;
         String finalKey = "orders/1/" + suffix + "/proof.pdf";
         when(storageService.isTemporaryKeyIssued(temporaryKey)).thenReturn(true);
+        when(storageService.isTemporaryKeyIssuedForUser(temporaryKey, user.getId())).thenReturn(true);
         when(storageService.moveToOrder(eq(temporaryKey), anyLong(), eq("proof.pdf"))).thenReturn(finalKey);
 
         OrderRequest request = new OrderRequest(user.getId(), Order.OrderType.INCLUSAO_DISCIPLINA,
@@ -82,6 +94,7 @@ class OrderServiceIntegrationTest {
 
         userRepository.delete(user);
         courseRepository.delete(course);
+        orgUnitRepository.delete(department);
     }
 }
 

@@ -174,7 +174,7 @@ Como gestor, quero garantir que os usuários associados existem e exercem a fun�
 - `directorId`, `coordinatorId` e `secretaryId` são obrigatórios e devem apontar para usuários existentes com o papel correspondente.
 - Os campos `reitoriaId`, `coordenacaoId`, `direcaoId`, `secretariaId` e `escolaId` são obrigatórios nas novas requisições; devem referenciar unidades com tipo correspondente.
 - `departmentId` é obrigatório nas requisições de criação e atualização e deve apontar para `OrgUnitType.DEPARTAMENTO`; respostas devolvem apenas identificador e nome da unidade.
-- Cursos existentes antes da V2 podem permanecer sem departamento; essas associações devem ser preenchidas por uma atualização administrativa posterior. O fluxo que use etapa `DEPARTAMENTO` precisa de curso associado a essa unidade.
+- A V2 adicionou `department_id` anulável para preservar dados legados; a V7 torna a coluna obrigatória. Em bancos descartáveis, recriar a base com as migrations atuais garante que todos os cursos iniciem com departamento. A aplicação não infere associações automaticamente.
 - Erros de integridade do banco são convertidos pelo handler global em HTTP 409.
 - IDs inexistentes e associações organizacionais inválidas são rejeitados com HTTP 400; a mensagem identifica o vínculo inválido.
 - Os endpoints seguem a autenticação e a proteção CSRF definidas globalmente para a API.
@@ -189,7 +189,7 @@ Como gestor, quero garantir que os usuários associados existem e exercem a fun�
 
 | ID | Suposição | Status | Resolução |
 |---|---|---|---|
-| ASM-010 | Cursos existentes não têm um mapeamento automático confiável para departamentos. | confirmada | O usuário escolheu manter os cursos legados sem vínculo; novas criações e atualizações exigem departamento. |
+| ASM-010 | Cursos existentes não têm um mapeamento automático confiável para departamentos. | confirmada | A V2 preservava cursos legados com vínculo nulo; após a V7, todos os cursos exigem departamento, e a base descartável será recriada com as migrations atuais. |
 
 ## Perguntas em aberto
 
