@@ -55,7 +55,7 @@ public class AWSStorageService implements IStorageService {
         if (ownerUserId == null || ownerUserId <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A valid upload owner is required");
         }
-        if (!ALLOWED_CONTENT_TYPES.contains(contentType)) {
+        if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported attachment content type");
         }
         validateConfiguration();
