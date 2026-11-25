@@ -1,11 +1,11 @@
 {
   "feature": "order-create",
-  "timestamp": "2026-11-24T18:00:41.372Z",
-  "gitRev": "e558daa",
+  "timestamp": "2026-11-25T00:30:57.589Z",
+  "gitRev": "29bece2",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
   "exitCode": 0,
-  "testsParsed": 308,
+  "testsParsed": 332,
   "results": {
     "AC-004": {
       "status": "pass",
@@ -74,7 +74,7 @@
     },
     "AC-178": {
       "status": "pass",
-      "testName": "@spec:AC-178 rejeita arquivo maior que 5 MiB antes de persistir ou mover",
+      "testName": "@spec:AC-178 rejeita MIME type não permitido",
       "method": "tap"
     },
     "AC-179": {

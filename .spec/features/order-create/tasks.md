@@ -24,7 +24,7 @@
 
 ## T-056 — Restringir tamanho e tipos na autorização de upload [concluida]
 - Refs: US-049, AC-178
-- Arquivos: src/main/java/com/gap/api/Model/DTO/AnnexUploadRequest.java, src/main/java/com/gap/api/Service/AWSStorageService.java, src/main/java/com/gap/api/Service/Interface/IStorageService.java, src/main/java/com/gap/api/Service/OrderService.java, src/main/java/com/gap/api/Controller/OrderController.java, src/test/java/com/gap/api/Service/AWSStorageServiceTest.java, src/test/java/com/gap/api/Controller/OrderControllerTest.java
+- Arquivos: src/main/java/com/gap/api/Model/DTO/AnnexUploadRequest.java, src/main/java/com/gap/api/Service/AWSStorageService.java, src/main/java/com/gap/api/Service/Interface/IStorageService.java, src/main/java/com/gap/api/Service/OrderService.java, src/main/java/com/gap/api/Controller/OrderController.java, src/test/java/com/gap/api/Service/AWSStorageServiceTest.java, src/test/java/com/gap/api/Controller/OrderControllerTest.java, test/run-onp-tests.mjs
 - Notas: Permitir apenas `application/pdf`, `image/jpeg`, `image/png` e `application/vnd.openxmlformats-officedocument.wordprocessingml.document`; assinar política S3 com tamanho máximo de 5 MiB e verificar o tamanho do objeto antes de movê-lo.
 
 ## T-057 — Vincular chaves temporárias ao usuário autenticado [concluida]
