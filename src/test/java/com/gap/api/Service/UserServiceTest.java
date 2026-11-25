@@ -100,6 +100,34 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("@spec:AC-183 administrador pode atribuir exatamente os papéis centrais")
+    void updateRoles_acceptsOnlyCoreRoles() {
+        User existing = user(EMAIL);
+        existing.setRoles(new HashSet<>(Set.of(new Role(1L, Role.BASIC))));
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(roleRepository.findByAuthority(Role.BASIC)).thenReturn(Optional.of(new Role(1L, Role.BASIC)));
+        when(roleRepository.findByAuthority(Role.ADMIN)).thenReturn(Optional.of(new Role(2L, Role.ADMIN)));
+        when(repository.save(existing)).thenReturn(existing);
+
+        UserResponse response = service.updateRoles(1L, new UserRolesRequest(List.of(Role.BASIC, Role.ADMIN)));
+
+        assertThat(response.roles()).containsExactlyInAnyOrder(Role.BASIC, Role.ADMIN);
+        assertThat(existing.getRoles()).extracting(Role::getAuthority)
+                .containsExactlyInAnyOrder(Role.BASIC, Role.ADMIN);
+    }
+
+    @Test
+    @DisplayName("@spec:AC-184 updateRoles deve rejeitar papel fora do catálogo sem alterar associações")
+    void updateRoles_rejectsNonCoreRoleWithoutChangingAssociations() {
+        assertThatThrownBy(() -> service.updateRoles(1L,
+                new UserRolesRequest(List.of(Role.ADMIN, "ROLE_AUDITOR"))))
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST))
+                .hasMessageContaining("ROLE_AUDITOR");
+
+        verifyNoInteractions(repository, roleRepository);
+    }
+
+    @Test
     @DisplayName("@spec:AC-157 updateRoles deve lançar 404 quando o usuário não existe")
     void updateRoles_userNotFound() {
         when(repository.findById(99L)).thenReturn(Optional.empty());
@@ -110,17 +138,12 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-157 updateRoles deve lançar 404 e manter os papéis quando o papel não existe")
-    void updateRoles_roleNotFound() {
-        User existing = user(EMAIL);
-        existing.setRoles(new HashSet<>(Set.of(new Role(1L, "ROLE_BASIC"))));
-        when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(roleRepository.findByAuthority("ROLE_INEXISTENTE")).thenReturn(Optional.empty());
+    @DisplayName("@spec:AC-184 updateRoles recusa authority não permitida antes de consultar o usuário")
+    void updateRoles_unknownAuthorityIsRejectedBeforeDatabaseLookup() {
 
         assertThatThrownBy(() -> service.updateRoles(1L, new UserRolesRequest(List.of("ROLE_INEXISTENTE"))))
-                .satisfies(ex -> assertStatus(ex, HttpStatus.NOT_FOUND));
-        assertThat(existing.getRoles()).extracting(Role::getAuthority).containsExactly("ROLE_BASIC");
-        verify(repository, never()).save(any());
+                .satisfies(ex -> assertStatus(ex, HttpStatus.BAD_REQUEST));
+        verifyNoInteractions(repository, roleRepository);
     }
 
     // ---------- findByEmail ----------
