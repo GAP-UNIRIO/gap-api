@@ -1,7 +1,9 @@
-# Especificação: CRUD de papéis
+# Especificação histórica: CRUD de papéis (substituída)
 
-> feature: role-crud
-> status: implementada
+> feature: role-crud-historica
+> status: auditada
+
+> Esta spec descreve a implementação antiga e foi substituída pela feature [role-removal](../role-removal/spec.md). Não representa o comportamento atual.
 
 ## Contexto
 

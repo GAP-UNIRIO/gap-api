@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -304,10 +305,55 @@ class CourseControllerTest {
         }
     }
 
+    @Test
+    @DisplayName("@spec:AC-181 criação sem qualquer vínculo organizacional retorna 400 sem salvar")
+    void create_missingOrganizationalUnit_returnsBadRequestWithoutSaving() throws Exception {
+        for (String field : new String[]{"reitoriaId", "coordenacaoId", "direcaoId", "secretariaId", "escolaId"}) {
+            String content = organizationalCourseRequest().replace(organizationalUnitField(field), "");
+            mockMvc.perform(post("/courses")
+                            .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                            .with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(content))
+                    .andExpect(status().isBadRequest());
+        }
+        verify(service, never()).create(any(CourseRequest.class));
+    }
+
+    @Test
+    @DisplayName("@spec:AC-182 atualização sem qualquer vínculo organizacional retorna 400 sem alterar")
+    void update_missingOrganizationalUnit_returnsBadRequestWithoutUpdating() throws Exception {
+        for (String field : new String[]{"reitoriaId", "coordenacaoId", "direcaoId", "secretariaId", "escolaId"}) {
+            String content = organizationalCourseRequest().replace(organizationalUnitField(field), "");
+            mockMvc.perform(put("/courses/1")
+                            .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                            .with(csrf())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(content))
+                    .andExpect(status().isBadRequest());
+        }
+        verify(service, never()).update(eq(1L), any(CourseRequest.class));
+    }
+
+    private String organizationalCourseRequest() {
+        return "{\"name\":\"Curso\",\"directorId\":10,\"coordinatorId\":20,\"secretaryId\":30,\"departmentId\":40,\"reitoriaId\":41,\"coordenacaoId\":42,\"direcaoId\":43,\"secretariaId\":44,\"escolaId\":45}";
+    }
+
+    private String organizationalUnitField(String field) {
+        String id = switch (field) {
+            case "reitoriaId" -> "41";
+            case "coordenacaoId" -> "42";
+            case "direcaoId" -> "43";
+            case "secretariaId" -> "44";
+            default -> "45";
+        };
+        return ",\"" + field + "\":" + id;
+    }
+
     // ---------- update ----------
 
     @Test
-    @DisplayName("@spec:AC-038 @spec:AC-120 update retorna 200 e os vínculos organizacionais")
+    @DisplayName("@spec:AC-038 @spec:AC-120 @spec:AC-183 update retorna 200 e atualiza os vínculos organizacionais")
     void update_success() throws Exception {
         when(service.update(eq(1L), any(CourseRequest.class))).thenReturn(response(1L, "Nome novo"));
 
