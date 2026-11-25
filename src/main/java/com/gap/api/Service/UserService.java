@@ -64,9 +64,4 @@ public class UserService implements IUserService {
         return UserResponse.from(repository.save(user));
     }
 
-    private User getOrThrow(Long id) {
-        return repository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, ROLE_NOT_FOUND_MESSAGE + id));
-    }
-
 }
