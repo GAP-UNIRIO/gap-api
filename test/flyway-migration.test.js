@@ -5,6 +5,7 @@ import test from 'node:test';
 const migration = await readFile('src/main/resources/db/migration/V1__initial_schema.sql', 'utf8');
 const departmentMigration = await readFile('src/main/resources/db/migration/V2__add_course_department.sql', 'utf8');
 const workflowTemplateMigration = await readFile('src/main/resources/db/migration/V6__workflow_template_integrity.sql', 'utf8');
+const requireCourseDepartmentMigration = await readFile('src/main/resources/db/migration/V7__require_course_department.sql', 'utf8').catch(() => '');
 const production = await readFile('src/main/resources/application-prod.yaml', 'utf8');
 
 test('@spec:AC-001 migration inicial cobre tabelas e tipos PostgreSQL das entidades', () => {
@@ -53,6 +54,16 @@ test('@spec:AC-111 V2 adiciona departamento opcional a cursos existentes com cha
   assert.match(departmentMigration, /foreign\s+key\s*\(\s*department_id\s*\)\s+references\s+org_units\s*\(\s*id\s*\)/i);
   assert.doesNotMatch(departmentMigration, /department_id\s+bigint\s+not\s+null/i);
   assert.doesNotMatch(migration, /department_id/i, 'V1 stays immutable for databases already baselined at version 1');
+});
+
+test('@spec:AC-178 V7 não inventa departamentos para cursos existentes', () => {
+  assert.match(requireCourseDepartmentMigration, /alter\s+table\s+courses\s+alter\s+column\s+department_id\s+set\s+not\s+null/i);
+  assert.doesNotMatch(requireCourseDepartmentMigration, /\bupdate\s+courses\b/i);
+});
+
+test('@spec:AC-179 V7 torna department_id obrigatório sem remover a chave estrangeira definida em V2', () => {
+  assert.match(requireCourseDepartmentMigration, /alter\s+table\s+courses\s+alter\s+column\s+department_id\s+set\s+not\s+null/i);
+  assert.doesNotMatch(requireCourseDepartmentMigration, /drop\s+constraint\s+fk_courses_department/i);
 });
 
 test('@spec:AC-170 V6 mantém menor id e apaga etapas antes dos templates duplicados', () => {

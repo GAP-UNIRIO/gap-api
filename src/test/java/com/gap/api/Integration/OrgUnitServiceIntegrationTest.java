@@ -59,9 +59,15 @@ class OrgUnitServiceIntegrationTest {
         unit.setName("Reitoria " + suffix);
         unit = orgUnitRepository.saveAndFlush(unit);
 
+        OrgUnit department = new OrgUnit();
+        department.setType(OrgUnit.OrgUnitType.DEPARTAMENTO);
+        department.setName("Departamento do curso " + suffix);
+        department = orgUnitRepository.saveAndFlush(department);
+
         Course course = new Course();
         course.setName("Curso para teste de unidade " + suffix);
         course.setReitoria(unit);
+        course.setDepartment(department);
         course = courseRepository.saveAndFlush(course);
 
         Long unitId = unit.getId();
@@ -72,6 +78,8 @@ class OrgUnitServiceIntegrationTest {
             courseRepository.deleteById(courseId);
             courseRepository.flush();
             orgUnitRepository.deleteById(unitId);
+            orgUnitRepository.flush();
+            orgUnitRepository.delete(department);
             orgUnitRepository.flush();
         }
     }

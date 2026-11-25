@@ -67,7 +67,7 @@ public class Course {
     private OrgUnit escola;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", nullable = false)
     private OrgUnit department;
 
 }

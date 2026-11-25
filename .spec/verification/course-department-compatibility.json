@@ -1,0 +1,42 @@
+{
+  "feature": "course-department-compatibility",
+  "timestamp": "2026-11-25T01:09:42.106Z",
+  "gitRev": "e2ca0fd",
+  "command": "node test/run-onp-tests.mjs",
+  "reporter": "tap",
+  "exitCode": 1,
+  "testsParsed": 50,
+  "results": {
+    "AC-175": {
+      "status": "pass",
+      "testName": "@spec:AC-107 @spec:AC-175 create e update rejeitam curso sem departmentId",
+      "method": "tap"
+    },
+    "AC-176": {
+      "status": "pass",
+      "testName": "@spec:AC-176 banco rejeita curso sem departamento",
+      "method": "tap"
+    },
+    "AC-177": {
+      "status": "pass",
+      "testName": "@spec:AC-109 @spec:AC-177 create e update rejeitam unidade inexistente ou que não seja departamento",
+      "method": "tap"
+    },
+    "AC-178": {
+      "status": "pass",
+      "testName": "@spec:AC-178 V7 não inventa departamentos para cursos existentes",
+      "method": "tap"
+    },
+    "AC-179": {
+      "status": "pass",
+      "testName": "@spec:AC-179 V7 torna department_id obrigatório sem remover a chave estrangeira definida em V2",
+      "method": "tap"
+    },
+    "AC-180": {
+      "status": "pass",
+      "testName": "@spec:AC-035 @spec:AC-108 @spec:AC-120 @spec:AC-180 create retorna 201 com resumos de unidades",
+      "method": "tap"
+    }
+  },
+  "principles": {}
+}

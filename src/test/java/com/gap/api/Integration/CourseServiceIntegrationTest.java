@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -47,6 +48,9 @@ class CourseServiceIntegrationTest {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @MockitoBean
     private IStorageService storageService;
 
@@ -74,6 +78,13 @@ class CourseServiceIntegrationTest {
         } finally {
             cleanup(fixture);
         }
+    }
+
+    @Test
+    @DisplayName("@spec:AC-176 banco rejeita curso sem departamento")
+    void insert_courseWithoutDepartment_isRejectedByDatabase() {
+        assertThrows(DataIntegrityViolationException.class,
+                () -> jdbcTemplate.update("INSERT INTO courses (name) VALUES (?)", "Curso sem departamento " + UUID.randomUUID()));
     }
 
     @Test

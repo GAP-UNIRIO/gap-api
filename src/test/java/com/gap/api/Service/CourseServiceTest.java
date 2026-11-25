@@ -241,7 +241,7 @@ class CourseServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-109 create e update rejeitam unidade inexistente ou que não seja departamento")
+    @DisplayName("@spec:AC-109 @spec:AC-177 create e update rejeitam unidade inexistente ou que não seja departamento")
     void create_rejectsInvalidDepartment() {
         stubUserReferences();
         OrgUnit otherUnit = new OrgUnit();
