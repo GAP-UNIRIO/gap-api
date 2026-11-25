@@ -3,11 +3,14 @@ package com.gap.api.Service;
 import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.DTO.UserRolesRequest;
+import com.gap.api.Model.DTO.UserOrgUnitsRequest;
+import com.gap.api.Model.DTO.UserOrgUnitsResponse;
 import com.gap.api.Model.Entity.Role;
 import com.gap.api.Model.Entity.User;
 import com.gap.api.Repository.CourseRepository;
 import com.gap.api.Repository.RoleRepository;
 import com.gap.api.Repository.UserRepository;
+import com.gap.api.Repository.OrgUnitRepository;
 import com.gap.api.Service.Interface.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ public class UserService implements IUserService {
     private final UserRepository repository;
     private final CourseRepository courseRepository;
     private final RoleRepository roleRepository;
+    private final OrgUnitRepository orgUnitRepository;
 
     public UserResponse findByEmail(String email) {
         return UserResponse.from(repository.findByEmail(email).orElseThrow(() ->
@@ -54,6 +58,21 @@ public class UserService implements IUserService {
         }
         user.setRoles(roles);
         return UserResponse.from(repository.save(user));
+    }
+
+    @Transactional
+    public UserOrgUnitsResponse updateOrgUnits(Long id, UserOrgUnitsRequest request) {
+        User user = repository.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado: " + id));
+        Set<Long> requestedIds = Set.copyOf(request.orgUnitIds());
+        var units = orgUnitRepository.findAllById(request.orgUnitIds());
+        if (units.size() != requestedIds.size()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Uma ou mais unidades organizacionais não foram encontradas.");
+        }
+        user.setOrgUnits(new HashSet<>(units));
+        User saved = repository.save(user);
+        return new UserOrgUnitsResponse(saved.getId(), saved.getOrgUnits().stream()
+                .map(unit -> unit.getId()).sorted().toList());
     }
 
     private User getOrThrow(Long id) {

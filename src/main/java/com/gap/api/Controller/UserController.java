@@ -4,6 +4,8 @@ import com.gap.api.Model.DTO.BaseResponse;
 import com.gap.api.Model.DTO.UserComplementRequest;
 import com.gap.api.Model.DTO.UserResponse;
 import com.gap.api.Model.DTO.UserRolesRequest;
+import com.gap.api.Model.DTO.UserOrgUnitsRequest;
+import com.gap.api.Model.DTO.UserOrgUnitsResponse;
 import com.gap.api.Service.Interface.ICourseService;
 import com.gap.api.Service.Interface.IUserService;
 import jakarta.validation.Valid;
@@ -32,6 +34,13 @@ public class UserController {
     public ResponseEntity<BaseResponse<UserResponse>> updateRoles(@PathVariable("id") Long id,
                                                                   @Valid @RequestBody UserRolesRequest request) {
         return ResponseEntity.ok(BaseResponse.success("Papéis atualizados com sucesso.", userService.updateRoles(id, request)));
+    }
+
+    @PutMapping("/{id}/org-units")
+    public ResponseEntity<BaseResponse<UserOrgUnitsResponse>> updateOrgUnits(@PathVariable("id") Long id,
+                                                                              @Valid @RequestBody UserOrgUnitsRequest request) {
+        return ResponseEntity.ok(BaseResponse.success("Unidades organizacionais atualizadas com sucesso.",
+                userService.updateOrgUnits(id, request)));
     }
 
     @PutMapping("/me/complemento")
