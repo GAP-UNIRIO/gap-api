@@ -1,7 +1,7 @@
 # Especificação: Remoção do CRUD de papéis
 
 > feature: role-removal
-> status: implementada
+> status: em-implementacao
 
 ## Contexto
 

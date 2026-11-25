@@ -1,11 +1,37 @@
 {
   "feature": "role-removal",
-  "timestamp": "2026-11-25T03:49:46.018Z",
-  "gitRev": null,
+  "timestamp": "2026-11-25T05:08:01.481Z",
+  "gitRev": "c7ab9a8",
   "command": "node test/run-onp-tests.mjs",
   "reporter": "tap",
-  "exitCode": 1,
-  "testsParsed": 301,
-  "results": {},
+  "exitCode": 0,
+  "testsParsed": 315,
+  "results": {
+    "AC-181": {
+      "status": "pass",
+      "testName": "@spec:AC-181 todas as rotas de administração de roles respondem 404",
+      "method": "tap"
+    },
+    "AC-182": {
+      "status": "pass",
+      "testName": "@spec:AC-182 V5 cadastra os dois papéis centrais sem duplicar registros",
+      "method": "tap"
+    },
+    "AC-183": {
+      "status": "pass",
+      "testName": "@spec:AC-183 administrador pode atribuir exatamente os papéis centrais",
+      "method": "tap"
+    },
+    "AC-184": {
+      "status": "pass",
+      "testName": "@spec:AC-184 updateRoles deve rejeitar papel fora do catálogo sem alterar associações",
+      "method": "tap"
+    },
+    "AC-185": {
+      "status": "pass",
+      "testName": "@spec:AC-185 V8 remove vínculos antes dos papéis que não pertencem ao catálogo central",
+      "method": "tap"
+    }
+  },
   "principles": {}
 }

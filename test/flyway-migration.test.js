@@ -78,12 +78,16 @@ test('@spec:AC-170 V6 mantém menor id e apaga etapas antes dos templates duplic
   assert.match(workflowTemplateMigration, /create\s+unique\s+index\s+uq_workflow_templates_order_type_default[\s\S]*?where\s+course_id\s+is\s+null/i);
 });
 
-test('@spec:AC-176 V5 cadastra os dois papéis centrais sem duplicar registros', () => {
+test('@spec:AC-182 V5 cadastra os dois papéis centrais sem duplicar registros', () => {
   assert.match(coreRolesMigration, /values\s*\(\s*'ROLE_BASIC'\s*\)\s*,\s*\(\s*'ROLE_ADMIN'\s*\)/i);
   assert.match(coreRolesMigration, /on\s+conflict\s*\(\s*authority\s*\)\s+do\s+nothing/i);
 });
 
-test('@spec:AC-179 V8 remove vínculos antes dos papéis que não pertencem ao catálogo central', () => {
+test('@spec:AC-182 V8 também garante a existência dos papéis centrais', () => {
+  assert.match(roleCleanupMigration, /insert\s+into\s+roles\s*\(\s*authority\s*\)[\s\S]*?'ROLE_BASIC'[\s\S]*?'ROLE_ADMIN'[\s\S]*?on\s+conflict\s*\(\s*authority\s*\)\s+do\s+nothing/i);
+});
+
+test('@spec:AC-185 V8 remove vínculos antes dos papéis que não pertencem ao catálogo central', () => {
   const deleteLinks = roleCleanupMigration.search(/delete\s+from\s+users_roles/i);
   const deleteRoles = roleCleanupMigration.search(/delete\s+from\s+roles/i);
   assert.ok(deleteLinks >= 0, 'Migration removes user-role links first');

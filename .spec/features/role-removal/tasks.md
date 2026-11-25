@@ -22,7 +22,7 @@
 - Arquivos: README.md, .spec/features/access-control/spec.md, .spec/features/access-control/tasks.md, .spec/archive/role-crud/README.md, .spec/archive/role-crud/spec-historica.md, .spec/archive/role-crud/tasks-historicas.md, .spec/archive/role-crud/executar-tarefas-antigo.sh, .spec/archive/role-crud/plano-execucao-antigo.html, .spec/archive/role-crud/plano-execucao-antigo.md, .spec/archive/role-crud/plano-antigo.json, .spec/features/role-removal/spec.md
 - Notas: Arquivar o CRUD e os planos antigos sem apagar rastreabilidade; atualizar matriz de acesso e documentar que os papéis são definidos pelo sistema.
 
-## T-164 — Registrar testes anotados, verificar e auditar [pendente]
+## T-164 — Registrar testes anotados, verificar e auditar [concluida]
 - Refs: US-051, AC-181, AC-182, AC-183, AC-184, AC-185
 - Arquivos: src/main/resources/db/migration/V8__remove_non_core_roles.sql, src/test/java/com/gap/api/Controller/RoleControllerTest.java, src/test/java/com/gap/api/Service/UserServiceTest.java, src/test/java/com/gap/api/Controller/AccessControlTest.java, src/test/java/com/gap/api/Integration/RoleServiceIntegrationTest.java, test/flyway-migration.test.js, test/run-onp-tests.mjs, .spec/features/role-removal/spec.md, .spec/features/role-removal/tasks.md, .spec/verification/role-removal.json
-- Notas: Um teste anotado por critério; verify PASS confirmou todos os cinco critérios. Auditoria CI ainda aponta problemas preexistentes em outras features; registrar o resultado e não ocultar achados.
+- Notas: Um teste anotado por critério; verify PASS confirmou todos os cinco critérios. `audit --ci` foi executado e segue bloqueado por achados preexistentes em outras features (IDs duplicados, verifies obsoletos e ASM-015 aberta); nenhum foi ocultado nem alterado fora do escopo.

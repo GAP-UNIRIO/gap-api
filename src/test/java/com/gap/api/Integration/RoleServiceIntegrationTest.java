@@ -44,7 +44,7 @@ class RoleServiceIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("@spec:AC-179 migration remove vínculos e papéis extras e preserva os centrais")
+    @DisplayName("@spec:AC-185 migration remove vínculos e papéis extras e preserva os centrais")
     void cleanupMigration_removesExtraRoleLinksAndKeepsCoreRoleLinks() {
         String suffix = UUID.randomUUID().toString();
         String extraAuthority = "ROLE_LEGACY_" + suffix;
@@ -81,6 +81,24 @@ class RoleServiceIntegrationTest {
         assertEquals(1, countRoleLinks(userId, adminRoleId));
         assertTrue(roleRepository.existsById(basic.getId()));
         assertTrue(roleRepository.existsById(admin.getId()));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("@spec:AC-182 migration garante a existência dos papéis centrais sem duplicá-los")
+    void cleanupMigration_seedsCoreRolesIdempotently() {
+        jdbcTemplate.execute((ConnectionCallback<Void>) connection -> {
+            ScriptUtils.executeSqlScript(connection,
+                    new ClassPathResource("db/migration/V8__remove_non_core_roles.sql"));
+            ScriptUtils.executeSqlScript(connection,
+                    new ClassPathResource("db/migration/V8__remove_non_core_roles.sql"));
+            return null;
+        });
+
+        assertEquals(1, roleRepository.findAll().stream()
+                .filter(role -> Role.BASIC.equals(role.getAuthority())).count());
+        assertEquals(1, roleRepository.findAll().stream()
+                .filter(role -> Role.ADMIN.equals(role.getAuthority())).count());
     }
 
     private int countRoleLinks(Long userId, Long roleId) {

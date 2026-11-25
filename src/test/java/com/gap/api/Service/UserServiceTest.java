@@ -100,7 +100,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-177 administrador pode atribuir exatamente os papéis centrais")
+    @DisplayName("@spec:AC-183 administrador pode atribuir exatamente os papéis centrais")
     void updateRoles_acceptsOnlyCoreRoles() {
         User existing = user(EMAIL);
         existing.setRoles(new HashSet<>(Set.of(new Role(1L, Role.BASIC))));
@@ -117,7 +117,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-178 updateRoles deve rejeitar papel fora do catálogo sem alterar associações")
+    @DisplayName("@spec:AC-184 updateRoles deve rejeitar papel fora do catálogo sem alterar associações")
     void updateRoles_rejectsNonCoreRoleWithoutChangingAssociations() {
         assertThatThrownBy(() -> service.updateRoles(1L,
                 new UserRolesRequest(List.of(Role.ADMIN, "ROLE_AUDITOR"))))
@@ -138,7 +138,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("@spec:AC-178 updateRoles recusa authority não permitida antes de consultar o usuário")
+    @DisplayName("@spec:AC-184 updateRoles recusa authority não permitida antes de consultar o usuário")
     void updateRoles_unknownAuthorityIsRejectedBeforeDatabaseLookup() {
 
         assertThatThrownBy(() -> service.updateRoles(1L, new UserRolesRequest(List.of("ROLE_INEXISTENTE"))))

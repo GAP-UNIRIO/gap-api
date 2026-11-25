@@ -1,3 +1,7 @@
+INSERT INTO roles (authority)
+VALUES ('ROLE_BASIC'), ('ROLE_ADMIN')
+ON CONFLICT (authority) DO NOTHING;
+
 DELETE FROM users_roles user_role
 USING roles role
 WHERE user_role.role_id = role.id
