@@ -36,7 +36,7 @@ O que a API faz hoje:
 
 - **Login institucional via Google (OIDC)**, restrito a domínios de e-mail permitidos (por padrão `edu.unirio.br` e `uniriotec.br`).
 - **Cadastro complementar do usuário** após o primeiro login (matrícula e curso).
-- **CRUDs administrativos** de instituições, cursos, unidades organizacionais, papéis (roles) e calendários acadêmicos.
+- **CRUDs administrativos** de instituições, cursos, unidades organizacionais e calendários acadêmicos.
 - **Templates de workflow**: define quais etapas de aprovação (coordenação, direção, secretaria) cada tipo de solicitação percorre, com regra padrão da instituição e sobreposição por curso.
 - **Motor de workflow** que, dada uma solicitação, instancia as etapas de aprovação resolvendo a unidade responsável a partir do curso do aluno.
 
@@ -158,7 +158,7 @@ Exemplo de template (padrão da instituição para trancamento de matrícula):
 - **Sessão**: baseada em cookie `JSESSIONID`.
 - **CSRF**: token em cookie `XSRF-TOKEN` (legível pelo JavaScript). Requisições que alteram estado (`POST`, `PUT`, `DELETE`) devem enviar o valor no header `X-XSRF-TOKEN`.
 - **CORS**: libera apenas a origem configurada em `app.security.frontend-url`, com credenciais e métodos `GET`, `POST`, `PUT`, `DELETE` e `OPTIONS`.
-- **Autorização**: papéis `ROLE_BASIC` (aluno) e `ROLE_ADMIN` (servidores), carregados do banco no login. Cadastros (instituições, unidades, cursos, calendários): leitura para qualquer usuário logado, escrita só `ROLE_ADMIN`. Papéis (`/roles`), fluxos (`/workflow-template`) e atribuição de papéis (`PUT /users/{id}/roles`): só `ROLE_ADMIN`. Demais rotas: qualquer usuário logado. Chamada sem login responde **401** e acesso negado responde **403**, ambos no formato `BaseResponse`.
+- **Autorização**: papéis fixos `ROLE_BASIC` (aluno) e `ROLE_ADMIN` (servidores), carregados do banco no login e mantidos pelas migrations. Cadastros (instituições, unidades, cursos, calendários): leitura para qualquer usuário logado, escrita só `ROLE_ADMIN`. Fluxos (`/workflow-template`) e atribuição de papéis (`PUT /users/{id}/roles`): só `ROLE_ADMIN`. Não existe CRUD `/roles`; a atribuição aceita somente os dois papéis centrais. Demais rotas: qualquer usuário logado. Chamada sem login responde **401** e acesso negado responde **403**, ambos no formato `BaseResponse`.
 - **Redirecionamentos**: sucesso vai para `{frontend-url}/home`; falha para `{frontend-url}/login?error=unauthorized`; logout para `{frontend-url}/login?logout=true`.
 
 Fluxo típico de login:
@@ -323,7 +323,6 @@ Os recursos abaixo seguem o mesmo padrão: `GET /recurso`, `GET /recurso/{id}`, 
 | Instituições | `/institutions` | `name`*, `code`*, `authProviderType`*, `signatureProvider`*, `settings`, `active` |
 | Cursos | `/courses` | `name`, `directorId`, `coordinatorId`, `secretaryId` |
 | Unidades organizacionais | `/org-units` | `type`, `name` |
-| Papéis | `/roles` | `authority`* |
 | Calendários acadêmicos | `/academic-calendars` | `semester`*, `startDate`*, `endDate`*, `deadlines`, `academicLimits`, `active` |
 
 \* obrigatório.

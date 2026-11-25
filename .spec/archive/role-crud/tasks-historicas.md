@@ -1,6 +1,8 @@
-# Tarefas: CRUD de papéis
+# Tarefas históricas: CRUD de papéis (substituídas)
 
-> feature: role-crud
+> feature: role-crud-historica
+
+Estas tarefas foram arquivadas ao remover o CRUD. A execução atual está em [role-removal](../role-removal/tasks.md).
 
 ## T-025 — Especificar o CRUD e suas restrições [concluida]
 - Refs: US-026, AC-080, AC-081, AC-082, AC-083, US-027, AC-084, AC-085, AC-086, US-028, AC-087, AC-088, AC-089, US-029, AC-090, AC-091, AC-092

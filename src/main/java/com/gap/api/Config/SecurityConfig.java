@@ -5,19 +5,20 @@ import com.gap.api.Model.Entity.Role;
 import com.gap.api.Repository.UserRepository;
 import com.gap.api.Service.CustomOidcUserService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -41,7 +42,7 @@ public class SecurityConfig {
             "/institutions/**", "/org-units/**", "/courses/**", "/academic-calendars/**"};
     /** Endpoints exclusivos do administrador, inclusive para leitura. */
     private static final String[] ADMIN_ONLY_PATHS = {
-            "/roles/**", "/workflow-template/**", "/users/*/roles"};
+            "/workflow-template/**", "/users/*/roles"};
     private static final ObjectMapper JSON = new ObjectMapper();
 
     @Value("${app.security.frontend-url}")
@@ -56,61 +57,61 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName(null);
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        try {
+            http
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .csrfTokenRequestHandler(requestHandler)
-                )
+                    .csrf(csrf -> csrf
+                            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                            .csrfTokenRequestHandler(requestHandler)
+                    )
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/public/**").permitAll() // Rotas abertas, se houver
-                        .requestMatchers("/doc", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Documentação (Swagger)
-                        .requestMatchers("/users/me", "/users/me/complemento").authenticated()
-                        .requestMatchers(HttpMethod.GET, REGISTRY_PATHS).access((authentication, context) ->
-                                new AuthorizationDecision(isRegistrationComplete(authentication.get())))
-                        .requestMatchers(REGISTRY_PATHS).access((authentication, context) ->
-                                new AuthorizationDecision(isRegistrationComplete(authentication.get())
-                                        && hasAuthority(authentication.get(), Role.ADMIN)))
-                        .requestMatchers(ADMIN_ONLY_PATHS).access((authentication, context) ->
-                                new AuthorizationDecision(isRegistrationComplete(authentication.get())
-                                        && hasAuthority(authentication.get(), Role.ADMIN)))
-                        .anyRequest().access((authentication, context) ->
-                                new AuthorizationDecision(isRegistrationComplete(authentication.get())))
-                )
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/api/public/**").permitAll() // Rotas abertas, se houver
+                            .requestMatchers("/doc", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Documentação (Swagger)
+                            .requestMatchers("/users/me", "/users/me/complemento").authenticated()
+                            .requestMatchers(HttpMethod.GET, REGISTRY_PATHS).access((authentication, context) ->
+                                    new AuthorizationDecision(isRegistrationComplete(authentication.get())))
+                            .requestMatchers(REGISTRY_PATHS).access((authentication, context) ->
+                                    new AuthorizationDecision(isRegistrationComplete(authentication.get())
+                                            && hasAuthority(authentication.get(), Role.ADMIN)))
+                            .requestMatchers(ADMIN_ONLY_PATHS).access((authentication, context) ->
+                                    new AuthorizationDecision(isRegistrationComplete(authentication.get())
+                                            && hasAuthority(authentication.get(), Role.ADMIN)))
+                            .anyRequest().access((authentication, context) ->
+                                    new AuthorizationDecision(isRegistrationComplete(authentication.get())))
+                    )
 
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((request, response, failure) -> writeError(response,
-                                HttpStatus.UNAUTHORIZED, "É necessário fazer login para acessar este recurso."))
-                        .accessDeniedHandler((request, response, failure) -> writeError(response,
-                                HttpStatus.FORBIDDEN, failure instanceof CsrfException
-                                        ? "Token CSRF ausente ou inválido. Recarregue a página e tente novamente."
-                                        : isAuthenticatedOidcUser() && !isRegistrationComplete(
-                                                SecurityContextHolder.getContext().getAuthentication())
-                                                ? "Complete seu cadastro de usuário para acessar este recurso."
-                                        : "Você não tem permissão para acessar este recurso."))
-                )
+                    .exceptionHandling(exceptions -> exceptions
+                            .authenticationEntryPoint((request, response, failure) -> writeError(response,
+                                    HttpStatus.UNAUTHORIZED, "É necessário fazer login para acessar este recurso."))
+                            .accessDeniedHandler((request, response, failure) -> writeError(response,
+                                    HttpStatus.FORBIDDEN, accessDeniedMessage(failure)))
+                    )
 
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(customOidcUserService) // Nossa validação de domínio
+                    .oauth2Login(oauth2 -> oauth2
+                            .userInfoEndpoint(userInfo -> userInfo
+                                    .oidcUserService(customOidcUserService) // Nossa validação de domínio
+                            )
+                            .successHandler(new SimpleUrlAuthenticationSuccessHandler(frontendUrl + "/home"))
+                            .failureHandler(new SimpleUrlAuthenticationFailureHandler(frontendUrl + "/login?error=unauthorized"))
                         )
-                        .successHandler(new SimpleUrlAuthenticationSuccessHandler(frontendUrl + "/home"))
-                        .failureHandler(new SimpleUrlAuthenticationFailureHandler(frontendUrl + "/login?error=unauthorized"))
-                )
 
-                .logout(logout -> logout
-                        .logoutSuccessUrl(frontendUrl + "/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
-                );
+                    .logout(logout -> logout
+                            .logoutSuccessUrl(frontendUrl + "/login?logout=true")
+                            .invalidateHttpSession(true)
+                            .clearAuthentication(true)
+                            .deleteCookies("JSESSIONID", "XSRF-TOKEN")
+                    );
 
-        return http.build();
+            return http.build();
+        } catch (Exception exception) {
+            throw new BeanCreationException("filterChain",
+                    "Could not configure the application security filter chain.", exception);
+        }
     }
 
     boolean isRegistrationComplete(Authentication authentication) {
@@ -127,8 +128,19 @@ public class SecurityConfig {
                 .anyMatch(grantedAuthority -> authority.equals(grantedAuthority.getAuthority()));
     }
 
-    private boolean isAuthenticatedOidcUser() {
+    private String accessDeniedMessage(Exception failure) {
+        if (failure instanceof CsrfException) {
+            return "Token CSRF ausente ou inválido. Recarregue a página e tente novamente.";
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (isAuthenticatedOidcUser(authentication) && !isRegistrationComplete(authentication)) {
+            return "Complete seu cadastro de usuário para acessar este recurso.";
+        }
+        return "Você não tem permissão para acessar este recurso.";
+    }
+
+    private boolean isAuthenticatedOidcUser(Authentication authentication) {
         return authentication != null && authentication.isAuthenticated()
                 && authentication.getPrincipal() instanceof OidcUser;
     }

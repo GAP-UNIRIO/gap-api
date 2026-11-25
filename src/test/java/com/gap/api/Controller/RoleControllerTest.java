@@ -1,224 +1,74 @@
 package com.gap.api.Controller;
 
 import com.gap.api.Config.SecurityConfig;
+import com.gap.api.Model.Entity.Role;
 import com.gap.api.Repository.UserRepository;
-import com.gap.api.Model.DTO.RoleRequest;
-import com.gap.api.Model.DTO.RoleResponse;
 import com.gap.api.Service.CustomOidcUserService;
-import com.gap.api.Service.Interface.IRoleService;
+import com.gap.api.Service.Interface.ICourseService;
+import com.gap.api.Service.Interface.IUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import tools.jackson.databind.ObjectMapper;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(RoleController.class)
+@WebMvcTest(controllers = UserController.class)
 @Import(SecurityConfig.class)
 class RoleControllerTest {
-
-    @MockitoBean
-    private UserRepository userRepository;
-
-    @BeforeEach
-    void allowCompletedUserForControllerTests() {
-        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
-    }
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @MockitoBean
+    private UserRepository userRepository;
 
     @MockitoBean
-    private IRoleService service;
+    private IUserService userService;
+
+    @MockitoBean
+    private ICourseService courseService;
 
     @MockitoBean
     private CustomOidcUserService customOidcUserService;
 
-    // Métodos auxiliares
-    private RoleResponse response(Long id, String authority) {
-        return new RoleResponse(id, authority);
-    }
-
-    private RoleRequest request(String authority) {
-        return new RoleRequest(authority);
-    }
-
-    // ---------- findAll / findById ----------
-
-    @Test
-    @DisplayName("@spec:AC-080 findAll retorna papéis ordenados")
-    void findAll_returnsMappedList() throws Exception {
-        when(service.findAll()).thenReturn(List.of(
-                response(1L, "Student")
-        ));
-
-        mockMvc.perform(get("/roles").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data[0].authority").value("Student"));
+    @BeforeEach
+    void allowCompletedUser() {
+        when(userRepository.isCadasterCompleted(anyString())).thenReturn(true);
     }
 
     @Test
-    @DisplayName("@spec:AC-081 findAll sem papéis retorna lista vazia")
-    void findAll_empty() throws Exception {
-        when(service.findAll()).thenReturn(List.of());
-        mockMvc.perform(get("/roles").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.data").isEmpty());
-    }
+    @DisplayName("@spec:AC-181 todas as rotas de administração de roles respondem 404")
+    void roleCrudRoutes_areNotMapped() throws Exception {
+        var admin = oidcLogin()
+                .idToken(token -> token.claim("email", "admin@example.test"))
+                .authorities(new SimpleGrantedAuthority(Role.ADMIN));
 
-    @Test
-    @DisplayName("@spec:AC-082 findById retorna o papel quando existe")
-    void findById_found() throws Exception {
-        when(service.findById(1L)).thenReturn(response(1L, "Admin"));
-
-        mockMvc.perform(get("/roles/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.authority").value("Admin"));
-    }
-
-    @Test
-    @DisplayName("@spec:AC-083 findById inexistente retorna 404")
-    void findById_notFound() throws Exception {
-        when(service.findById(99L)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mockMvc.perform(get("/roles/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))).andExpect(status().isNotFound());
-    }
-
-    // ---------- create ----------
-
-    @Test
-    @DisplayName("@spec:AC-084 create retorna 201 e o papel criado")
-    void create_success() throws Exception {
-        when(service.create(any(RoleRequest.class))).thenReturn(response(1L, "Professor"));
-
-        mockMvc.perform(post("/roles")
-                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                        .with(csrf())
+        mockMvc.perform(get("/roles").with(admin)).andExpect(status().isNotFound());
+        mockMvc.perform(get("/roles/1").with(admin)).andExpect(status().isNotFound());
+        mockMvc.perform(post("/roles").with(admin).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request("Professor"))))
-                .andExpect(status().isCreated())
-                .andExpect(header().exists("Location"))
-                .andExpect(jsonPath("$.data.id").value(1L));
-    }
-
-    @Test
-    @DisplayName("@spec:AC-085 create rejeita autoridade ausente, branca ou acima do limite")
-    void create_invalidAuthority() throws Exception {
-        String[] bodies = {
-                "{}",
-                "{\"authority\":\" \"}",
-                "{\"authority\":\"" + "x".repeat(256) + "\"}"
-        };
-        for (String body : bodies) {
-            mockMvc.perform(post("/roles").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
-                            .contentType(MediaType.APPLICATION_JSON).content(body))
-                    .andExpect(status().isBadRequest());
-        }
-    }
-
-    @Test
-    @DisplayName("@spec:AC-085 update rejeita autoridade branca")
-    void update_blankAuthority() throws Exception {
-        mockMvc.perform(put("/roles/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"authority\":\" \"}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("@spec:AC-086 create com authority duplicada retorna 409")
-    void create_duplicateAuthority() throws Exception {
-        when(service.create(any(RoleRequest.class))).thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
-        mockMvc.perform(post("/roles").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request("ROLE_ADMIN"))))
-                .andExpect(status().isConflict());
-    }
-
-    // ---------- update ----------
-
-    @Test
-    @DisplayName("@spec:AC-087 update retorna 200 ao alterar o papel")
-    void update_success() throws Exception {
-        when(service.update(eq(1L), any(RoleRequest.class))).thenReturn(response(1L, "Coordenador"));
-
-        mockMvc.perform(put("/roles/1")
-                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request("Coordenador"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.authority").value("Coordenador"));
-    }
-
-    @Test
-    @DisplayName("@spec:AC-088 update com authority de outro papel retorna 409")
-    void update_duplicateAuthority() throws Exception {
-        when(service.update(eq(1L), any(RoleRequest.class)))
-                .thenThrow(new ResponseStatusException(HttpStatus.CONFLICT));
-        mockMvc.perform(put("/roles/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request("ROLE_TAKEN"))))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    @DisplayName("@spec:AC-089 update inexistente retorna 404")
-    void update_notFound() throws Exception {
-        when(service.update(eq(99L), any(RoleRequest.class)))
-                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mockMvc.perform(put("/roles/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request("ROLE_NEW"))))
+                        .content("{\"authority\":\"ROLE_CUSTOM\"}"))
                 .andExpect(status().isNotFound());
-    }
-
-    // ---------- delete ----------
-
-    @Test
-    @DisplayName("@spec:AC-090 delete retorna 200 ao remover o papel")
-    void delete_success() throws Exception {
-        mockMvc.perform(delete("/roles/1")
-                        .with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
-                        .with(csrf()))
-                .andExpect(status().isOk());
-
-        verify(service).delete(1L);
-    }
-
-    @Test
-    @DisplayName("@spec:AC-091 delete inexistente retorna 404")
-    void delete_notFound() throws Exception {
-        org.mockito.Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(service).delete(99L);
-        mockMvc.perform(delete("/roles/99").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())).andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("@spec:AC-092 delete papel associado a usuário retorna 409")
-    void delete_assignedRoleConflict() throws Exception {
-        org.mockito.Mockito.doThrow(new org.springframework.dao.DataIntegrityViolationException("foreign key"))
-                .when(service).delete(1L);
-        mockMvc.perform(delete("/roles/1").with(oidcLogin().idToken(token -> token.claim("email", "complete@example.test")).authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))).with(csrf())).andExpect(status().isConflict());
+        mockMvc.perform(put("/roles/1").with(admin).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"authority\":\"ROLE_CUSTOM\"}"))
+                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/roles/1").with(admin).with(csrf()))
+                .andExpect(status().isNotFound());
     }
 }
